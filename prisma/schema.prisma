@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  progress         Progress?
+  completions      LessonCompletion[]
+  srsItems         SrsItem[]
+  examAttempts     ExamAttempt[]
+  placementResults PlacementResult[]
+}
+
+model Progress {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentLevel      Int      @default(1)
+  unlockedLevel     Int      @default(1)
+  estimatedItpScore Int      @default(310)
+  currentLessonId   String?
+  streakCount       Int      @default(0)
+  lastActiveDate    DateTime?
+  placementDone     Boolean  @default(false)
+  updatedAt         DateTime @updatedAt
+}
+
+// Lecciones del currículo. content es JSON con la estructura de actividades.
+model Lesson {
+  id      String @id
+  level   Int
+  order   Int
+  title   String
+  // Área del ITP que entrena: listening | structure | reading | vocab
+  area    String
+  // Tipo de actividad principal de la lección
+  type    String
+  content String // JSON serializado
+
+  completions LessonCompletion[]
+
+  @@index([level, order])
+}
+
+model LessonCompletion {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  score       Float
+  completedAt DateTime @default(now())
+
+  @@unique([userId, lessonId])
+}
+
+// Sistema de Repetición Espaciada (SM-2 simplificado)
+model SrsItem {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // vocab | grammar
+  type         String
+  // listening | structure | reading | vocab
+  area         String
+  front        String
+  back         String
+  example      String?
+  interval     Int      @default(0)
+  easeFactor   Float    @default(2.5)
+  repetitions  Int      @default(0)
+  lapses       Int      @default(0)
+  nextReviewAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  // Clave para evitar duplicados del mismo concepto por usuario
+  conceptKey   String
+
+  @@unique([userId, conceptKey])
+  @@index([userId, nextReviewAt])
+}
+
+model LevelExam {
+  id            String @id @default(cuid())
+  level         Int    @unique
+  title         String
+  passThreshold Float  @default(0.7)
+  items         String // JSON serializado de los ítems
+}
+
+model ExamAttempt {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level            Int
+  score            Float
+  passed           Boolean
+  sectionBreakdown String // JSON: { listening, structure, reading }
+  attemptedAt      DateTime @default(now())
+
+  @@index([userId, level])
+}
+
+model PlacementResult {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rawScore          Int
+  maxScore          Int
+  estimatedItpScore Int
+  placedLevel       Int
+  takenAt           DateTime @default(now())
+
+  @@index([userId])
+}
