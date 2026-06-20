@@ -347,6 +347,70 @@ export const grammarLessons: GrammarLesson[] = [
       { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "The store closes ___ midnight.", options: ["in", "on", "at", "to"], answerIndex: 2, translationEs: "La tienda cierra a medianoche.", explanation: "Con 'midnight' y 'night' se usa 'at': at midnight." },
     ],
   },
+  {
+    title: "Pasado continuo (was/were + -ing)",
+    tipEs:
+      "Describe una acción en progreso en el pasado. Se forma con was/were + verbo -ing. Suele interrumpirse por otra acción en pasado simple: I was sleeping when the phone rang.",
+    examples: [
+      { en: "I was watching TV at 9 p.m.", es: "Estaba viendo la tele a las 9 p.m." },
+      { en: "They were studying when I arrived.", es: "Estaban estudiando cuando llegué." },
+    ],
+    practice: [
+      { kind: "mcq", prompt: "Completa con pasado continuo.", sentence: "She ___ cooking when I called.", options: ["is", "was", "were", "did"], answerIndex: 1, translationEs: "Ella estaba cocinando cuando llamé.", explanation: "Con she se usa 'was' + -ing: was cooking." },
+      { kind: "mcq", prompt: "Elige el auxiliar correcto.", sentence: "We ___ walking in the park.", options: ["was", "were", "are", "did"], answerIndex: 1, translationEs: "Estábamos caminando en el parque.", explanation: "Con we/you/they se usa 'were'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "It ___ raining all morning.", options: ["was", "were", "is", "did"], answerIndex: 0, translationEs: "Estuvo lloviendo toda la mañana.", explanation: "Con it se usa 'was' + -ing." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "What ___ you doing at noon?", options: ["was", "were", "did", "are"], answerIndex: 1, translationEs: "¿Qué estabas haciendo al mediodía?", explanation: "Pregunta en pasado continuo con 'you': were." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "He was ___ when the lights went out.", options: ["read", "reads", "reading", "readed"], answerIndex: 2, translationEs: "Él estaba leyendo cuando se fue la luz.", explanation: "Tras was/were va el verbo en -ing: reading." },
+    ],
+  },
+  {
+    title: "Used to (solía / antes)",
+    tipEs:
+      "'Used to' habla de hábitos o estados del pasado que ya no son ciertos: I used to play soccer (antes jugaba). En negativo y pregunta se usa 'use to': Did you use to...? / I didn't use to...",
+    examples: [
+      { en: "I used to live in a small town.", es: "Antes vivía en un pueblo pequeño." },
+      { en: "She used to drink coffee, but not anymore.", es: "Ella solía tomar café, pero ya no." },
+    ],
+    practice: [
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "I ___ play the piano as a child.", options: ["use to", "used to", "used", "am used to"], answerIndex: 1, translationEs: "Antes tocaba el piano de niño.", explanation: "En afirmativo: 'used to' + verbo base." },
+      { kind: "mcq", prompt: "Elige la forma correcta (pregunta).", sentence: "___ you use to smoke?", options: ["Do", "Did", "Are", "Were"], answerIndex: 1, translationEs: "¿Antes fumabas?", explanation: "La pregunta usa 'Did' + use to (sin -d)." },
+      { kind: "mcq", prompt: "Completa la negación.", sentence: "He didn't ___ like vegetables.", options: ["used to", "use to", "uses to", "using to"], answerIndex: 1, translationEs: "Antes no le gustaban las verduras.", explanation: "En negativo: didn't + 'use to' (sin -d)." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "We ___ to have a dog.", options: ["use", "used", "using", "uses"], answerIndex: 1, translationEs: "Antes teníamos un perro.", explanation: "Afirmativo: 'used to'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "There ___ to be a cinema here.", options: ["use", "used", "uses", "using"], answerIndex: 1, translationEs: "Antes había un cine aquí.", explanation: "Afirmativo con 'there': there used to be." },
+    ],
+  },
+  {
+    title: "Cláusulas relativas (who / which / that)",
+    tipEs:
+      "Unen información sobre un sustantivo. 'who' para personas, 'which' para cosas, 'that' para ambos. The man who called... / the book which/that I read...",
+    examples: [
+      { en: "The woman who lives next door is a doctor.", es: "La mujer que vive al lado es doctora." },
+      { en: "This is the book that changed my life.", es: "Este es el libro que cambió mi vida." },
+    ],
+    practice: [
+      { kind: "mcq", prompt: "Elige el relativo correcto.", sentence: "The man ___ called you is my uncle.", options: ["which", "who", "where", "what"], answerIndex: 1, translationEs: "El hombre que te llamó es mi tío.", explanation: "Para personas se usa 'who'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "I have a phone ___ takes great photos.", options: ["who", "which", "where", "whose"], answerIndex: 1, translationEs: "Tengo un teléfono que toma excelentes fotos.", explanation: "Para cosas se usa 'which' (o 'that')." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She is the teacher ___ helped me.", options: ["which", "who", "what", "where"], answerIndex: 1, translationEs: "Ella es la maestra que me ayudó.", explanation: "Persona → 'who'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "This is the house ___ we grew up.", options: ["which", "who", "where", "that"], answerIndex: 2, translationEs: "Esta es la casa donde crecimos.", explanation: "Para lugares se usa 'where'." },
+      { kind: "mcq", prompt: "Elige la opción que sirve para ambos.", sentence: "The movie ___ we saw was great.", options: ["who", "where", "that", "whose"], answerIndex: 2, translationEs: "La película que vimos estuvo genial.", explanation: "'that' sirve para personas y cosas." },
+    ],
+  },
+  {
+    title: "Voz pasiva (be + participio)",
+    tipEs:
+      "Se usa cuando importa más la acción que quién la hace. Se forma con el verbo TO BE + participio: The house was built in 1990. El objeto pasa a ser el sujeto.",
+    examples: [
+      { en: "English is spoken all over the world.", es: "El inglés se habla en todo el mundo." },
+      { en: "The cake was made by my mother.", es: "El pastel fue hecho por mi madre." },
+    ],
+    practice: [
+      { kind: "mcq", prompt: "Completa la voz pasiva (presente).", sentence: "These cars ___ made in Japan.", options: ["is", "are", "was", "be"], answerIndex: 1, translationEs: "Estos carros se hacen en Japón.", explanation: "Pasiva presente con plural: are + participio (made)." },
+      { kind: "mcq", prompt: "Elige el participio correcto.", sentence: "The letter was ___ yesterday.", options: ["send", "sent", "sended", "sending"], answerIndex: 1, translationEs: "La carta fue enviada ayer.", explanation: "send → sent (participio) en pasiva pasada." },
+      { kind: "mcq", prompt: "Completa la voz pasiva (pasado).", sentence: "The bridge ___ built in 1980.", options: ["is", "was", "were", "did"], answerIndex: 1, translationEs: "El puente fue construido en 1980.", explanation: "Pasiva pasada singular: was + participio (built)." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "Spanish ___ spoken in Mexico.", options: ["is", "are", "was", "be"], answerIndex: 0, translationEs: "El español se habla en México.", explanation: "Pasiva presente singular: is + participio (spoken)." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "The room ___ cleaned every day.", options: ["is", "are", "be", "was"], answerIndex: 0, translationEs: "El cuarto se limpia todos los días.", explanation: "Pasiva presente (rutina) singular: is cleaned." },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -586,6 +650,58 @@ export const vocabSets: VocabSet[] = [
       { kind: "flashcard", word: "size", meaning: "talla", example: "Do you have this in a bigger size?" },
       { kind: "flashcard", word: "It fits me well", meaning: "Me queda bien", example: "This shirt fits me well." },
       { kind: "flashcard", word: "to get dressed", meaning: "vestirse", example: "I get dressed before breakfast." },
+    ],
+  },
+  {
+    theme: "Naturaleza y animales",
+    cards: [
+      { kind: "flashcard", word: "tree / forest", meaning: "árbol / bosque", example: "We walked through a beautiful forest." },
+      { kind: "flashcard", word: "beach / sea", meaning: "playa / mar", example: "I love swimming in the sea." },
+      { kind: "flashcard", word: "mountain", meaning: "montaña", example: "They climbed a tall mountain." },
+      { kind: "flashcard", word: "river / lake", meaning: "río / lago", example: "There is a quiet lake near my house." },
+      { kind: "flashcard", word: "pet", meaning: "mascota", example: "Do you have any pets?" },
+      { kind: "flashcard", word: "bird", meaning: "pájaro / ave", example: "A bird is singing in the tree." },
+      { kind: "flashcard", word: "wild animals", meaning: "animales salvajes", example: "We saw wild animals on the safari." },
+      { kind: "flashcard", word: "weather forecast", meaning: "pronóstico del clima", example: "The weather forecast says it will be sunny." },
+    ],
+  },
+  {
+    theme: "Deportes y ejercicio",
+    cards: [
+      { kind: "flashcard", word: "to go for a run", meaning: "salir a correr", example: "I go for a run every morning." },
+      { kind: "flashcard", word: "team / match", meaning: "equipo / partido", example: "Our team won the match." },
+      { kind: "flashcard", word: "to win / to lose", meaning: "ganar / perder", example: "We won the game last night." },
+      { kind: "flashcard", word: "coach", meaning: "entrenador", example: "The coach gave us good advice." },
+      { kind: "flashcard", word: "to score a goal", meaning: "anotar un gol", example: "He scored a goal in the last minute." },
+      { kind: "flashcard", word: "gym", meaning: "gimnasio", example: "I go to the gym three times a week." },
+      { kind: "flashcard", word: "to warm up", meaning: "calentar (antes de ejercitar)", example: "Always warm up before you run." },
+      { kind: "flashcard", word: "to be in shape", meaning: "estar en forma", example: "She runs to stay in shape." },
+    ],
+  },
+  {
+    theme: "Educación y estudios",
+    cards: [
+      { kind: "flashcard", word: "to take a course", meaning: "tomar un curso", example: "I'm taking an English course online." },
+      { kind: "flashcard", word: "homework / assignment", meaning: "tarea", example: "I have a lot of homework tonight." },
+      { kind: "flashcard", word: "to pass / to fail", meaning: "aprobar / reprobar", example: "I studied hard to pass the exam." },
+      { kind: "flashcard", word: "degree", meaning: "título / grado", example: "She has a degree in biology." },
+      { kind: "flashcard", word: "to take notes", meaning: "tomar apuntes", example: "Take notes during the lesson." },
+      { kind: "flashcard", word: "subject", meaning: "materia / asignatura", example: "Math is my favorite subject." },
+      { kind: "flashcard", word: "to make progress", meaning: "progresar / avanzar", example: "I'm making progress with my English." },
+      { kind: "flashcard", word: "deadline", meaning: "fecha de entrega", example: "The deadline for the essay is Friday." },
+    ],
+  },
+  {
+    theme: "Acuerdo y opinión",
+    cards: [
+      { kind: "flashcard", word: "I think that...", meaning: "Creo que...", example: "I think that it's a good idea." },
+      { kind: "flashcard", word: "In my opinion...", meaning: "En mi opinión...", example: "In my opinion, the movie was boring." },
+      { kind: "flashcard", word: "I agree / I disagree", meaning: "Estoy de acuerdo / en desacuerdo", example: "I agree with you on that." },
+      { kind: "flashcard", word: "You're right", meaning: "Tienes razón", example: "You're right, I hadn't thought of that." },
+      { kind: "flashcard", word: "It depends", meaning: "Depende", example: "Will you come? — It depends on the time." },
+      { kind: "flashcard", word: "I'm not sure", meaning: "No estoy seguro", example: "I'm not sure that's true." },
+      { kind: "flashcard", word: "to be honest...", meaning: "para ser honesto...", example: "To be honest, I didn't like it." },
+      { kind: "flashcard", word: "That makes sense", meaning: "Eso tiene sentido", example: "That makes sense, thanks for explaining." },
     ],
   },
 ];

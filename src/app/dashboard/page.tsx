@@ -384,10 +384,28 @@ export default async function DashboardPage() {
         {/* Acciones extra */}
         <div className="mt-8 flex flex-col items-center gap-2 text-center">
           <Link
+            href="/practice/conversation"
+            className="text-sm text-brand-600 hover:underline"
+          >
+            💬 Práctica de conversación (diálogos reales)
+          </Link>
+          <Link
             href="/practice/speaking"
             className="text-sm text-brand-600 hover:underline"
           >
             🎤 Práctica de pronunciación (habla y te corrige)
+          </Link>
+          <Link
+            href="/grammar"
+            className="text-sm text-brand-600 hover:underline"
+          >
+            📖 Biblioteca de gramática (todas las reglas)
+          </Link>
+          <Link
+            href="/achievements"
+            className="text-sm text-brand-600 hover:underline"
+          >
+            🏆 Mis logros
           </Link>
           <Link
             href="/mistakes"
