@@ -33,11 +33,15 @@ Atajo para reconstruir la BD desde cero: `npm run db:reset`.
 ### Variables de entorno (`.env`)
 
 ```
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://usuario:password@host/basededatos?sslmode=require"
 JWT_SECRET="<secreto largo y aleatorio>"
 ANTHROPIC_API_KEY=""      # opcional; activa la retroalimentación con IA
 ANTHROPIC_MODEL=""        # opcional; por defecto claude-sonnet-4-6
 ```
+
+> Usa **PostgreSQL** (recomendado: Neon / Vercel Postgres, gratis). En el
+> despliegue, el comando `build` ejecuta `prisma db push` y la siembra de
+> lecciones automáticamente.
 
 La app funciona completamente **sin** `ANTHROPIC_API_KEY`; solo la práctica de
 escritura con retroalimentación de IA queda deshabilitada con un aviso claro.
