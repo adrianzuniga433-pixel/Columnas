@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Columnas — Inglés para TOEFL ITP",
+  title: "Curso de Inglés — TOEFL ITP",
   description:
     "Aprende inglés desde cero hasta un A2 sólido (meta 400 en el TOEFL ITP) con niveles, repetición espaciada y exámenes.",
 };

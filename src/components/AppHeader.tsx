@@ -17,7 +17,7 @@ export function AppHeader({ name }: { name?: string | null }) {
     <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
       <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
         <Link href="/dashboard" className="text-lg font-bold text-brand-600">
-          Columnas
+          Curso de Inglés
         </Link>
         <div className="flex items-center gap-2">
           {name && (

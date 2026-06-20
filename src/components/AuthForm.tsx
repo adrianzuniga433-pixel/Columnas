@@ -45,7 +45,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
       <div className="mb-8 text-center">
         <div className="mb-2 text-3xl font-bold tracking-tight text-brand-600">
-          Columnas
+          Curso de Inglés
         </div>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Inglés de cero a A2 sólido · meta 400 en el TOEFL ITP
