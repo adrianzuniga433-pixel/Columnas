@@ -42,6 +42,7 @@ export interface DailySession {
   monthFocus: string;
   grammar: GrammarLesson;
   vocab: VocabSet;
+  comprehension: Activity;
   activities: Activity[];
   productionPrompt: string;
   resources: DayResource[];
@@ -907,6 +908,7 @@ export function getDailySession(dayNumber: number): DailySession {
     monthFocus: focus,
     grammar,
     vocab,
+    comprehension,
     activities,
     productionPrompt,
     resources: resourcesByStage[stage],

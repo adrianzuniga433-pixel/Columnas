@@ -57,36 +57,48 @@ export default async function DashboardPage() {
         </div>
 
         {/* Sesión de estudio de hoy (protagonista) */}
-        <Link
-          href="/today"
-          className="mb-6 block rounded-2xl bg-gradient-to-br from-brand-600 to-brand-500 p-5 text-white shadow-lg transition-transform hover:scale-[1.01] dark:from-brand-700 dark:to-brand-600"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-brand-100">
-                {daily.stageEmoji} {daily.stage} · Semana {daily.week}
-              </p>
-              <h2 className="mt-1 text-xl font-bold">
-                {doneToday ? "✓ Sesión de hoy completada" : `Estudiar — Día ${daily.day}`}
-              </h2>
-              <p className="mt-1 text-sm text-brand-50">
-                {doneToday
-                  ? "¡Buen trabajo! Puedes repasarla o volver mañana."
-                  : `Hoy: ${daily.grammar.title} · vocabulario de ${daily.vocab.theme}`}
-              </p>
+        <div className="mb-6 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-500 p-5 text-white shadow-lg dark:from-brand-700 dark:to-brand-600">
+          <Link href="/today" className="block">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-brand-100">
+                  {daily.stageEmoji} {daily.stage} · Semana {daily.week}
+                </p>
+                <h2 className="mt-1 text-xl font-bold">
+                  {doneToday ? "✓ Sesión de hoy completada" : `Estudiar — Día ${daily.day}`}
+                </h2>
+                <p className="mt-1 text-sm text-brand-50">
+                  {doneToday
+                    ? "¡Buen trabajo! Puedes repasarla o volver mañana."
+                    : `Hoy: ${daily.grammar.title} · vocabulario de ${daily.vocab.theme}`}
+                </p>
+              </div>
+              <span className="shrink-0 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold">
+                {doneToday ? "Repasar" : "Empezar"} →
+              </span>
             </div>
-            <span className="shrink-0 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold">
-              {doneToday ? "Repasar" : "Empezar"} →
-            </span>
+          </Link>
+          <p className="mt-4 mb-2 text-xs text-brand-100">
+            O entra directo a una parte:
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <Link href="/today?section=grammar" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
+              📘 Gramática
+            </Link>
+            <Link href="/today?section=vocab" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
+              📝 Vocabulario
+            </Link>
+            <Link href="/today?section=comprension" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
+              📖 Comprensión
+            </Link>
+            <Link href="/today?section=produccion" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
+              ✏️ Producción
+            </Link>
+            <Link href="/today?section=recursos" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
+              🎬 Recursos
+            </Link>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2 text-xs">
-            <span className="rounded-full bg-white/15 px-2 py-1">📘 Gramática</span>
-            <span className="rounded-full bg-white/15 px-2 py-1">📝 Vocabulario</span>
-            <span className="rounded-full bg-white/15 px-2 py-1">📖 Comprensión</span>
-            <span className="rounded-full bg-white/15 px-2 py-1">✏️ Producción</span>
-            <span className="rounded-full bg-white/15 px-2 py-1">🎬 Recursos</span>
-          </div>
-        </Link>
+        </div>
 
         {/* Fila superior: meta + acciones rápidas */}
         <div className="grid gap-4 md:grid-cols-3">
