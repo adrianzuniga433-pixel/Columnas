@@ -204,6 +204,13 @@ export function DailyPlayer({
                 </li>
               ))}
             </ul>
+            {isFull && (
+              <div className="mb-4 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600 dark:bg-slate-800/60 dark:text-slate-300">
+                ⏱️ Sesión completa de hoy: <strong>≈ {session.estimatedMinutes} min</strong>{" "}
+                ({session.activities.length} actividades + producción). Puedes
+                hacerla de corrido o por partes con los botones del panel.
+              </div>
+            )}
             <button className="btn-primary" onClick={() => setPhase("activities")}>
               {isFull ? "Empezar la sesión →" : "Empezar la práctica →"}
             </button>

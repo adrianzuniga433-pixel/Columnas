@@ -5,8 +5,10 @@
 
 import type {
   Activity,
+  Dictation,
   Flashcard,
   Listening,
+  Matching,
   Mcq,
   OrderWords,
   Reading,
@@ -46,6 +48,7 @@ export interface DailySession {
   activities: Activity[];
   productionPrompt: string;
   resources: DayResource[];
+  estimatedMinutes: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -611,6 +614,21 @@ export const orderTasks: OrderWords[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Pool de dictados (escucha y escribe — práctica de listening + escritura)
+// ---------------------------------------------------------------------------
+
+export const dictationTasks: Dictation[] = [
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "I usually wake up early in the morning.", accepted: ["I usually wake up early in the morning"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "She is going to visit her family next week.", accepted: ["She is going to visit her family next week"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "There are many interesting books in the library.", accepted: ["There are many interesting books in the library"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "We have never been to the United States.", accepted: ["We have never been to the United States"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "You should drink more water every day.", accepted: ["You should drink more water every day"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "How much does this jacket cost?", accepted: ["How much does this jacket cost"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "If it rains tomorrow, we will stay home.", accepted: ["If it rains tomorrow we will stay home"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "My favorite hobby is reading in my free time.", accepted: ["My favorite hobby is reading in my free time"] },
+];
+
+// ---------------------------------------------------------------------------
 // Pool de consignas de producción (escritura / habla)
 // ---------------------------------------------------------------------------
 
@@ -670,6 +688,15 @@ function stageForWeek(week: number): { stage: string; emoji: string; focus: stri
   return { stage: "Intermedio-Alto", emoji: "🟣", focus: "Contenido auténtico y autonomía" };
 }
 
+/** Crea una actividad de emparejar (inglés → español) a partir del vocabulario. */
+function matchingFromVocab(vocab: VocabSet): Matching {
+  return {
+    kind: "matching",
+    prompt: `Empareja cada palabra de "${vocab.theme}" con su significado.`,
+    pairs: vocab.cards.slice(0, 6).map((c) => ({ left: c.word, right: c.meaning })),
+  };
+}
+
 /** Devuelve la sesión completa para el día N (N empieza en 1). */
 export function getDailySession(dayNumber: number): DailySession {
   const day = Math.max(1, Math.floor(dayNumber));
@@ -679,22 +706,31 @@ export function getDailySession(dayNumber: number): DailySession {
 
   const grammar = grammarLessons[i % grammarLessons.length];
   const vocab = vocabSets[i % vocabSets.length];
+  const matching = matchingFromVocab(vocab);
 
-  // La comprensión del día incluye una lectura y una escucha.
-  const reading = readingTasks[i % readingTasks.length];
+  // Comprensión: dos lecturas y una escucha para acercarse a la hora de estudio.
+  const reading1 = readingTasks[i % readingTasks.length];
+  const reading2 = readingTasks[(i + 2) % readingTasks.length];
   const listening = listeningTasks[i % listeningTasks.length];
-  const comprehensionSet: Activity[] = [reading, listening];
+  const dictation = dictationTasks[i % dictationTasks.length];
+  const comprehensionSet: Activity[] = [reading1, listening, reading2];
 
-  const order = orderTasks[i % orderTasks.length];
+  const order1 = orderTasks[i % orderTasks.length];
+  const order2 = orderTasks[(i + 3) % orderTasks.length];
   const productionPrompt = productionPrompts[i % productionPrompts.length];
 
-  // Sesión completa: vocabulario → gramática → comprensión → producción guiada.
+  // Sesión completa (~1 hora): vocabulario + repaso → gramática + práctica →
+  // comprensión (lectura, escucha, dictado) → producción guiada.
   const activities: Activity[] = [
-    ...vocab.cards,
-    ...grammar.practice,
-    reading,
-    listening,
-    order,
+    ...vocab.cards, // ~10 min: vocabulario nuevo
+    matching, // ~5 min: consolidación de vocabulario
+    ...grammar.practice, // ~12 min: gramática
+    order1,
+    order2, // ~5 min: construir oraciones
+    reading1, // ~10 min: lectura
+    dictation, // ~5 min: dictado (escucha + escribe)
+    listening, // ~8 min: escucha
+    reading2, // ~10 min: segunda lectura
   ];
 
   return {
@@ -709,6 +745,7 @@ export function getDailySession(dayNumber: number): DailySession {
     activities,
     productionPrompt,
     resources: resourcesByStage[stage],
+    estimatedMinutes: 60,
   };
 }
 
