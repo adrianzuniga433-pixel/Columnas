@@ -7,6 +7,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { getDailySession, checkpointDue } from "@/content/daily";
 import { prisma } from "@/lib/prisma";
 import { Onboarding } from "@/components/Onboarding";
+import { ReminderClient } from "@/components/ReminderClient";
 
 export const dynamic = "force-dynamic";
 
@@ -68,6 +69,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen">
       <Onboarding />
+      <ReminderClient doneToday={doneToday} />
       <AppHeader name={user?.name ?? user?.email} />
       <main className="mx-auto max-w-4xl px-4 py-6">
         {/* Encabezado de bienvenida */}
@@ -101,6 +103,12 @@ export default async function DashboardPage() {
                 {doneToday ? "Repasar" : "Empezar"} →
               </span>
             </div>
+          </Link>
+          <Link
+            href="/today?mode=short"
+            className="mt-3 inline-block rounded-full bg-white/25 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-white/35"
+          >
+            ⏱️ ¿Poco tiempo? Sesión corta (~15 min)
           </Link>
           <p className="mt-4 mb-2 text-xs text-brand-100">O entra directo a una parte:</p>
           <div className="flex flex-wrap gap-2 text-xs">
@@ -229,6 +237,7 @@ export default async function DashboardPage() {
           <Link href="/reading" className="card !p-4 transition-colors hover:border-brand-400">📚 Biblioteca de lecturas</Link>
           <Link href="/practice/conversation" className="card !p-4 transition-colors hover:border-brand-400">💬 Conversación</Link>
           <Link href="/practice/speaking" className="card !p-4 transition-colors hover:border-brand-400">🎤 Pronunciación</Link>
+          <Link href="/practice/free-talk" className="card !p-4 transition-colors hover:border-brand-400">🗣️ Conversación libre</Link>
           <Link href="/practice/writing" className="card !p-4 transition-colors hover:border-brand-400">✍️ Escritura (con revisión)</Link>
           <Link href="/videos" className="card !p-4 transition-colors hover:border-brand-400">🎬 Videos y escucha</Link>
           <Link href="/grammar" className="card !p-4 transition-colors hover:border-brand-400">📖 Biblioteca de gramática</Link>
@@ -236,6 +245,7 @@ export default async function DashboardPage() {
           <Link href="/achievements" className="card !p-4 transition-colors hover:border-brand-400">🏆 Mis logros</Link>
           <Link href="/leaderboard" className="card !p-4 transition-colors hover:border-brand-400">👥 Tabla de avance</Link>
           <Link href="/certificate" className="card !p-4 transition-colors hover:border-brand-400">🏅 Mi certificado</Link>
+          <Link href="/settings" className="card !p-4 transition-colors hover:border-brand-400">⚙️ Ajustes y recordatorio</Link>
         </div>
 
         {/* Acceso al modo TOEFL (separado) */}

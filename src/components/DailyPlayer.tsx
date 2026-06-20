@@ -34,12 +34,24 @@ export function DailyPlayer({
   session,
   alreadyDoneToday,
   section = "full",
+  quick = false,
 }: {
   session: DailySession;
   alreadyDoneToday: boolean;
   section?: DailySection;
+  quick?: boolean;
 }) {
   const router = useRouter();
+
+  const isShort = section === "full" && quick;
+
+  // Subconjunto corto para una sesión de ~15 minutos.
+  const shortActivities: Activity[] = [
+    ...session.vocab.cards.slice(0, 5),
+    ...session.grammarPractice.slice(0, 5),
+    session.comprehensionSet[0],
+    ...session.pronunciationSet.slice(0, 1),
+  ];
 
   // Qué actividades corresponden a esta sección.
   const activities: Activity[] =
@@ -53,10 +65,12 @@ export function DailyPlayer({
             ? [session.dialogue]
             : section === "pronunciation"
               ? session.pronunciationSet
-              : session.activities; // full
+              : isShort
+                ? shortActivities
+                : session.activities; // full
 
-  const showGrammarIntro = section === "full" || section === "grammar";
-  const isFull = section === "full";
+  const showGrammarIntro = (section === "full" && !isShort) || section === "grammar";
+  const isFull = section === "full" && !isShort;
 
   const [phase, setPhase] = useState<Phase>(
     showGrammarIntro ? "intro" : "activities"
@@ -105,7 +119,9 @@ export function DailyPlayer({
     setCorrect((c) => c + r.correct);
     setTotal((t) => t + r.total);
     if (step + 1 >= totalSteps) {
-      setPhase(isFull ? "wrapup" : "done");
+      if (isFull) setPhase("wrapup");
+      else if (isShort) finish();
+      else setPhase("done");
     } else {
       setStep((s) => s + 1);
     }
@@ -138,9 +154,11 @@ export function DailyPlayer({
       </div>
       <h1 className="text-2xl font-bold">
         Día {session.day}
-        {!isFull && (
+        {isShort ? (
+          <span className="text-slate-400"> · Sesión corta</span>
+        ) : !isFull ? (
           <span className="text-slate-400"> · {SECTION_LABEL[section]}</span>
-        )}
+        ) : null}
       </h1>
       <p className="mb-4 text-sm text-slate-500">{session.monthFocus}</p>
     </>
@@ -307,7 +325,7 @@ export function DailyPlayer({
           <div className="animate-pop-in text-center">
             <div className="mb-2 text-5xl">🎉</div>
             <h2 className="mb-1 text-xl font-bold">
-              {isFull ? "¡Sesión completada!" : "¡Práctica completada!"}
+              {isFull || isShort ? "¡Sesión completada!" : "¡Práctica completada!"}
             </h2>
             {total > 0 && (
               <p className="mb-1 text-slate-500">
@@ -315,7 +333,7 @@ export function DailyPlayer({
               </p>
             )}
             <p className="mb-4 text-sm text-slate-400">
-              {isFull
+              {isFull || isShort
                 ? `Las palabras de hoy se agregaron a tus repasos. ¡Vuelve mañana para el Día ${session.day + 1}!`
                 : "¡Buen trabajo! Puedes practicar otra sección cuando quieras."}
             </p>

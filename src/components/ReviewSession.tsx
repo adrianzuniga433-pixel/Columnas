@@ -22,6 +22,9 @@ export function ReviewSession() {
   const [revealed, setRevealed] = useState(false);
   const [done, setDone] = useState(0);
   const [hits, setHits] = useState(0);
+  const [typed, setTyped] = useState("");
+  const [checked, setChecked] = useState(false);
+  const [wasCorrect, setWasCorrect] = useState(false);
 
   useEffect(() => {
     fetch("/api/srs")
@@ -42,7 +45,25 @@ export function ReviewSession() {
       body: JSON.stringify({ id: card.id, correct }),
     }).catch(() => {});
     setRevealed(false);
+    setTyped("");
+    setChecked(false);
+    setWasCorrect(false);
     setIdx((i) => i + 1);
+  }
+
+  function normalize(s: string): string {
+    return s.toLowerCase().replace(/[.,!?;:'"]/g, "").replace(/\s+/g, " ").trim();
+  }
+
+  function checkTyped() {
+    if (!items) return;
+    const card = items[idx];
+    // Acepta cualquiera de las opciones separadas por "/".
+    const accepted = card.front.split("/").map((p) => normalize(p));
+    const ok = accepted.includes(normalize(typed));
+    setWasCorrect(ok);
+    setChecked(true);
+    setRevealed(true);
   }
 
   if (items === null) {
@@ -125,47 +146,97 @@ export function ReviewSession() {
           </span>
         </div>
 
-        <p className="mb-2 text-sm text-slate-500">Recuerda el significado:</p>
-        <div className="flex items-center gap-3">
-          <span className="text-2xl font-semibold">{card.front}</span>
-          {card.type === "vocab" && (
-            <SpeechButton text={card.front} label="" className="!px-3 !py-1.5" />
-          )}
-        </div>
+        {card.type === "vocab" ? (
+          /* Modo escribir (Anki): dado el significado, escribe la palabra. */
+          <>
+            <p className="mb-2 text-sm text-slate-500">Escribe en inglés:</p>
+            <p className="text-2xl font-semibold">{card.back}</p>
 
-        {!revealed ? (
-          <button
-            className="btn-secondary mt-6"
-            onClick={() => setRevealed(true)}
-          >
-            Mostrar respuesta
-          </button>
-        ) : (
-          <div className="mt-6 animate-pop-in">
-            <p className="text-lg font-medium text-brand-700 dark:text-brand-300">
-              {card.back}
-            </p>
-            {card.example && (
-              <p className="mt-2 text-sm italic text-slate-600 dark:text-slate-300">
-                “{card.example}”
-              </p>
+            {!checked ? (
+              <div className="mt-5">
+                <input
+                  className="input"
+                  autoFocus
+                  value={typed}
+                  onChange={(e) => setTyped(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && typed.trim()) checkTyped();
+                  }}
+                  placeholder="Type the English word..."
+                />
+                <div className="mt-3 flex gap-2">
+                  <button className="btn-ghost" onClick={() => answer(false)}>
+                    No la sé
+                  </button>
+                  <button
+                    className="btn-primary flex-1"
+                    disabled={!typed.trim()}
+                    onClick={checkTyped}
+                  >
+                    Revisar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-5 animate-pop-in">
+                <div
+                  className={`rounded-lg px-3 py-2 text-sm ${
+                    wasCorrect
+                      ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                      : "bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-300"
+                  }`}
+                >
+                  {wasCorrect ? "¡Correcto! 🎉" : `La respuesta era: ${card.front}`}
+                </div>
+                <div className="mt-3 flex items-center gap-2">
+                  <span className="text-lg font-semibold">{card.front}</span>
+                  <SpeechButton text={card.front} label="" className="!px-3 !py-1.5" />
+                </div>
+                {card.example && (
+                  <p className="mt-1 text-sm italic text-slate-600 dark:text-slate-300">
+                    “{card.example}”
+                  </p>
+                )}
+                <button
+                  className="btn-primary mt-4 w-full"
+                  onClick={() => answer(wasCorrect)}
+                >
+                  Continuar →
+                </button>
+              </div>
             )}
-            <p className="mt-6 text-sm text-slate-500">¿Lo recordabas?</p>
-            <div className="mt-2 flex gap-2">
-              <button
-                className="btn-secondary flex-1"
-                onClick={() => answer(false)}
-              >
-                No 🙁
+          </>
+        ) : (
+          /* Modo reconocer (gramática u otros). */
+          <>
+            <p className="mb-2 text-sm text-slate-500">Recuerda el significado:</p>
+            <span className="text-2xl font-semibold">{card.front}</span>
+            {!revealed ? (
+              <button className="btn-secondary mt-6" onClick={() => setRevealed(true)}>
+                Mostrar respuesta
               </button>
-              <button
-                className="btn-primary flex-1"
-                onClick={() => answer(true)}
-              >
-                Sí 🙂
-              </button>
-            </div>
-          </div>
+            ) : (
+              <div className="mt-6 animate-pop-in">
+                <p className="text-lg font-medium text-brand-700 dark:text-brand-300">
+                  {card.back}
+                </p>
+                {card.example && (
+                  <p className="mt-2 text-sm italic text-slate-600 dark:text-slate-300">
+                    “{card.example}”
+                  </p>
+                )}
+                <p className="mt-6 text-sm text-slate-500">¿Lo recordabas?</p>
+                <div className="mt-2 flex gap-2">
+                  <button className="btn-secondary flex-1" onClick={() => answer(false)}>
+                    No 🙁
+                  </button>
+                  <button className="btn-primary flex-1" onClick={() => answer(true)}>
+                    Sí 🙂
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

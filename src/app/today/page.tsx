@@ -29,7 +29,7 @@ function isSameDay(a: Date | null, b: Date): boolean {
 export default async function TodayPage({
   searchParams,
 }: {
-  searchParams: { section?: string };
+  searchParams: { section?: string; mode?: string };
 }) {
   const session = await getSession();
   if (!session) redirect("/login");
@@ -49,6 +49,7 @@ export default async function TodayPage({
       session={daily}
       alreadyDoneToday={alreadyDoneToday}
       section={section}
+      quick={searchParams.mode === "short"}
     />
   );
 }
