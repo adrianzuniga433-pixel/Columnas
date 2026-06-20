@@ -153,12 +153,46 @@ function McqView({ a, onDone }: { a: Mcq; onDone: (r: ActivityResult) => void })
       {answered && (
         <>
           <Feedback correct={picked === a.answerIndex} text={a.explanation} />
+          <McqExtraFeedback a={a} picked={picked!} />
           <ContinueButton
             onClick={() =>
               onDone({ correct: picked === a.answerIndex ? 1 : 0, total: 1 })
             }
           />
         </>
+      )}
+    </div>
+  );
+}
+
+// Retroalimentación adicional para MCQ: oración correcta + traducción,
+// por qué la elección fue incorrecta, y explicación del tema.
+function McqExtraFeedback({ a, picked }: { a: Mcq; picked: number }) {
+  const wasWrong = picked !== a.answerIndex;
+  const correctSentence = a.sentence
+    ? a.sentence.replace("___", a.options[a.answerIndex])
+    : a.options[a.answerIndex];
+  return (
+    <div className="mt-3 space-y-2 text-sm">
+      <div className="rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800/60">
+        <p className="font-medium">✅ Respuesta correcta: “{a.options[a.answerIndex]}”</p>
+        <p className="mt-1 text-slate-600 dark:text-slate-300">
+          {correctSentence}
+          {a.translationEs ? (
+            <span className="text-slate-500"> — {a.translationEs}</span>
+          ) : null}
+        </p>
+      </div>
+      {wasWrong && (
+        <div className="rounded-lg bg-amber-50 px-3 py-2 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+          ✗ Tu respuesta “{a.options[picked]}” no es correcta aquí. {a.explanation}
+        </div>
+      )}
+      {a.topicTitle && (
+        <div className="rounded-lg bg-brand-50 px-3 py-2 text-brand-900 dark:bg-brand-950 dark:text-brand-100">
+          <span className="font-semibold">📚 {a.topicTitle}.</span>{" "}
+          {a.topicWhy}
+        </div>
       )}
     </div>
   );

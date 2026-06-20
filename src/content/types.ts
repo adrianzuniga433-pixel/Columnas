@@ -16,7 +16,10 @@ export interface Mcq {
   sentence?: string; // oración con hueco "___"
   options: string[];
   answerIndex: number;
-  explanation: string; // feedback inmediato
+  explanation: string; // feedback inmediato (por qué es la correcta / por qué no la otra)
+  translationEs?: string; // traducción al español de la oración correcta
+  topicTitle?: string; // tema de la pregunta (se inyecta automáticamente)
+  topicWhy?: string; // breve explicación del tema y para qué sirve
 }
 
 // Identificar el error (réplica del formato Structure & Written Expression).

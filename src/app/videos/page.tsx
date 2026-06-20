@@ -48,6 +48,14 @@ export default async function VideosPage() {
                   <div className="mt-3 rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-900 dark:bg-brand-950 dark:text-brand-100">
                     <strong>Práctica:</strong> {r.practice}
                   </div>
+                  <a
+                    href={`https://www.youtube.com/watch?v=${r.youtubeId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-block text-xs text-slate-400 hover:text-brand-600 hover:underline"
+                  >
+                    ¿No carga? Ábrelo en YouTube ↗
+                  </a>
                 </div>
               ))}
             </div>

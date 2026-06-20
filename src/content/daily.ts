@@ -43,6 +43,7 @@ export interface DailySession {
   stageEmoji: string;
   monthFocus: string;
   grammar: GrammarLesson;
+  grammarPractice: Mcq[];
   vocab: VocabSet;
   comprehensionSet: Activity[];
   activities: Activity[];
@@ -52,7 +53,9 @@ export interface DailySession {
 }
 
 // ---------------------------------------------------------------------------
-// Pool de gramática (15 lecciones, 5 prácticas cada una, con explicación amplia)
+// Pool de gramática (18 lecciones). Cada práctica trae traducción al español.
+// La explicación del tema (título + tip) se inyecta automáticamente al armar
+// la sesión, así que la retroalimentación siempre explica el tema.
 // ---------------------------------------------------------------------------
 
 export const grammarLessons: GrammarLesson[] = [
@@ -65,11 +68,11 @@ export const grammarLessons: GrammarLesson[] = [
       { en: "She is from Mexico.", es: "Ella es de México." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Completa con la forma correcta de TO BE.", sentence: "They ___ my friends.", options: ["is", "am", "are", "be"], answerIndex: 2, explanation: "Regla: I → am; he/she/it → is; you/we/they → are. Como 'they' es plural, usamos 'are': They are my friends." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "My name ___ Carlos.", options: ["am", "is", "are", "be"], answerIndex: 1, explanation: "'My name' equivale a 'it' (singular, una cosa), y con it se usa 'is'. Por eso: My name is Carlos." },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "I ___ very happy today.", options: ["is", "are", "am", "be"], answerIndex: 2, explanation: "Con el sujeto 'I' SIEMPRE se usa 'am', nunca is ni are. Correcto: I am very happy." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "We ___ ready to start.", options: ["is", "am", "are", "be"], answerIndex: 2, explanation: "'We' es plural (nosotros), así que toma 'are': We are ready. 'be' es la forma base y no se usa sola aquí." },
-      { kind: "mcq", prompt: "Elige la forma negativa correcta.", sentence: "He ___ at home right now.", options: ["isn't", "aren't", "am not", "don't"], answerIndex: 0, explanation: "Para negar TO BE se agrega 'not'. Con 'he' (is) la negación es is not = isn't. 'aren't' es para you/we/they." },
+      { kind: "mcq", prompt: "Completa con la forma correcta de TO BE.", sentence: "They ___ my friends.", options: ["is", "am", "are", "be"], answerIndex: 2, translationEs: "Ellos son mis amigos.", explanation: "Regla: I → am; he/she/it → is; you/we/they → are. 'they' es plural, por eso 'are'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "My name ___ Carlos.", options: ["am", "is", "are", "be"], answerIndex: 1, translationEs: "Mi nombre es Carlos.", explanation: "'My name' equivale a 'it' (una cosa, singular), y con it se usa 'is'." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "I ___ very happy today.", options: ["is", "are", "am", "be"], answerIndex: 2, translationEs: "Estoy muy feliz hoy.", explanation: "Con el sujeto 'I' SIEMPRE se usa 'am', nunca is ni are." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "We ___ ready to start.", options: ["is", "am", "are", "be"], answerIndex: 2, translationEs: "Estamos listos para empezar.", explanation: "'We' (nosotros) es plural, así que toma 'are'." },
+      { kind: "mcq", prompt: "Elige la forma negativa correcta.", sentence: "He ___ at home right now.", options: ["isn't", "aren't", "am not", "don't"], answerIndex: 0, translationEs: "Él no está en casa ahora mismo.", explanation: "Con 'he' (is) la negación es is not = isn't. 'aren't' es para you/we/they." },
     ],
   },
   {
@@ -81,11 +84,11 @@ export const grammarLessons: GrammarLesson[] = [
       { en: "He works in an office.", es: "Él trabaja en una oficina." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Completa con el presente simple.", sentence: "She ___ to school by bus.", options: ["go", "goes", "going", "gone"], answerIndex: 1, explanation: "Con he/she/it el verbo lleva -s (o -es). 'go' termina en -o, así que se vuelve 'goes': She goes to school." },
-      { kind: "mcq", prompt: "Elige la forma correcta de la pregunta.", sentence: "___ you like pizza?", options: ["Does", "Is", "Do", "Are"], answerIndex: 2, explanation: "Para preguntar en presente simple usamos do/does + sujeto + verbo. Con 'you' es 'Do': Do you like pizza?" },
-      { kind: "mcq", prompt: "Completa la negación.", sentence: "He ___ eat meat.", options: ["don't", "doesn't", "isn't", "not"], answerIndex: 1, explanation: "Para negar usamos don't/doesn't + verbo base. Con he/she/it es 'doesn't', y el verbo queda sin -s: He doesn't eat meat." },
-      { kind: "mcq", prompt: "Completa con el presente simple.", sentence: "My parents ___ in another city.", options: ["lives", "live", "living", "to live"], answerIndex: 1, explanation: "'My parents' es plural (they), y con they el verbo NO lleva -s: My parents live. La -s solo va con he/she/it." },
-      { kind: "mcq", prompt: "Elige la pregunta correcta.", sentence: "___ she work on weekends?", options: ["Do", "Does", "Is", "Are"], answerIndex: 1, explanation: "Con he/she/it la pregunta usa 'Does', y el verbo va en base (sin -s): Does she work...? No 'Does she works'." },
+      { kind: "mcq", prompt: "Completa con el presente simple.", sentence: "She ___ to school by bus.", options: ["go", "goes", "going", "gone"], answerIndex: 1, translationEs: "Ella va a la escuela en autobús.", explanation: "Con he/she/it el verbo lleva -s (o -es). 'go' se vuelve 'goes'." },
+      { kind: "mcq", prompt: "Elige la forma correcta de la pregunta.", sentence: "___ you like pizza?", options: ["Does", "Is", "Do", "Are"], answerIndex: 2, translationEs: "¿Te gusta la pizza?", explanation: "Para preguntar usamos do/does + sujeto + verbo. Con 'you' es 'Do'." },
+      { kind: "mcq", prompt: "Completa la negación.", sentence: "He ___ eat meat.", options: ["don't", "doesn't", "isn't", "not"], answerIndex: 1, translationEs: "Él no come carne.", explanation: "Para negar usamos don't/doesn't + verbo base. Con he/she/it es 'doesn't'." },
+      { kind: "mcq", prompt: "Completa con el presente simple.", sentence: "My parents ___ in another city.", options: ["lives", "live", "living", "to live"], answerIndex: 1, translationEs: "Mis padres viven en otra ciudad.", explanation: "'My parents' es plural (they); con they el verbo NO lleva -s." },
+      { kind: "mcq", prompt: "Elige la pregunta correcta.", sentence: "___ she work on weekends?", options: ["Do", "Does", "Is", "Are"], answerIndex: 1, translationEs: "¿Ella trabaja los fines de semana?", explanation: "Con he/she/it la pregunta usa 'Does', y el verbo va en base (sin -s)." },
     ],
   },
   {
@@ -97,59 +100,59 @@ export const grammarLessons: GrammarLesson[] = [
       { en: "They are watching TV.", es: "Ellos están viendo la tele." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Completa con presente continuo.", sentence: "She ___ a book right now.", options: ["read", "reads", "is reading", "reading"], answerIndex: 2, explanation: "Acción que ocurre ahora = am/is/are + -ing. Con 'she' usamos 'is' + reading: She is reading." },
-      { kind: "mcq", prompt: "Elige el auxiliar correcto.", sentence: "We ___ having dinner.", options: ["is", "am", "are", "be"], answerIndex: 2, explanation: "El presente continuo necesita el verbo TO BE como auxiliar. Con 'we' es 'are': We are having dinner." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "Listen! The baby ___ .", options: ["cry", "cries", "is crying", "crying"], answerIndex: 2, explanation: "'Listen!' indica algo en este momento, así que va continuo: is + crying. El bebé está llorando ahora." },
-      { kind: "mcq", prompt: "Elige la forma -ing correcta.", sentence: "He is ___ a letter.", options: ["write", "writeing", "writing", "wrote"], answerIndex: 2, explanation: "Verbos que terminan en -e mute pierden la 'e' al agregar -ing: write → writing (no 'writeing')." },
-      { kind: "mcq", prompt: "Completa la pregunta.", sentence: "What ___ you doing?", options: ["is", "do", "are", "does"], answerIndex: 2, explanation: "En continuo, la pregunta usa TO BE: con 'you' es 'are': What are you doing?" },
+      { kind: "mcq", prompt: "Completa con presente continuo.", sentence: "She ___ a book right now.", options: ["read", "reads", "is reading", "reading"], answerIndex: 2, translationEs: "Ella está leyendo un libro ahora mismo.", explanation: "Acción que ocurre ahora = am/is/are + -ing. Con 'she' usamos 'is reading'." },
+      { kind: "mcq", prompt: "Elige el auxiliar correcto.", sentence: "We ___ having dinner.", options: ["is", "am", "are", "be"], answerIndex: 2, translationEs: "Estamos cenando.", explanation: "El continuo necesita TO BE como auxiliar. Con 'we' es 'are'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "Listen! The baby ___ .", options: ["cry", "cries", "is crying", "crying"], answerIndex: 2, translationEs: "¡Escucha! El bebé está llorando.", explanation: "'Listen!' indica algo en este momento, así que va continuo: is crying." },
+      { kind: "mcq", prompt: "Elige la forma -ing correcta.", sentence: "He is ___ a letter.", options: ["write", "writeing", "writing", "wrote"], answerIndex: 2, translationEs: "Él está escribiendo una carta.", explanation: "Verbos en -e muda pierden la 'e' al agregar -ing: write → writing." },
+      { kind: "mcq", prompt: "Completa la pregunta.", sentence: "What ___ you doing?", options: ["is", "do", "are", "does"], answerIndex: 2, translationEs: "¿Qué estás haciendo?", explanation: "En continuo, la pregunta usa TO BE: con 'you' es 'are'." },
     ],
   },
   {
     title: "Artículos a / an / the",
     tipEs:
-      "Usa 'a' antes de sonido consonante (a car) y 'an' antes de sonido vocal (an apple). 'The' se usa para algo específico o ya mencionado. Para hablar en general (plural o incontable) no se usa artículo.",
+      "Usa 'a' antes de sonido consonante (a car) y 'an' antes de sonido vocal (an apple). 'The' es para algo específico o ya mencionado. Para algo en general (plural/incontable) no se usa artículo.",
     examples: [
       { en: "I have a dog and an umbrella.", es: "Tengo un perro y un paraguas." },
       { en: "The car outside is mine.", es: "El carro de afuera es mío." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Elige el artículo correcto.", sentence: "She is ___ engineer.", options: ["a", "an", "the", "—"], answerIndex: 1, explanation: "Se usa 'an' antes de SONIDO vocal. 'engineer' empieza con sonido /e/, por eso: an engineer." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "I bought ___ new phone yesterday.", options: ["an", "the", "a", "—"], answerIndex: 2, explanation: "'new' empieza con sonido consonante /n/, así que se usa 'a': a new phone. (Es algo no específico.)" },
-      { kind: "mcq", prompt: "Elige el artículo correcto.", sentence: "Can you close ___ door, please?", options: ["a", "an", "the", "—"], answerIndex: 2, explanation: "Hablamos de UNA puerta específica (la que los dos conocemos), por eso 'the': the door." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "We waited for ___ hour.", options: ["a", "an", "the", "—"], answerIndex: 1, explanation: "Importa el SONIDO, no la letra. En 'hour' la 'h' es muda y suena como vocal /au/, por eso: an hour." },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "I like ___ music.", options: ["a", "an", "the", "—"], answerIndex: 3, explanation: "Cuando hablamos de algo EN GENERAL (la música como concepto), no se usa artículo: I like music." },
+      { kind: "mcq", prompt: "Elige el artículo correcto.", sentence: "She is ___ engineer.", options: ["a", "an", "the", "—"], answerIndex: 1, translationEs: "Ella es ingeniera.", explanation: "Se usa 'an' antes de SONIDO vocal. 'engineer' empieza con /e/." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "I bought ___ new phone yesterday.", options: ["an", "the", "a", "—"], answerIndex: 2, translationEs: "Compré un teléfono nuevo ayer.", explanation: "'new' empieza con sonido consonante /n/, así que 'a'." },
+      { kind: "mcq", prompt: "Elige el artículo correcto.", sentence: "Can you close ___ door, please?", options: ["a", "an", "the", "—"], answerIndex: 2, translationEs: "¿Puedes cerrar la puerta, por favor?", explanation: "Es UNA puerta específica (la que ambos conocemos), por eso 'the'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "We waited for ___ hour.", options: ["a", "an", "the", "—"], answerIndex: 1, translationEs: "Esperamos una hora.", explanation: "Importa el SONIDO: en 'hour' la 'h' es muda y suena vocal, por eso 'an'." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "I like ___ music.", options: ["a", "an", "the", "—"], answerIndex: 3, translationEs: "Me gusta la música.", explanation: "Para algo EN GENERAL (la música como concepto) no se usa artículo." },
     ],
   },
   {
     title: "There is / There are (hay)",
     tipEs:
-      "'There is' = hay (singular). 'There are' = hay (plural). Para negar: there isn't / there aren't. Con incontables se usa there is (there is some water).",
+      "'There is' = hay (singular). 'There are' = hay (plural). Negativo: there isn't / there aren't. Con incontables se usa there is (there is some water).",
     examples: [
       { en: "There is a book on the table.", es: "Hay un libro en la mesa." },
       { en: "There are three chairs.", es: "Hay tres sillas." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Completa con there is/are.", sentence: "___ a cat in the garden.", options: ["There is", "There are", "It is", "Have"], answerIndex: 0, explanation: "'a cat' es singular (uno), así que 'There is': There is a cat. 'There are' es solo para plural." },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "___ many people at the party.", options: ["There is", "There are", "It is", "Has"], answerIndex: 1, explanation: "'many people' es plural, por eso 'There are': There are many people." },
-      { kind: "mcq", prompt: "Completa la negación.", sentence: "There ___ any milk in the fridge.", options: ["isn't", "aren't", "not", "don't"], answerIndex: 0, explanation: "'milk' es incontable (se trata como singular), así que la negación es 'there isn't any milk'." },
-      { kind: "mcq", prompt: "Completa la pregunta.", sentence: "___ there a bank near here?", options: ["Is", "Are", "Do", "Has"], answerIndex: 0, explanation: "Para preguntar invertimos: Is/Are there...? Con 'a bank' (singular): Is there a bank near here?" },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "There ___ two windows in this room.", options: ["is", "are", "be", "has"], answerIndex: 1, explanation: "'two windows' es plural, por eso 'There are two windows'." },
+      { kind: "mcq", prompt: "Completa con there is/are.", sentence: "___ a cat in the garden.", options: ["There is", "There are", "It is", "Have"], answerIndex: 0, translationEs: "Hay un gato en el jardín.", explanation: "'a cat' es singular (uno), así que 'There is'." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "___ many people at the party.", options: ["There is", "There are", "It is", "Has"], answerIndex: 1, translationEs: "Hay mucha gente en la fiesta.", explanation: "'many people' es plural, por eso 'There are'." },
+      { kind: "mcq", prompt: "Completa la negación.", sentence: "There ___ any milk in the fridge.", options: ["isn't", "aren't", "not", "don't"], answerIndex: 0, translationEs: "No hay leche en el refrigerador.", explanation: "'milk' es incontable (se trata como singular): there isn't any milk." },
+      { kind: "mcq", prompt: "Completa la pregunta.", sentence: "___ there a bank near here?", options: ["Is", "Are", "Do", "Has"], answerIndex: 0, translationEs: "¿Hay un banco cerca de aquí?", explanation: "Para preguntar invertimos: Is/Are there...? Con singular: Is there." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "There ___ two windows in this room.", options: ["is", "are", "be", "has"], answerIndex: 1, translationEs: "Hay dos ventanas en este cuarto.", explanation: "'two windows' es plural, por eso 'There are'." },
     ],
   },
   {
     title: "Pasado simple (regular e irregular)",
     tipEs:
-      "Para hablar del pasado, los verbos regulares terminan en -ed (work → worked). Los irregulares cambian (go → went, eat → ate). En negativo/pregunta se usa 'did' y el verbo vuelve a su forma base.",
+      "Para el pasado, los verbos regulares terminan en -ed (work → worked). Los irregulares cambian (go → went). En negativo/pregunta se usa 'did' y el verbo vuelve a su base.",
     examples: [
       { en: "I watched a movie last night.", es: "Vi una película anoche." },
       { en: "We went to the beach.", es: "Fuimos a la playa." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Completa con el pasado simple.", sentence: "Yesterday I ___ a great book.", options: ["read", "readed", "reads", "reading"], answerIndex: 0, explanation: "'read' es irregular: su pasado se ESCRIBE igual (read) pero se PRONUNCIA 'red'. Nunca se dice 'readed'." },
-      { kind: "mcq", prompt: "Elige el pasado correcto.", sentence: "They ___ to Spain in 2019.", options: ["goed", "went", "go", "gone"], answerIndex: 1, explanation: "'go' es irregular: su pasado es 'went' (no 'goed'). 'gone' es el participio, se usa con have." },
-      { kind: "mcq", prompt: "Completa la pregunta en pasado.", sentence: "___ you call her yesterday?", options: ["Do", "Did", "Was", "Are"], answerIndex: 1, explanation: "En pasado, las preguntas usan 'Did' + sujeto + verbo base: Did you call...? (no 'called' aquí)." },
-      { kind: "mcq", prompt: "Completa con el pasado simple.", sentence: "She ___ dinner an hour ago.", options: ["cook", "cooks", "cooked", "cooking"], answerIndex: 2, explanation: "'cook' es regular: se agrega -ed para el pasado: cooked. 'an hour ago' indica pasado." },
-      { kind: "mcq", prompt: "Elige la negación correcta.", sentence: "We ___ see the email.", options: ["didn't", "don't", "wasn't", "weren't"], answerIndex: 0, explanation: "Negación en pasado: didn't + verbo base. 'We didn't see' (no 'didn't saw'): el 'did' ya marca el pasado." },
+      { kind: "mcq", prompt: "Completa con el pasado simple.", sentence: "Yesterday I ___ a great book.", options: ["read", "readed", "reads", "reading"], answerIndex: 0, translationEs: "Ayer leí un gran libro.", explanation: "'read' es irregular: su pasado se escribe igual pero se pronuncia 'red'. Nunca 'readed'." },
+      { kind: "mcq", prompt: "Elige el pasado correcto.", sentence: "They ___ to Spain in 2019.", options: ["goed", "went", "go", "gone"], answerIndex: 1, translationEs: "Fueron a España en 2019.", explanation: "'go' es irregular: pasado 'went'. 'gone' es el participio (con have)." },
+      { kind: "mcq", prompt: "Completa la pregunta en pasado.", sentence: "___ you call her yesterday?", options: ["Do", "Did", "Was", "Are"], answerIndex: 1, translationEs: "¿La llamaste ayer?", explanation: "En pasado, las preguntas usan 'Did' + sujeto + verbo base." },
+      { kind: "mcq", prompt: "Completa con el pasado simple.", sentence: "She ___ dinner an hour ago.", options: ["cook", "cooks", "cooked", "cooking"], answerIndex: 2, translationEs: "Ella cocinó la cena hace una hora.", explanation: "'cook' es regular: se agrega -ed → cooked." },
+      { kind: "mcq", prompt: "Elige la negación correcta.", sentence: "We ___ see the email.", options: ["didn't", "don't", "wasn't", "weren't"], answerIndex: 0, translationEs: "No vimos el correo.", explanation: "Negación en pasado: didn't + verbo base ('didn't see', no 'didn't saw')." },
     ],
   },
   {
@@ -161,75 +164,75 @@ export const grammarLessons: GrammarLesson[] = [
       { en: "We are going to travel next month.", es: "Vamos a viajar el próximo mes." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Elige la mejor opción (plan ya decidido).", sentence: "I ___ visit my family this weekend.", options: ["will", "am going to", "go", "would"], answerIndex: 1, explanation: "Es un plan ya decidido de antemano, por eso 'going to': I am going to visit. 'will' sería para una decisión del momento." },
-      { kind: "mcq", prompt: "Completa (decisión del momento).", sentence: "The phone is ringing. I ___ answer it.", options: ["am going to", "will", "would", "going"], answerIndex: 1, explanation: "Decides en el momento (no era un plan), por eso 'will': I will answer it." },
-      { kind: "mcq", prompt: "Elige la forma correcta.", sentence: "Look at those clouds! It ___ rain.", options: ["will", "is going to", "goes to", "would"], answerIndex: 1, explanation: "Hay evidencia presente (las nubes), así que predecimos con 'going to': It is going to rain." },
-      { kind: "mcq", prompt: "Completa la predicción.", sentence: "I think she ___ win the game.", options: ["will", "is going to", "go to", "would"], answerIndex: 0, explanation: "Es una opinión/predicción sin evidencia ('I think'), por eso 'will': I think she will win." },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "We ___ to start a business next year.", options: ["will", "are going", "going", "go"], answerIndex: 1, explanation: "'going to' necesita TO BE: are going to. Con 'we': We are going to start a business." },
+      { kind: "mcq", prompt: "Elige la mejor opción (plan ya decidido).", sentence: "I ___ visit my family this weekend.", options: ["will", "am going to", "go", "would"], answerIndex: 1, translationEs: "Voy a visitar a mi familia este fin de semana.", explanation: "Es un plan ya decidido, por eso 'going to'." },
+      { kind: "mcq", prompt: "Completa (decisión del momento).", sentence: "The phone is ringing. I ___ answer it.", options: ["am going to", "will", "would", "going"], answerIndex: 1, translationEs: "El teléfono está sonando. Lo contestaré.", explanation: "Decides en el momento (no era un plan), por eso 'will'." },
+      { kind: "mcq", prompt: "Elige la forma correcta.", sentence: "Look at those clouds! It ___ rain.", options: ["will", "is going to", "goes to", "would"], answerIndex: 1, translationEs: "¡Mira esas nubes! Va a llover.", explanation: "Hay evidencia presente (las nubes), así que 'going to'." },
+      { kind: "mcq", prompt: "Completa la predicción.", sentence: "I think she ___ win the game.", options: ["will", "is going to", "go to", "would"], answerIndex: 0, translationEs: "Creo que ella ganará el partido.", explanation: "Opinión/predicción sin evidencia ('I think'), por eso 'will'." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "We ___ to start a business next year.", options: ["will", "are going", "going", "go"], answerIndex: 1, translationEs: "Vamos a empezar un negocio el próximo año.", explanation: "'going to' necesita TO BE: are going to." },
     ],
   },
   {
     title: "Comparativos y superlativos",
     tipEs:
-      "Comparativos cortos: adjetivo + -er + than (taller than). Largos (2+ sílabas): more + adjetivo (more expensive). Superlativos: the + -est / the most. Irregulares: good→better→best, bad→worse→worst.",
+      "Cortos: adjetivo + -er + than (taller than). Largos (2+ sílabas): more + adjetivo. Superlativos: the + -est / the most. Irregulares: good→better→best, bad→worse→worst.",
     examples: [
       { en: "This car is faster than that one.", es: "Este carro es más rápido que aquel." },
       { en: "She is the best student in class.", es: "Ella es la mejor estudiante de la clase." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Completa el comparativo.", sentence: "Today is ___ than yesterday.", options: ["hot", "hotter", "hottest", "more hot"], answerIndex: 1, explanation: "'hot' es corto (1 sílaba), así que el comparativo es -er. Se dobla la t: hotter than. No 'more hot'." },
-      { kind: "mcq", prompt: "Elige el comparativo correcto.", sentence: "This phone is ___ than mine.", options: ["expensiver", "more expensive", "most expensive", "expensive"], answerIndex: 1, explanation: "'expensive' es largo (3 sílabas), por eso usamos 'more': more expensive than. Nunca 'expensiver'." },
-      { kind: "mcq", prompt: "Completa el superlativo.", sentence: "It was the ___ day of my life.", options: ["happier", "more happy", "happiest", "happy"], answerIndex: 2, explanation: "Superlativo de adjetivo corto: the + -est. 'happy' cambia y a i: the happiest day." },
-      { kind: "mcq", prompt: "Elige la opción correcta (irregular).", sentence: "Her English is ___ than mine.", options: ["gooder", "more good", "better", "best"], answerIndex: 2, explanation: "'good' es irregular: su comparativo es 'better' (no 'gooder' ni 'more good')." },
-      { kind: "mcq", prompt: "Completa el superlativo.", sentence: "This is the ___ restaurant in town.", options: ["better", "best", "good", "more good"], answerIndex: 1, explanation: "Superlativo irregular de good: good → better → the best. 'better' es comparativo, aquí va el superlativo." },
+      { kind: "mcq", prompt: "Completa el comparativo.", sentence: "Today is ___ than yesterday.", options: ["hot", "hotter", "hottest", "more hot"], answerIndex: 1, translationEs: "Hoy hace más calor que ayer.", explanation: "'hot' es corto (1 sílaba): comparativo -er, se dobla la t → hotter." },
+      { kind: "mcq", prompt: "Elige el comparativo correcto.", sentence: "This phone is ___ than mine.", options: ["expensiver", "more expensive", "most expensive", "expensive"], answerIndex: 1, translationEs: "Este teléfono es más caro que el mío.", explanation: "'expensive' es largo (3 sílabas), por eso 'more expensive'." },
+      { kind: "mcq", prompt: "Completa el superlativo.", sentence: "It was the ___ day of my life.", options: ["happier", "more happy", "happiest", "happy"], answerIndex: 2, translationEs: "Fue el día más feliz de mi vida.", explanation: "Superlativo corto: the + -est. 'happy' cambia y→i: the happiest." },
+      { kind: "mcq", prompt: "Elige la opción correcta (irregular).", sentence: "Her English is ___ than mine.", options: ["gooder", "more good", "better", "best"], answerIndex: 2, translationEs: "Su inglés es mejor que el mío.", explanation: "'good' es irregular: comparativo 'better' (no 'gooder')." },
+      { kind: "mcq", prompt: "Completa el superlativo.", sentence: "This is the ___ restaurant in town.", options: ["better", "best", "good", "more good"], answerIndex: 1, translationEs: "Este es el mejor restaurante del pueblo.", explanation: "Superlativo irregular de good: the best." },
     ],
   },
   {
     title: "Presente perfecto (have / has + participio)",
     tipEs:
-      "Se forma con have/has + participio pasado. Describe experiencias o acciones con efecto en el presente, sin decir CUÁNDO exactamente. Suele ir con 'ever', 'never', 'already', 'yet', 'just'.",
+      "Se forma con have/has + participio. Describe experiencias o acciones con efecto en el presente, sin decir CUÁNDO exactamente. Suele ir con 'ever', 'never', 'already', 'yet', 'just'.",
     examples: [
       { en: "I have visited London twice.", es: "He visitado Londres dos veces." },
       { en: "She has just finished her work.", es: "Ella acaba de terminar su trabajo." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Completa con presente perfecto.", sentence: "I ___ never been to Japan.", options: ["have", "has", "had", "am"], answerIndex: 0, explanation: "Con I/you/we/they se usa 'have'; con he/she/it 'has'. Aquí 'I have never been'." },
-      { kind: "mcq", prompt: "Elige el participio correcto.", sentence: "He has ___ his keys.", options: ["lose", "lost", "losed", "losing"], answerIndex: 1, explanation: "El presente perfecto usa el PARTICIPIO. 'lose' es irregular: lose → lost → lost. He has lost his keys." },
-      { kind: "mcq", prompt: "Completa la pregunta.", sentence: "___ you ever eaten sushi?", options: ["Has", "Have", "Did", "Are"], answerIndex: 1, explanation: "Pregunta de experiencia ('ever') = presente perfecto. Con 'you': Have you ever eaten...?" },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She ___ already finished the report.", options: ["have", "has", "is", "did"], answerIndex: 1, explanation: "Con he/she/it el auxiliar es 'has': She has already finished. 'already' es típico del presente perfecto." },
-      { kind: "mcq", prompt: "Completa con el participio.", sentence: "We have ___ this movie before.", options: ["see", "saw", "seen", "seeing"], answerIndex: 2, explanation: "Participio irregular: see → saw → seen. Con have se usa el participio 'seen': We have seen it before." },
+      { kind: "mcq", prompt: "Completa con presente perfecto.", sentence: "I ___ never been to Japan.", options: ["have", "has", "had", "am"], answerIndex: 0, translationEs: "Nunca he estado en Japón.", explanation: "Con I/you/we/they se usa 'have'; con he/she/it 'has'." },
+      { kind: "mcq", prompt: "Elige el participio correcto.", sentence: "He has ___ his keys.", options: ["lose", "lost", "losed", "losing"], answerIndex: 1, translationEs: "Él ha perdido sus llaves.", explanation: "Usa el PARTICIPIO. 'lose' es irregular: lose → lost → lost." },
+      { kind: "mcq", prompt: "Completa la pregunta.", sentence: "___ you ever eaten sushi?", options: ["Has", "Have", "Did", "Are"], answerIndex: 1, translationEs: "¿Alguna vez has comido sushi?", explanation: "Pregunta de experiencia ('ever') = presente perfecto. Con 'you': Have." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She ___ already finished the report.", options: ["have", "has", "is", "did"], answerIndex: 1, translationEs: "Ella ya ha terminado el informe.", explanation: "Con he/she/it el auxiliar es 'has'. 'already' es típico del perfecto." },
+      { kind: "mcq", prompt: "Completa con el participio.", sentence: "We have ___ this movie before.", options: ["see", "saw", "seen", "seeing"], answerIndex: 2, translationEs: "Hemos visto esta película antes.", explanation: "Participio irregular: see → saw → seen." },
     ],
   },
   {
     title: "Verbos modales (can / should / must)",
     tipEs:
-      "'Can' = poder/saber. 'Should' = debería (consejo). 'Must' = deber (obligación fuerte/regla). Después del modal SIEMPRE va el verbo en su forma base (sin to, sin -s, sin -ed).",
+      "'Can' = poder/saber. 'Should' = debería (consejo). 'Must' = deber (obligación/regla). Después del modal SIEMPRE va el verbo en base (sin to, sin -s, sin -ed).",
     examples: [
       { en: "You should rest more.", es: "Deberías descansar más." },
       { en: "I can speak a little English.", es: "Puedo hablar un poco de inglés." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Elige el modal correcto (consejo).", sentence: "You look tired. You ___ go to bed.", options: ["can", "should", "must", "could"], answerIndex: 1, explanation: "Le das un consejo, no una orden, así que 'should' (deberías): You should go to bed." },
-      { kind: "mcq", prompt: "Completa (habilidad).", sentence: "She ___ play the guitar very well.", options: ["must", "should", "can", "would"], answerIndex: 2, explanation: "Hablas de una habilidad (saber hacer algo), por eso 'can': She can play the guitar." },
-      { kind: "mcq", prompt: "Elige la forma correcta del verbo.", sentence: "We must ___ before the test.", options: ["studying", "studies", "study", "studied"], answerIndex: 2, explanation: "Después de CUALQUIER modal va el verbo en base: must study (no studying, no studies)." },
-      { kind: "mcq", prompt: "Completa (obligación fuerte).", sentence: "Drivers ___ stop at a red light.", options: ["can", "should", "must", "would"], answerIndex: 2, explanation: "Es una regla obligatoria, así que 'must': Drivers must stop. 'should' sería solo una recomendación." },
-      { kind: "mcq", prompt: "Elige la negación correcta.", sentence: "You ___ smoke here; it's not allowed.", options: ["mustn't", "shouldn't", "can", "don't"], answerIndex: 0, explanation: "'no está permitido' = prohibición fuerte = mustn't (must not): You mustn't smoke here." },
+      { kind: "mcq", prompt: "Elige el modal correcto (consejo).", sentence: "You look tired. You ___ go to bed.", options: ["can", "should", "must", "could"], answerIndex: 1, translationEs: "Te ves cansado. Deberías irte a la cama.", explanation: "Es un consejo, no una orden, por eso 'should'." },
+      { kind: "mcq", prompt: "Completa (habilidad).", sentence: "She ___ play the guitar very well.", options: ["must", "should", "can", "would"], answerIndex: 2, translationEs: "Ella sabe tocar la guitarra muy bien.", explanation: "Hablas de una habilidad, por eso 'can'." },
+      { kind: "mcq", prompt: "Elige la forma correcta del verbo.", sentence: "We must ___ before the test.", options: ["studying", "studies", "study", "studied"], answerIndex: 2, translationEs: "Debemos estudiar antes del examen.", explanation: "Después de cualquier modal va el verbo en base: study." },
+      { kind: "mcq", prompt: "Completa (obligación fuerte).", sentence: "Drivers ___ stop at a red light.", options: ["can", "should", "must", "would"], answerIndex: 2, translationEs: "Los conductores deben detenerse en el semáforo en rojo.", explanation: "Es una regla obligatoria, por eso 'must'." },
+      { kind: "mcq", prompt: "Elige la negación correcta.", sentence: "You ___ smoke here; it's not allowed.", options: ["mustn't", "shouldn't", "can", "don't"], answerIndex: 0, translationEs: "No debes fumar aquí; no está permitido.", explanation: "Prohibición fuerte = mustn't (must not)." },
     ],
   },
   {
     title: "Preposiciones de lugar (in / on / at)",
     tipEs:
-      "'in' = dentro de un espacio (in a room, in a city). 'on' = sobre una superficie (on the table, on the wall). 'at' = en un punto específico (at the door, at school, at the bus stop).",
+      "'in' = dentro de un espacio (in a room, in a city). 'on' = sobre una superficie (on the table). 'at' = en un punto específico (at the door, at school).",
     examples: [
       { en: "The keys are on the table.", es: "Las llaves están sobre la mesa." },
       { en: "She is at the bus stop.", es: "Ella está en la parada del autobús." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Elige la preposición correcta.", sentence: "The milk is ___ the fridge.", options: ["on", "in", "at", "to"], answerIndex: 1, explanation: "Dentro de un espacio cerrado = 'in': in the fridge (dentro del refrigerador)." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "There is a picture ___ the wall.", options: ["in", "at", "on", "to"], answerIndex: 2, explanation: "Sobre una superficie (pegado a la pared) = 'on': on the wall." },
-      { kind: "mcq", prompt: "Elige la preposición correcta.", sentence: "I'll meet you ___ the airport.", options: ["in", "on", "at", "to"], answerIndex: 2, explanation: "Un punto/lugar específico de encuentro = 'at': at the airport." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "My books are ___ my bag.", options: ["on", "at", "in", "to"], answerIndex: 2, explanation: "Dentro de la mochila (espacio) = 'in': in my bag." },
-      { kind: "mcq", prompt: "Elige la preposición correcta.", sentence: "She lives ___ Paris.", options: ["at", "on", "in", "to"], answerIndex: 2, explanation: "Con ciudades y países se usa 'in': in Paris, in Mexico." },
+      { kind: "mcq", prompt: "Elige la preposición correcta.", sentence: "The milk is ___ the fridge.", options: ["on", "in", "at", "to"], answerIndex: 1, translationEs: "La leche está en (dentro de) el refrigerador.", explanation: "Dentro de un espacio cerrado = 'in'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "There is a picture ___ the wall.", options: ["in", "at", "on", "to"], answerIndex: 2, translationEs: "Hay un cuadro en (sobre) la pared.", explanation: "Sobre una superficie = 'on'." },
+      { kind: "mcq", prompt: "Elige la preposición correcta.", sentence: "I'll meet you ___ the airport.", options: ["in", "on", "at", "to"], answerIndex: 2, translationEs: "Te veré en el aeropuerto.", explanation: "Un punto/lugar específico de encuentro = 'at'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "My books are ___ my bag.", options: ["on", "at", "in", "to"], answerIndex: 2, translationEs: "Mis libros están en (dentro de) mi mochila.", explanation: "Dentro de la mochila (espacio) = 'in'." },
+      { kind: "mcq", prompt: "Elige la preposición correcta.", sentence: "She lives ___ Paris.", options: ["at", "on", "in", "to"], answerIndex: 2, translationEs: "Ella vive en París.", explanation: "Con ciudades y países se usa 'in'." },
     ],
   },
   {
@@ -241,49 +244,113 @@ export const grammarLessons: GrammarLesson[] = [
       { en: "She is never late.", es: "Ella nunca llega tarde." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Elige la posición correcta.", sentence: "I ___ go to the gym on Mondays.", options: ["go usually", "usually go", "go to usually", "usually"], answerIndex: 1, explanation: "El adverbio va ANTES del verbo principal: usually go. Correcto: I usually go to the gym." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "He is ___ happy on Fridays.", options: ["always", "happy always", "is always", "always is"], answerIndex: 0, explanation: "Con TO BE (is), el adverbio va DESPUÉS: He is always happy." },
-      { kind: "mcq", prompt: "Elige el adverbio adecuado.", sentence: "I ___ eat meat; I'm vegetarian.", options: ["always", "usually", "never", "often"], answerIndex: 2, explanation: "Por el contexto (es vegetariano) corresponde 'never' (nunca): I never eat meat." },
-      { kind: "mcq", prompt: "Completa correctamente.", sentence: "They ___ watch TV at night.", options: ["watch sometimes", "sometimes watch", "watch to sometimes", "to sometimes"], answerIndex: 1, explanation: "El adverbio de frecuencia va antes del verbo: sometimes watch. They sometimes watch TV." },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She ___ arrives on time.", options: ["always", "is always", "always is", "be always"], answerIndex: 0, explanation: "'arrives' es verbo principal (no es TO BE), así que el adverbio va antes: She always arrives." },
+      { kind: "mcq", prompt: "Elige la posición correcta.", sentence: "I ___ go to the gym on Mondays.", options: ["go usually", "usually go", "go to usually", "usually"], answerIndex: 1, translationEs: "Normalmente voy al gimnasio los lunes.", explanation: "El adverbio va ANTES del verbo principal: usually go." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "He is ___ happy on Fridays.", options: ["always", "happy always", "is always", "always is"], answerIndex: 0, translationEs: "Él siempre está feliz los viernes.", explanation: "Con TO BE (is), el adverbio va DESPUÉS: is always happy." },
+      { kind: "mcq", prompt: "Elige el adverbio adecuado.", sentence: "I ___ eat meat; I'm vegetarian.", options: ["always", "usually", "never", "often"], answerIndex: 2, translationEs: "Nunca como carne; soy vegetariano.", explanation: "Por el contexto corresponde 'never' (nunca)." },
+      { kind: "mcq", prompt: "Completa correctamente.", sentence: "They ___ watch TV at night.", options: ["watch sometimes", "sometimes watch", "watch to sometimes", "to sometimes"], answerIndex: 1, translationEs: "Ellos a veces ven la tele en la noche.", explanation: "El adverbio va antes del verbo: sometimes watch." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She ___ arrives on time.", options: ["always", "is always", "always is", "be always"], answerIndex: 0, translationEs: "Ella siempre llega a tiempo.", explanation: "'arrives' es verbo principal (no es TO BE): el adverbio va antes." },
     ],
   },
   {
     title: "Contables, incontables y cuantificadores",
     tipEs:
-      "Contables = se pueden contar (a book, three books). Incontables = no se cuentan (water, money, time). Usa 'many' con contables, 'much' con incontables, y 'a lot of' con ambos. 'some' en afirmaciones, 'any' en negativas y preguntas.",
+      "Contables = se cuentan (a book, three books). Incontables = no se cuentan (water, money). 'many' con contables, 'much' con incontables, 'a lot of' con ambos. 'some' en afirmaciones, 'any' en negativas/preguntas.",
     examples: [
       { en: "I don't have much money.", es: "No tengo mucho dinero." },
       { en: "There are many cars.", es: "Hay muchos carros." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Elige el cuantificador correcto.", sentence: "How ___ water do you drink?", options: ["many", "much", "some", "a lot"], answerIndex: 1, explanation: "'water' es incontable, así que se usa 'much': How much water...? 'many' es solo para contables." },
-      { kind: "mcq", prompt: "Completa la oración.", sentence: "There aren't ___ apples left.", options: ["much", "many", "some", "a"], answerIndex: 1, explanation: "'apples' es contable plural, así que 'many': aren't many apples." },
-      { kind: "mcq", prompt: "Elige some/any.", sentence: "I need ___ help, please.", options: ["any", "many", "some", "much"], answerIndex: 2, explanation: "En oraciones afirmativas (y peticiones amables) se usa 'some': I need some help." },
-      { kind: "mcq", prompt: "Completa la negación.", sentence: "We don't have ___ sugar.", options: ["some", "any", "many", "a"], answerIndex: 1, explanation: "En negaciones se usa 'any': We don't have any sugar." },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She has ___ of friends.", options: ["much", "many", "a lot", "a lot of"], answerIndex: 3, explanation: "La expresión es 'a lot of' + sustantivo: a lot of friends. 'a lot' sin 'of' no lleva sustantivo después." },
+      { kind: "mcq", prompt: "Elige el cuantificador correcto.", sentence: "How ___ water do you drink?", options: ["many", "much", "some", "a lot"], answerIndex: 1, translationEs: "¿Cuánta agua tomas?", explanation: "'water' es incontable, por eso 'much'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "There aren't ___ apples left.", options: ["much", "many", "some", "a"], answerIndex: 1, translationEs: "No quedan muchas manzanas.", explanation: "'apples' es contable plural, por eso 'many'." },
+      { kind: "mcq", prompt: "Elige some/any.", sentence: "I need ___ help, please.", options: ["any", "many", "some", "much"], answerIndex: 2, translationEs: "Necesito algo de ayuda, por favor.", explanation: "En afirmaciones y peticiones amables se usa 'some'." },
+      { kind: "mcq", prompt: "Completa la negación.", sentence: "We don't have ___ sugar.", options: ["some", "any", "many", "a"], answerIndex: 1, translationEs: "No tenemos nada de azúcar.", explanation: "En negaciones se usa 'any'." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She has ___ of friends.", options: ["much", "many", "a lot", "a lot of"], answerIndex: 3, translationEs: "Ella tiene muchos amigos.", explanation: "La expresión es 'a lot of' + sustantivo." },
     ],
   },
   {
     title: "Condicionales (1º y 2º)",
     tipEs:
-      "1º condicional (situación real/probable a futuro): If + presente, will + verbo. 2º condicional (situación hipotética/imaginaria): If + pasado, would + verbo. Tras 'if' nunca va 'will'.",
+      "1º condicional (real/probable): If + presente, will + verbo. 2º condicional (hipotético): If + pasado, would + verbo. Tras 'if' nunca va 'will'.",
     examples: [
       { en: "If it rains, I will stay home.", es: "Si llueve, me quedaré en casa." },
       { en: "If I had money, I would travel.", es: "Si tuviera dinero, viajaría." },
     ],
     practice: [
-      { kind: "mcq", prompt: "Completa el 1º condicional.", sentence: "If you study, you ___ pass the exam.", options: ["would", "will", "are", "passed"], answerIndex: 1, explanation: "1º condicional: If + presente (study), y en la otra parte 'will' + verbo: you will pass." },
-      { kind: "mcq", prompt: "Completa el 2º condicional.", sentence: "If I ___ you, I would apologize.", options: ["am", "was", "were", "be"], answerIndex: 2, explanation: "En el 2º condicional se usa 'were' para TODAS las personas (incluido I): If I were you..." },
-      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She would buy a house if she ___ rich.", options: ["is", "were", "will be", "be"], answerIndex: 1, explanation: "Situación imaginaria (no es rica) = 2º condicional con 'were': if she were rich." },
-      { kind: "mcq", prompt: "Completa el 1º condicional.", sentence: "If it ___ tomorrow, we'll cancel the trip.", options: ["rains", "will rain", "rained", "would rain"], answerIndex: 0, explanation: "Regla de oro: tras 'if' NUNCA va 'will'. Va el presente: If it rains, we'll cancel." },
-      { kind: "mcq", prompt: "Completa el 2º condicional.", sentence: "If I had more time, I ___ learn the piano.", options: ["will", "would", "can", "am"], answerIndex: 1, explanation: "2º condicional (hipótesis): If + pasado (had), would + verbo base: I would learn." },
+      { kind: "mcq", prompt: "Completa el 1º condicional.", sentence: "If you study, you ___ pass the exam.", options: ["would", "will", "are", "passed"], answerIndex: 1, translationEs: "Si estudias, aprobarás el examen.", explanation: "1º condicional: If + presente (study), will + verbo (will pass)." },
+      { kind: "mcq", prompt: "Completa el 2º condicional.", sentence: "If I ___ you, I would apologize.", options: ["am", "was", "were", "be"], answerIndex: 2, translationEs: "Si yo fuera tú, me disculparía.", explanation: "En el 2º condicional se usa 'were' para todas las personas." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She would buy a house if she ___ rich.", options: ["is", "were", "will be", "be"], answerIndex: 1, translationEs: "Ella compraría una casa si fuera rica.", explanation: "Situación imaginaria = 2º condicional con 'were'." },
+      { kind: "mcq", prompt: "Completa el 1º condicional.", sentence: "If it ___ tomorrow, we'll cancel the trip.", options: ["rains", "will rain", "rained", "would rain"], answerIndex: 0, translationEs: "Si llueve mañana, cancelaremos el viaje.", explanation: "Regla de oro: tras 'if' nunca va 'will'; va el presente (rains)." },
+      { kind: "mcq", prompt: "Completa el 2º condicional.", sentence: "If I had more time, I ___ learn the piano.", options: ["will", "would", "can", "am"], answerIndex: 1, translationEs: "Si tuviera más tiempo, aprendería piano.", explanation: "2º condicional: If + pasado (had), would + verbo base." },
+    ],
+  },
+  {
+    title: "Preguntas WH- (what, where, when...)",
+    tipEs:
+      "Las preguntas WH- piden información: what (qué), where (dónde), when (cuándo), who (quién), why (por qué), how (cómo). Estructura: WH + auxiliar + sujeto + verbo.",
+    examples: [
+      { en: "Where do you live?", es: "¿Dónde vives?" },
+      { en: "Why are you late?", es: "¿Por qué llegas tarde?" },
+    ],
+    practice: [
+      { kind: "mcq", prompt: "Elige la palabra WH- correcta.", sentence: "___ is your birthday?", options: ["Where", "When", "Who", "How"], answerIndex: 1, translationEs: "¿Cuándo es tu cumpleaños?", explanation: "Pregunta por tiempo: When." },
+      { kind: "mcq", prompt: "Completa la pregunta.", sentence: "___ do you go to work?", options: ["What", "Who", "How", "Which"], answerIndex: 2, translationEs: "¿Cómo vas al trabajo?", explanation: "Pregunta por el medio/manera: How." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "___ does this jacket cost?", options: ["How much", "How many", "What time", "Where"], answerIndex: 0, translationEs: "¿Cuánto cuesta esta chaqueta?", explanation: "Para precio (incontable): How much." },
+      { kind: "mcq", prompt: "Completa la pregunta.", sentence: "___ is that woman? She's my teacher.", options: ["What", "Who", "Where", "When"], answerIndex: 1, translationEs: "¿Quién es esa mujer? Es mi maestra.", explanation: "Pregunta por una persona: Who." },
+      { kind: "mcq", prompt: "Elige la palabra correcta.", sentence: "___ books do you have?", options: ["How much", "How many", "What time", "Why"], answerIndex: 1, translationEs: "¿Cuántos libros tienes?", explanation: "Para algo contable (books): How many." },
+    ],
+  },
+  {
+    title: "Pronombres de objeto (me, him, her, us, them)",
+    tipEs:
+      "Los pronombres de sujeto (I, he, she, we, they) hacen la acción. Los de objeto (me, him, her, us, them) la reciben y van después del verbo o preposición: I see her / Call me.",
+    examples: [
+      { en: "Can you help me?", es: "¿Puedes ayudarme?" },
+      { en: "I gave the book to him.", es: "Le di el libro a él." },
+    ],
+    practice: [
+      { kind: "mcq", prompt: "Elige el pronombre de objeto.", sentence: "I really like ___ .", options: ["she", "her", "hers", "herself"], answerIndex: 1, translationEs: "Ella me gusta mucho.", explanation: "Después del verbo va el pronombre de OBJETO: 'her' (no 'she', que es sujeto)." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "Please call ___ tomorrow.", options: ["I", "my", "me", "mine"], answerIndex: 2, translationEs: "Por favor llámame mañana.", explanation: "El objeto del verbo 'call' es 'me' (a mí)." },
+      { kind: "mcq", prompt: "Elige el pronombre correcto.", sentence: "We invited ___ to the party.", options: ["they", "them", "their", "theirs"], answerIndex: 1, translationEs: "Los invitamos a la fiesta.", explanation: "Objeto del verbo 'invited' = 'them' (a ellos)." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "Can you give this to ___ ?", options: ["he", "his", "him", "himself"], answerIndex: 2, translationEs: "¿Puedes darle esto a él?", explanation: "Después de la preposición 'to' va el objeto: 'him'." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "She helped ___ with the homework.", options: ["we", "us", "our", "ours"], answerIndex: 1, translationEs: "Ella nos ayudó con la tarea.", explanation: "Objeto del verbo 'helped' = 'us' (a nosotros)." },
+    ],
+  },
+  {
+    title: "Posesivos (my, your... y el genitivo 's)",
+    tipEs:
+      "Los adjetivos posesivos indican de quién es algo: my, your, his, her, our, their + sustantivo. Para personas también se usa 's: Maria's car (el carro de María).",
+    examples: [
+      { en: "This is my house.", es: "Esta es mi casa." },
+      { en: "That is John's car.", es: "Ese es el carro de John." },
+    ],
+    practice: [
+      { kind: "mcq", prompt: "Elige el posesivo correcto.", sentence: "This is ___ book, not yours.", options: ["I", "me", "my", "mine"], answerIndex: 2, translationEs: "Este es mi libro, no el tuyo.", explanation: "Antes del sustantivo va el adjetivo posesivo 'my'." },
+      { kind: "mcq", prompt: "Completa con el genitivo.", sentence: "That is ___ bicycle.", options: ["Sara", "Saras", "Sara's", "Saras'"], answerIndex: 2, translationEs: "Esa es la bicicleta de Sara.", explanation: "Para indicar posesión de una persona se usa 's: Sara's bicycle." },
+      { kind: "mcq", prompt: "Elige el posesivo correcto.", sentence: "The dog wagged ___ tail.", options: ["it's", "its", "his", "her"], answerIndex: 1, translationEs: "El perro movió su cola.", explanation: "'its' (sin apóstrofo) es el posesivo. 'it's' significa 'it is'." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "They love ___ new apartment.", options: ["they", "them", "their", "theirs"], answerIndex: 2, translationEs: "Ellos aman su nuevo departamento.", explanation: "Antes del sustantivo va 'their' (su, de ellos)." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "Is this ___ phone?", options: ["you", "your", "yours", "you're"], answerIndex: 1, translationEs: "¿Es este tu teléfono?", explanation: "Antes del sustantivo va 'your'. 'yours' va solo, sin sustantivo." },
+    ],
+  },
+  {
+    title: "Preposiciones de tiempo (in / on / at)",
+    tipEs:
+      "'at' para horas (at 5 o'clock). 'on' para días y fechas (on Monday, on July 3rd). 'in' para meses, años y partes del día (in May, in 2020, in the morning).",
+    examples: [
+      { en: "The class starts at nine.", es: "La clase empieza a las nueve." },
+      { en: "I was born in 1995.", es: "Nací en 1995." },
+    ],
+    practice: [
+      { kind: "mcq", prompt: "Elige la preposición de tiempo.", sentence: "I wake up ___ 7 a.m.", options: ["in", "on", "at", "to"], answerIndex: 2, translationEs: "Me despierto a las 7 a.m.", explanation: "Para horas exactas se usa 'at': at 7 a.m." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "We have a meeting ___ Monday.", options: ["in", "on", "at", "to"], answerIndex: 1, translationEs: "Tenemos una reunión el lunes.", explanation: "Para días de la semana se usa 'on': on Monday." },
+      { kind: "mcq", prompt: "Elige la preposición correcta.", sentence: "My birthday is ___ December.", options: ["in", "on", "at", "to"], answerIndex: 0, translationEs: "Mi cumpleaños es en diciembre.", explanation: "Para meses se usa 'in': in December." },
+      { kind: "mcq", prompt: "Completa la oración.", sentence: "She studies ___ the morning.", options: ["at", "on", "in", "to"], answerIndex: 2, translationEs: "Ella estudia en la mañana.", explanation: "Para partes del día se usa 'in': in the morning (excepción: at night)." },
+      { kind: "mcq", prompt: "Elige la opción correcta.", sentence: "The store closes ___ midnight.", options: ["in", "on", "at", "to"], answerIndex: 2, translationEs: "La tienda cierra a medianoche.", explanation: "Con 'midnight' y 'night' se usa 'at': at midnight." },
     ],
   },
 ];
 
 // ---------------------------------------------------------------------------
-// Pool de vocabulario por tema (15 temas, 8 tarjetas cada uno)
+// Pool de vocabulario por tema (18 temas, 8 tarjetas cada uno)
 // ---------------------------------------------------------------------------
 
 export const vocabSets: VocabSet[] = [
@@ -482,6 +549,45 @@ export const vocabSets: VocabSet[] = [
       { kind: "flashcard", word: "to take up (a hobby)", meaning: "empezar (un pasatiempo)", example: "I want to take up painting." },
     ],
   },
+  {
+    theme: "La ciudad y direcciones",
+    cards: [
+      { kind: "flashcard", word: "Excuse me, where is...?", meaning: "Disculpe, ¿dónde está...?", example: "Excuse me, where is the train station?" },
+      { kind: "flashcard", word: "go straight", meaning: "sigue recto", example: "Go straight for two blocks." },
+      { kind: "flashcard", word: "turn left / right", meaning: "gira a la izquierda / derecha", example: "Turn right at the bank." },
+      { kind: "flashcard", word: "next to / across from", meaning: "junto a / enfrente de", example: "The shop is next to the pharmacy." },
+      { kind: "flashcard", word: "corner", meaning: "esquina", example: "The café is on the corner." },
+      { kind: "flashcard", word: "traffic light", meaning: "semáforo", example: "Stop at the traffic light." },
+      { kind: "flashcard", word: "neighborhood", meaning: "barrio / colonia", example: "I live in a quiet neighborhood." },
+      { kind: "flashcard", word: "It's around the corner", meaning: "Está a la vuelta", example: "The bakery is around the corner." },
+    ],
+  },
+  {
+    theme: "La casa y los muebles",
+    cards: [
+      { kind: "flashcard", word: "living room", meaning: "sala", example: "We watch TV in the living room." },
+      { kind: "flashcard", word: "bedroom", meaning: "recámara / dormitorio", example: "My bedroom is small but cozy." },
+      { kind: "flashcard", word: "kitchen", meaning: "cocina", example: "She is cooking in the kitchen." },
+      { kind: "flashcard", word: "bathroom", meaning: "baño", example: "The bathroom is at the end of the hall." },
+      { kind: "flashcard", word: "furniture", meaning: "muebles", example: "We bought new furniture for the apartment." },
+      { kind: "flashcard", word: "to rent", meaning: "rentar / alquilar", example: "They rent a flat downtown." },
+      { kind: "flashcard", word: "neighbor", meaning: "vecino/a", example: "My neighbor is very friendly." },
+      { kind: "flashcard", word: "to move (house)", meaning: "mudarse", example: "We are going to move next month." },
+    ],
+  },
+  {
+    theme: "La ropa",
+    cards: [
+      { kind: "flashcard", word: "to wear", meaning: "llevar puesto / usar", example: "She is wearing a blue dress." },
+      { kind: "flashcard", word: "shirt / T-shirt", meaning: "camisa / playera", example: "He bought a white shirt." },
+      { kind: "flashcard", word: "trousers / pants", meaning: "pantalones", example: "These pants are too long." },
+      { kind: "flashcard", word: "shoes", meaning: "zapatos", example: "I need new running shoes." },
+      { kind: "flashcard", word: "jacket / coat", meaning: "chaqueta / abrigo", example: "Take a jacket; it's cold." },
+      { kind: "flashcard", word: "size", meaning: "talla", example: "Do you have this in a bigger size?" },
+      { kind: "flashcard", word: "It fits me well", meaning: "Me queda bien", example: "This shirt fits me well." },
+      { kind: "flashcard", word: "to get dressed", meaning: "vestirse", example: "I get dressed before breakfast." },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -674,7 +780,7 @@ export const orderTasks: OrderWords[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Pool de dictados (escucha y escribe — práctica de listening + escritura)
+// Pool de dictados (escucha y escribe — listening + escritura)
 // ---------------------------------------------------------------------------
 
 export const dictationTasks: Dictation[] = [
@@ -765,6 +871,14 @@ export function getDailySession(dayNumber: number): DailySession {
   const { stage, emoji, focus } = stageForWeek(week);
 
   const grammar = grammarLessons[i % grammarLessons.length];
+  // Inyecta el tema (título + explicación) en cada práctica para una
+  // retroalimentación más completa.
+  const grammarPractice: Mcq[] = grammar.practice.map((m) => ({
+    ...m,
+    topicTitle: m.topicTitle ?? grammar.title,
+    topicWhy: m.topicWhy ?? grammar.tipEs,
+  }));
+
   const vocab = vocabSets[i % vocabSets.length];
   const matching = matchingFromVocab(vocab);
 
@@ -779,18 +893,17 @@ export function getDailySession(dayNumber: number): DailySession {
   const order2 = orderTasks[(i + 3) % orderTasks.length];
   const productionPrompt = productionPrompts[i % productionPrompts.length];
 
-  // Sesión completa (~1 hora): vocabulario + repaso → gramática + práctica →
-  // comprensión (lectura, escucha, dictado) → producción guiada.
+  // Sesión completa (~1 hora).
   const activities: Activity[] = [
-    ...vocab.cards, // ~10 min: vocabulario nuevo
-    matching, // ~5 min: consolidación de vocabulario
-    ...grammar.practice, // ~12 min: gramática
+    ...vocab.cards,
+    matching,
+    ...grammarPractice,
     order1,
-    order2, // ~5 min: construir oraciones
-    reading1, // ~10 min: lectura
-    dictation, // ~5 min: dictado (escucha + escribe)
-    listening, // ~8 min: escucha
-    reading2, // ~10 min: segunda lectura
+    order2,
+    reading1,
+    dictation,
+    listening,
+    reading2,
   ];
 
   return {
@@ -800,6 +913,7 @@ export function getDailySession(dayNumber: number): DailySession {
     stageEmoji: emoji,
     monthFocus: focus,
     grammar,
+    grammarPractice,
     vocab,
     comprehensionSet,
     activities,

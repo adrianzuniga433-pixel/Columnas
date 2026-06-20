@@ -1,7 +1,8 @@
 // Recursos de video para practicar, curados de la Guía de Inglés Autodidacta.
-// Los videos se reproducen incrustados dentro del sitio (YouTube embed). Cada
-// uno trae una tarea de práctica concreta. El contenido es de terceros; aquí
-// solo se selecciona y se propone cómo practicar con él.
+// Se usan canales que permiten la reproducción incrustada de forma confiable
+// (BBC Learning English y TED). Cada uno trae una tarea de práctica concreta.
+// El contenido es de terceros; aquí solo se selecciona y se propone cómo
+// practicar con él.
 
 export interface VideoResource {
   title: string;
@@ -22,28 +23,14 @@ export const videoLevels: VideoLevel[] = [
     level: "Básico",
     emoji: "🟢",
     intro:
-      "Empieza con subtítulos (actívalos en el ícono ⚙ del video). Cuando entiendas más, cámbialos a inglés y luego quítalos.",
+      "Activa los subtítulos (ícono ⚙ del video). Empieza con subtítulos en inglés y, cuando entiendas más, quítalos.",
     resources: [
       {
-        title: "Conversación básica en inglés (vida real)",
-        youtubeId: "QnlSt8IbKHY",
-        teaches: "Diálogos cotidianos lentos y claros para principiantes.",
+        title: "BBC 6 Minute English — Talking at the table",
+        youtubeId: "xy27CfuFtJE",
+        teaches: "Vocabulario y expresiones para hablar durante la comida.",
         practice:
-          "Haz 'shadowing': repite cada frase justo después de escucharla, imitando el ritmo, durante 5 minutos.",
-      },
-      {
-        title: "Conversaciones básicas: familia, saludos y escuela",
-        youtubeId: "KftDkWCh2ec",
-        teaches: "Frases para presentarte y hablar de tu día a día.",
-        practice:
-          "Anota 5 frases útiles y luego úsalas para presentarte en voz alta.",
-      },
-      {
-        title: "Inglés fácil para nivel A1–A2 (30 min)",
-        youtubeId: "zUOSv7tS8gI",
-        teaches: "Conversación simple, ideal para empezar a entender oído.",
-        practice:
-          "Escucha 10 minutos con subtítulos. Anota 3 palabras nuevas con su significado.",
+          "Mira el video y anota 3 expresiones nuevas. Repítelas en voz alta imitando la pronunciación.",
       },
       {
         title: "BBC 6 Minute English — Food",
@@ -52,18 +39,25 @@ export const videoLevels: VideoLevel[] = [
         practice:
           "Anota 3 palabras de comida nuevas y escribe una oración con cada una.",
       },
+      {
+        title: "BBC 6 Minute English — How babies learn to talk",
+        youtubeId: "1lNbOH-cvl8",
+        teaches: "Escucha clara y pausada sobre un tema cotidiano.",
+        practice:
+          "Después de ver, intenta resumir en 2 oraciones de qué trató el episodio.",
+      },
     ],
   },
   {
     level: "Intermedio",
     emoji: "🔵",
     intro:
-      "Reduce los subtítulos en español. Intenta seguir el sentido general sin traducir cada palabra.",
+      "Intenta seguir el sentido general sin traducir cada palabra. Usa subtítulos en inglés si lo necesitas.",
     resources: [
       {
         title: "BBC 6 Minute English — All About Language",
         youtubeId: "fcN0BXzK8bg",
-        teaches: "Una hora de vocabulario nuevo sobre el idioma y la comunicación.",
+        teaches: "Una hora de vocabulario sobre el idioma y la comunicación.",
         practice:
           "Mira 15 minutos. Anota 5 expresiones nuevas y subráyalas en tu cuaderno.",
       },
@@ -75,30 +69,30 @@ export const videoLevels: VideoLevel[] = [
           "Después de ver, escribe un párrafo corto describiendo cómo te sientes hoy.",
       },
       {
-        title: "Present Perfect Tense — explicación de gramática",
-        youtubeId: "WDGc3CEBOUU",
-        teaches: "Cómo y cuándo usar el presente perfecto, con ejemplos.",
+        title: "BBC 6 Minute English — Wellbeing",
+        youtubeId: "WMokf0EgTcA",
+        teaches: "Vocabulario sobre bienestar y salud mental.",
         practice:
-          "Escribe 3 oraciones propias usando el presente perfecto (I have...).",
+          "Anota 5 palabras nuevas y escribe una oración con cada una.",
       },
       {
-        title: "Present Perfect vs Present Perfect Continuous",
-        youtubeId: "7NGLHYVmr00",
-        teaches: "La diferencia entre dos tiempos que suelen confundirse.",
+        title: "BBC 6 Minute English — Food and Drink",
+        youtubeId: "gEdPVA-6rVs",
+        teaches: "Una hora de vocabulario sobre comida y bebida.",
         practice:
-          "Escribe 2 oraciones: una con cada tiempo, sobre tu propia vida.",
+          "Elige 2 minutos y úsalos como dictado: pausa y escribe lo que escuches.",
       },
     ],
   },
   {
     level: "Intermedio-Alto",
     emoji: "🟣",
-    intro: "Intenta ver con subtítulos en inglés o sin subtítulos.",
+    intro: "Contenido auténtico. Intenta verlo con subtítulos en inglés o sin subtítulos.",
     resources: [
       {
         title: "The secrets of learning a new language (TED)",
         youtubeId: "o_XVt5rdpFY",
-        teaches: "Charla real (auténtica) sobre cómo aprender idiomas.",
+        teaches: "Charla real sobre cómo aprender idiomas, de una políglota.",
         practice:
           "Mira la charla y resume en 3–4 oraciones la idea principal, en inglés.",
       },
@@ -112,16 +106,16 @@ export const videoLevels: VideoLevel[] = [
       {
         title: "How to learn any language easily (TED)",
         youtubeId: "Yr_poW-KK1Q",
-        teaches: "Consejos prácticos en inglés claro pero auténtico.",
+        teaches: "Consejos prácticos de un políglota, en inglés claro.",
         practice:
           "Anota 5 palabras o expresiones nuevas y búscalas para entenderlas.",
       },
       {
-        title: "Learn ALL English tenses — repaso completo",
-        youtubeId: "du34F6p9rQ8",
-        teaches: "Repaso de todos los tiempos verbales en un solo video.",
+        title: "Speak a language like you're playing a video game (TED)",
+        youtubeId: "Ge7c7otG2mk",
+        teaches: "Una forma relajada de pensar el hablar en otro idioma.",
         practice:
-          "Mira un bloque y escribe una oración de ejemplo por cada tiempo que repases.",
+          "Después de ver, di en voz alta 3 ideas que recuerdes de la charla.",
       },
     ],
   },

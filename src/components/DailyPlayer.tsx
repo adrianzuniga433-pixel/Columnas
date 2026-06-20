@@ -40,7 +40,7 @@ export function DailyPlayer({
   // Qué actividades corresponden a esta sección.
   const activities: Activity[] =
     section === "grammar"
-      ? session.grammar.practice
+      ? session.grammarPractice
       : section === "vocab"
         ? session.vocab.cards
         : section === "comprension"
