@@ -379,6 +379,7 @@ function ListeningView({
       )}
       <div className="flex flex-wrap items-center gap-2">
         <SpeechButton text={a.script} label="Escuchar audio" />
+        <SpeechButton text={a.script} label="🐢 Lento" rate={0.6} />
         <button
           className="btn-ghost"
           onClick={() => setShowScript((s) => !s)}
@@ -575,7 +576,10 @@ function DictationView({
   return (
     <div>
       <p className="mb-3 text-sm text-slate-500">{a.prompt}</p>
-      <SpeechButton text={a.text} label="Escuchar" />
+      <div className="flex flex-wrap gap-2">
+        <SpeechButton text={a.text} label="Escuchar" />
+        <SpeechButton text={a.text} label="🐢 Lento" rate={0.55} />
+      </div>
       <textarea
         className="input mt-3 min-h-[80px]"
         value={value}

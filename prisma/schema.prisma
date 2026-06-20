@@ -66,6 +66,7 @@ model Progress {
   estimatedItpScore Int      @default(310)
   currentLessonId   String?
   streakCount       Int      @default(0)
+  streakFreezes     Int      @default(2)
   lastActiveDate    DateTime?
   placementDone     Boolean  @default(false)
   studyDay          Int      @default(1)

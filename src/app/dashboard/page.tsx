@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession, getCurrentUser } from "@/lib/auth";
-import { ensureProgress, getProgressStats, dateKey } from "@/lib/progress";
+import { ensureProgress, getProgressStats, getWeeklySummary, dateKey } from "@/lib/progress";
 import { getDashboardData } from "@/lib/dashboard";
 import { AppHeader } from "@/components/AppHeader";
 import { getDailySession, checkpointDue } from "@/content/daily";
@@ -63,6 +63,7 @@ export default async function DashboardPage() {
     });
   }
   const studied14 = last14.filter((d) => d.studied).length;
+  const weekly = await getWeeklySummary(session.userId);
 
   return (
     <div className="min-h-screen">
@@ -166,6 +167,9 @@ export default async function DashboardPage() {
             <div className="text-right">
               <p className="text-sm text-slate-500">Últimas 2 semanas</p>
               <p className="text-lg font-semibold">{studied14}/14 días</p>
+              <p className="mt-0.5 text-xs text-sky-500" title="Protegen tu racha si faltas un día">
+                ❄️ {progress.streakFreezes} protección{progress.streakFreezes === 1 ? "" : "es"}
+              </p>
             </div>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -192,6 +196,32 @@ export default async function DashboardPage() {
           </p>
         </div>
 
+        {/* Resumen de la semana */}
+        <div className="mb-6 card">
+          <p className="mb-3 text-sm font-semibold">📈 Tu semana</p>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div>
+              <p className="text-2xl font-bold text-brand-600">{weekly.daysThisWeek}</p>
+              <p className="text-xs text-slate-500">días estudiados</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-emerald-600">{weekly.wordsThisWeek}</p>
+              <p className="text-xs text-slate-500">palabras nuevas</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-indigo-600">{weekly.checkpointsThisWeek}</p>
+              <p className="text-xs text-slate-500">exámenes aprobados</p>
+            </div>
+          </div>
+          <p className="mt-3 text-center text-xs text-slate-400">
+            {weekly.daysThisWeek >= 5
+              ? "🔥 ¡Semana excelente! Vas muy constante."
+              : weekly.daysThisWeek >= 1
+                ? "Buen avance. Intenta estudiar un día más esta semana."
+                : "Empieza tu semana con una sesión de hoy. 💪"}
+          </p>
+        </div>
+
         {/* Más práctica */}
         <h2 className="mb-2 text-lg font-semibold">Más práctica</h2>
         <div className="mb-6 grid gap-2 sm:grid-cols-2">
@@ -204,6 +234,8 @@ export default async function DashboardPage() {
           <Link href="/grammar" className="card !p-4 transition-colors hover:border-brand-400">📖 Biblioteca de gramática</Link>
           <Link href="/dictionary" className="card !p-4 transition-colors hover:border-brand-400">📒 Mi diccionario</Link>
           <Link href="/achievements" className="card !p-4 transition-colors hover:border-brand-400">🏆 Mis logros</Link>
+          <Link href="/leaderboard" className="card !p-4 transition-colors hover:border-brand-400">👥 Tabla de avance</Link>
+          <Link href="/certificate" className="card !p-4 transition-colors hover:border-brand-400">🏅 Mi certificado</Link>
         </div>
 
         {/* Acceso al modo TOEFL (separado) */}

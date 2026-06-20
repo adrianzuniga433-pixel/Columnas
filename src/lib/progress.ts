@@ -33,15 +33,21 @@ export async function touchStreak(userId: string) {
   const progress = await ensureProgress(userId);
   const today = startOfDay(new Date());
   let streak = progress.streakCount;
+  let freezes = progress.streakFreezes;
 
   if (!progress.lastActiveDate) {
     streak = 1;
   } else {
     const last = startOfDay(progress.lastActiveDate);
-    if (last === today) {
+    const gap = today - last;
+    if (gap === 0) {
       // mismo día, no cambia
-    } else if (today - last === 1) {
+    } else if (gap === 1) {
       streak = streak + 1;
+    } else if (gap === 2 && freezes > 0) {
+      // Faltó exactamente un día: usa una protección de racha.
+      streak = streak + 1;
+      freezes = freezes - 1;
     } else {
       streak = 1;
     }
@@ -49,7 +55,7 @@ export async function touchStreak(userId: string) {
 
   return prisma.progress.update({
     where: { userId },
-    data: { streakCount: streak, lastActiveDate: new Date() },
+    data: { streakCount: streak, streakFreezes: freezes, lastActiveDate: new Date() },
   });
 }
 
@@ -143,6 +149,29 @@ export async function getProgressStats(userId: string) {
     wordsLearned,
     mistakesPending,
   };
+}
+
+/** Resumen de los últimos 7 días para el panel. */
+export async function getWeeklySummary(userId: string) {
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const last7Keys = new Set<string>();
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    last7Keys.add(dateKey(d));
+  }
+  const [logs, wordsThisWeek, checkpointsThisWeek] = await Promise.all([
+    prisma.studyLog.findMany({ where: { userId }, select: { date: true } }),
+    prisma.srsItem.count({
+      where: { userId, type: "vocab", createdAt: { gte: weekAgo } },
+    }),
+    prisma.examAttempt.count({
+      where: { userId, passed: true, level: { gte: 1000 }, attemptedAt: { gte: weekAgo } },
+    }),
+  ]);
+  const daysThisWeek = logs.filter((l) => last7Keys.has(l.date)).length;
+  return { daysThisWeek, wordsThisWeek, checkpointsThisWeek };
 }
 
 /** Cantidad de ítems de SRS pendientes de repaso hoy. */
