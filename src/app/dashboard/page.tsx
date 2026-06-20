@@ -47,13 +47,22 @@ export default async function DashboardPage() {
   }
 
   const stats = await getProgressStats(session.userId);
-  const last14: { key: string; label: string; studied: boolean }[] = [];
+  const DOW = ["D", "L", "M", "M", "J", "V", "S"];
+  const todayKey = dateKey(new Date());
+  const last14: { key: string; label: string; dow: string; studied: boolean; today: boolean }[] = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const key = dateKey(d);
-    last14.push({ key, label: String(d.getDate()), studied: stats.studyDates.has(key) });
+    last14.push({
+      key,
+      label: String(d.getDate()),
+      dow: DOW[d.getDay()],
+      studied: stats.studyDates.has(key),
+      today: key === todayKey,
+    });
   }
+  const studied14 = last14.filter((d) => d.studied).length;
 
   return (
     <div className="min-h-screen">
@@ -145,24 +154,41 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Calendario de racha */}
+        {/* Calendario de constancia */}
         <div className="mb-6 card">
-          <p className="mb-2 text-sm text-slate-500">Tus últimos 14 días</p>
-          <div className="flex flex-wrap gap-1">
+          <div className="mb-3 flex items-end justify-between">
+            <div>
+              <p className="text-sm text-slate-500">Tu constancia</p>
+              <p className="text-2xl font-bold">
+                {data.streakCount} <span className="text-base font-normal">días de racha 🔥</span>
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-slate-500">Últimas 2 semanas</p>
+              <p className="text-lg font-semibold">{studied14}/14 días</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
             {last14.map((d) => (
-              <div
-                key={d.key}
-                title={d.key}
-                className={`flex h-7 w-7 items-center justify-center rounded text-[11px] ${
-                  d.studied ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-400 dark:bg-slate-800"
-                }`}
-              >
-                {d.label}
+              <div key={d.key} className="flex flex-col items-center gap-0.5">
+                <span className="text-[9px] text-slate-400">{d.dow}</span>
+                <div
+                  title={d.key}
+                  className={`flex h-7 w-7 items-center justify-center rounded text-[11px] ${
+                    d.studied
+                      ? "bg-emerald-500 text-white"
+                      : "bg-slate-100 text-slate-400 dark:bg-slate-800"
+                  } ${d.today ? "ring-2 ring-brand-500 ring-offset-1 dark:ring-offset-slate-900" : ""}`}
+                >
+                  {d.label}
+                </div>
               </div>
             ))}
           </div>
-          <p className="mt-2 text-xs text-slate-400">
-            {doneToday ? "✓ Hoy ya estudiaste" : "Hoy aún no estudias"}
+          <p className="mt-3 text-xs text-slate-400">
+            {doneToday
+              ? "✓ Hoy ya estudiaste. ¡Sigue así para no romper tu racha!"
+              : "Hoy aún no estudias. Completa tu sesión para sumar el día 🟩"}
           </p>
         </div>
 
