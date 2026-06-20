@@ -52,7 +52,7 @@ export function DailyPlayer({
           : section === "conversation"
             ? [session.dialogue]
             : section === "pronunciation"
-              ? [session.pronunciation]
+              ? session.pronunciationSet
               : session.activities; // full
 
   const showGrammarIntro = section === "full" || section === "grammar";

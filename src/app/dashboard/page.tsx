@@ -4,15 +4,6 @@ import { getSession, getCurrentUser } from "@/lib/auth";
 import { ensureProgress, getProgressStats, dateKey } from "@/lib/progress";
 import { getDashboardData } from "@/lib/dashboard";
 import { AppHeader } from "@/components/AppHeader";
-import {
-  AREA_LABELS,
-  GOAL_SCORE,
-  LEVELS,
-  cefrForScore,
-  getLevel,
-  progressToGoal,
-  type Area,
-} from "@/lib/itp";
 import { getDailySession, checkpointDue } from "@/content/daily";
 import { prisma } from "@/lib/prisma";
 
@@ -37,9 +28,6 @@ export default async function DashboardPage() {
 
   const user = await getCurrentUser();
   const data = await getDashboardData(session.userId);
-  const levelDef = getLevel(data.currentLevel);
-  const goalPct = Math.round(progressToGoal(data.estimatedItpScore) * 100);
-  const reachedGoal = data.estimatedItpScore >= GOAL_SCORE;
   const daily = getDailySession(progress.studyDay);
   const doneToday = studiedToday(progress.lastStudyAt);
 
@@ -58,17 +46,12 @@ export default async function DashboardPage() {
   }
 
   const stats = await getProgressStats(session.userId);
-  // Últimos 14 días para el calendario.
   const last14: { key: string; label: string; studied: boolean }[] = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const key = dateKey(d);
-    last14.push({
-      key,
-      label: String(d.getDate()),
-      studied: stats.studyDates.has(key),
-    });
+    last14.push({ key, label: String(d.getDate()), studied: stats.studyDates.has(key) });
   }
 
   return (
@@ -81,7 +64,7 @@ export default async function DashboardPage() {
             Hola{user?.name ? `, ${user.name}` : ""} 👋
           </h1>
           <p className="text-sm text-slate-500">
-            Nivel {data.currentLevel} — {levelDef.name} · {levelDef.cefr}
+            {daily.stageEmoji} {daily.stage} · Semana {daily.week} · racha {data.streakCount} 🔥
           </p>
         </div>
 
@@ -107,31 +90,15 @@ export default async function DashboardPage() {
               </span>
             </div>
           </Link>
-          <p className="mt-4 mb-2 text-xs text-brand-100">
-            O entra directo a una parte:
-          </p>
+          <p className="mt-4 mb-2 text-xs text-brand-100">O entra directo a una parte:</p>
           <div className="flex flex-wrap gap-2 text-xs">
-            <Link href="/today?section=grammar" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
-              📘 Gramática
-            </Link>
-            <Link href="/today?section=vocab" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
-              📝 Vocabulario
-            </Link>
-            <Link href="/today?section=comprension" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
-              📖 Comprensión
-            </Link>
-            <Link href="/today?section=conversation" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
-              💬 Conversación
-            </Link>
-            <Link href="/today?section=pronunciation" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
-              🎤 Pronunciación
-            </Link>
-            <Link href="/today?section=produccion" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
-              ✏️ Producción
-            </Link>
-            <Link href="/today?section=recursos" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
-              🎬 Recursos
-            </Link>
+            <Link href="/today?section=grammar" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">📘 Gramática</Link>
+            <Link href="/today?section=vocab" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">📝 Vocabulario</Link>
+            <Link href="/today?section=comprension" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">📖 Comprensión</Link>
+            <Link href="/today?section=conversation" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">💬 Conversación</Link>
+            <Link href="/today?section=pronunciation" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">🎤 Pronunciación</Link>
+            <Link href="/today?section=produccion" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">✏️ Producción</Link>
+            <Link href="/today?section=recursos" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">🎬 Recursos</Link>
           </div>
         </div>
 
@@ -150,323 +117,79 @@ export default async function DashboardPage() {
                 Repasa la gramática de los últimos días. Necesitas 70% para aprobar.
               </p>
             </div>
-            <span className="shrink-0 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold">
-              Presentar →
-            </span>
+            <span className="shrink-0 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold">Presentar →</span>
           </Link>
         )}
 
-        {/* Progreso: calendario + palabras + errores */}
-        <div className="mb-6 grid gap-4 md:grid-cols-3">
-          <div className="card md:col-span-1">
+        {/* Progreso: palabras + errores + repasos */}
+        <div className="mb-4 grid gap-4 sm:grid-cols-3">
+          <div className="card">
             <p className="text-sm text-slate-500">Palabras aprendidas</p>
             <p className="text-3xl font-bold text-brand-600">{stats.wordsLearned}</p>
-            <p className="mt-1 text-xs text-slate-400">en tus repasos</p>
           </div>
           <Link
             href="/mistakes"
-            className={`card transition-colors hover:border-brand-400 ${
-              stats.mistakesPending > 0 ? "ring-1 ring-amber-300" : ""
-            }`}
+            className={`card transition-colors hover:border-brand-400 ${stats.mistakesPending > 0 ? "ring-1 ring-amber-300" : ""}`}
           >
             <p className="text-sm text-slate-500">Errores por repasar</p>
             <p className="text-3xl font-bold text-amber-600">{stats.mistakesPending}</p>
-            <p className="mt-1 text-xs text-slate-400">
-              {stats.mistakesPending > 0 ? "Toca para repasarlos →" : "¡Todo dominado!"}
-            </p>
           </Link>
-          <div className="card md:col-span-1">
-            <p className="mb-2 text-sm text-slate-500">Tus últimos 14 días</p>
-            <div className="flex flex-wrap gap-1">
-              {last14.map((d) => (
-                <div
-                  key={d.key}
-                  title={d.key}
-                  className={`flex h-6 w-6 items-center justify-center rounded text-[10px] ${
-                    d.studied
-                      ? "bg-emerald-500 text-white"
-                      : "bg-slate-100 text-slate-400 dark:bg-slate-800"
-                  }`}
-                >
-                  {d.label}
-                </div>
-              ))}
-            </div>
-            <p className="mt-2 text-xs text-slate-400">
-              {doneToday ? "✓ Hoy ya estudiaste" : "Hoy aún no estudias"}
-            </p>
-          </div>
+          <Link
+            href="/review"
+            className={`card transition-colors hover:border-brand-400 ${data.dueCount > 0 ? "ring-1 ring-brand-300" : ""}`}
+          >
+            <p className="text-sm text-slate-500">Repasos de hoy</p>
+            <p className="text-3xl font-bold text-brand-600">{data.dueCount}</p>
+          </Link>
         </div>
 
-        {/* Fila superior: meta + acciones rápidas */}
-        <div className="grid gap-4 md:grid-cols-3">
-          {/* Puntaje y meta */}
-          <div className="card md:col-span-2">
-            <div className="mb-2 flex items-end justify-between">
-              <div>
-                <p className="text-sm text-slate-500">Puntaje ITP estimado</p>
-                <p className="text-4xl font-bold text-brand-600">
-                  {data.estimatedItpScore}
-                </p>
-                <p className="text-xs text-slate-400">
-                  Nivel MCER: {cefrForScore(data.estimatedItpScore)}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-slate-500">Meta</p>
-                <p className="text-2xl font-semibold">{GOAL_SCORE}</p>
-              </div>
-            </div>
-            <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+        {/* Calendario de racha */}
+        <div className="mb-6 card">
+          <p className="mb-2 text-sm text-slate-500">Tus últimos 14 días</p>
+          <div className="flex flex-wrap gap-1">
+            {last14.map((d) => (
               <div
-                className={`h-full rounded-full transition-all ${
-                  reachedGoal ? "bg-emerald-500" : "bg-brand-500"
+                key={d.key}
+                title={d.key}
+                className={`flex h-7 w-7 items-center justify-center rounded text-[11px] ${
+                  d.studied ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-400 dark:bg-slate-800"
                 }`}
-                style={{ width: `${goalPct}%` }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-slate-500">
-              {reachedGoal
-                ? "🎉 ¡Has alcanzado la meta de 400! Sigue reforzando para asegurarla."
-                : `Avance hacia 400: ${goalPct}%`}
-            </p>
-          </div>
-
-          {/* Racha + repasos */}
-          <div className="flex flex-col gap-4">
-            <div className="card flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-500">Racha</p>
-                <p className="text-2xl font-bold">{data.streakCount} 🔥</p>
+              >
+                {d.label}
               </div>
-            </div>
-            <Link
-              href="/review"
-              className={`card flex items-center justify-between transition-colors hover:border-brand-400 ${
-                data.dueCount > 0 ? "ring-1 ring-brand-300" : ""
-              }`}
-            >
-              <div>
-                <p className="text-sm text-slate-500">Repasos de hoy</p>
-                <p className="text-2xl font-bold">{data.dueCount}</p>
-              </div>
-              <span className="text-brand-600">→</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Modo TOEFL por niveles (opcional) */}
-        <h2 className="mt-8 mb-2 text-lg font-semibold">
-          Modo TOEFL por niveles{" "}
-          <span className="text-sm font-normal text-slate-400">(opcional)</span>
-        </h2>
-        <div className="card bg-brand-600 text-white dark:bg-brand-700">
-          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-            <div>
-              <h2 className="text-lg font-semibold">
-                {data.levelLessonsCompleted
-                  ? "¡Completaste las lecciones de este nivel!"
-                  : "Continúa donde te quedaste"}
-              </h2>
-              <p className="text-sm text-brand-50">
-                {data.levelLessonsCompleted
-                  ? "Presenta el examen para desbloquear el siguiente nivel."
-                  : levelDef.focus}
-              </p>
-            </div>
-            {data.levelLessonsCompleted ? (
-              <Link
-                href={`/exam/${data.currentLevel}`}
-                className="btn bg-white text-brand-700 hover:bg-brand-50"
-              >
-                Tomar examen de nivel
-              </Link>
-            ) : data.continueLessonId ? (
-              <Link
-                href={`/lesson/${data.continueLessonId}`}
-                className="btn bg-white text-brand-700 hover:bg-brand-50"
-              >
-                Continuar estudiando
-              </Link>
-            ) : null}
-          </div>
-        </div>
-
-        {/* Lecciones del nivel */}
-        <section className="mt-6">
-          <h2 className="mb-3 text-lg font-semibold">
-            Lecciones del nivel {data.currentLevel}
-          </h2>
-          <div className="grid gap-2">
-            {data.lessons.map((l, i) => (
-              <Link
-                key={l.id}
-                href={`/lesson/${l.id}`}
-                className="card flex items-center justify-between !p-4 transition-colors hover:border-brand-400"
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
-                      l.completed
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300"
-                        : "bg-slate-100 text-slate-500 dark:bg-slate-800"
-                    }`}
-                  >
-                    {l.completed ? "✓" : i + 1}
-                  </span>
-                  <div>
-                    <p className="font-medium">{l.title}</p>
-                    <p className="text-xs text-slate-400">
-                      {AREA_LABELS[l.area]}
-                    </p>
-                  </div>
-                </div>
-                <span className="text-sm text-slate-400">
-                  {l.completed ? `${Math.round((l.score ?? 0) * 100)}%` : "Empezar →"}
-                </span>
-              </Link>
             ))}
           </div>
-        </section>
+          <p className="mt-2 text-xs text-slate-400">
+            {doneToday ? "✓ Hoy ya estudiaste" : "Hoy aún no estudias"}
+          </p>
+        </div>
 
-        {/* Dominio por área */}
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="card">
-            <h2 className="mb-4 text-lg font-semibold">Dominio por área</h2>
-            <div className="space-y-3">
-              {data.areaMastery.map((m) => (
-                <div key={m.area}>
-                  <div className="mb-1 flex justify-between text-xs text-slate-500">
-                    <span>{AREA_LABELS[m.area]}</span>
-                    <span>{m.count > 0 ? `${m.pct}%` : "—"}</span>
-                  </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
-                    <div
-                      className="h-full rounded-full bg-brand-500"
-                      style={{ width: `${m.pct}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+        {/* Más práctica */}
+        <h2 className="mb-2 text-lg font-semibold">Más práctica</h2>
+        <div className="mb-6 grid gap-2 sm:grid-cols-2">
+          <Link href="/practice/conversation" className="card !p-4 transition-colors hover:border-brand-400">💬 Conversación</Link>
+          <Link href="/practice/speaking" className="card !p-4 transition-colors hover:border-brand-400">🎤 Pronunciación</Link>
+          <Link href="/practice/writing" className="card !p-4 transition-colors hover:border-brand-400">✍️ Escritura (con revisión)</Link>
+          <Link href="/videos" className="card !p-4 transition-colors hover:border-brand-400">🎬 Videos y escucha</Link>
+          <Link href="/grammar" className="card !p-4 transition-colors hover:border-brand-400">📖 Biblioteca de gramática</Link>
+          <Link href="/achievements" className="card !p-4 transition-colors hover:border-brand-400">🏆 Mis logros</Link>
+        </div>
+
+        {/* Acceso al modo TOEFL (separado) */}
+        <Link
+          href="/toefl"
+          className="card flex items-center justify-between transition-colors hover:border-brand-400"
+        >
+          <div>
+            <p className="font-semibold">🎓 Modo TOEFL — examen de puntaje</p>
+            <p className="text-sm text-slate-500">
+              Mide tu puntaje ITP estimado y presenta exámenes de nivel. Opcional.
+            </p>
           </div>
+          <span className="text-brand-600">→</span>
+        </Link>
 
-          {/* Mapa de niveles */}
-          <div className="card">
-            <h2 className="mb-4 text-lg font-semibold">Tu ruta</h2>
-            <ol className="space-y-2">
-              {LEVELS.map((lv) => {
-                const unlocked = lv.level <= data.unlockedLevel;
-                const current = lv.level === data.currentLevel;
-                return (
-                  <li
-                    key={lv.level}
-                    className={`flex items-center gap-3 rounded-lg px-2 py-1.5 ${
-                      current ? "bg-brand-50 dark:bg-brand-950" : ""
-                    }`}
-                  >
-                    <span className="text-lg">
-                      {unlocked ? (current ? "📍" : "✓") : "🔒"}
-                    </span>
-                    <div>
-                      <p className="text-sm font-medium">
-                        Nivel {lv.level} — {lv.name}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        {lv.bandLabel} · {lv.cefr}
-                      </p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-        </section>
-
-        {/* Historial de exámenes */}
-        {data.examHistory.length > 0 && (
-          <section className="mt-6">
-            <h2 className="mb-3 text-lg font-semibold">Historial de exámenes</h2>
-            <div className="card !p-0 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500 dark:bg-slate-800/60">
-                  <tr>
-                    <th className="px-4 py-2">Nivel</th>
-                    <th className="px-4 py-2">Puntaje</th>
-                    <th className="px-4 py-2">Resultado</th>
-                    <th className="px-4 py-2">Fecha</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.examHistory.map((a, i) => (
-                    <tr
-                      key={i}
-                      className="border-t border-slate-100 dark:border-slate-800"
-                    >
-                      <td className="px-4 py-2">Nivel {a.level}</td>
-                      <td className="px-4 py-2">{a.score}%</td>
-                      <td className="px-4 py-2">
-                        {a.passed ? (
-                          <span className="text-emerald-600">Aprobado</span>
-                        ) : (
-                          <span className="text-amber-600">No aprobado</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-2 text-slate-400">
-                        {new Date(a.attemptedAt).toLocaleDateString("es")}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
-        {/* Acciones extra */}
-        <div className="mt-8 flex flex-col items-center gap-2 text-center">
-          <Link
-            href="/practice/conversation"
-            className="text-sm text-brand-600 hover:underline"
-          >
-            💬 Práctica de conversación (diálogos reales)
-          </Link>
-          <Link
-            href="/practice/speaking"
-            className="text-sm text-brand-600 hover:underline"
-          >
-            🎤 Práctica de pronunciación (habla y te corrige)
-          </Link>
-          <Link
-            href="/grammar"
-            className="text-sm text-brand-600 hover:underline"
-          >
-            📖 Biblioteca de gramática (todas las reglas)
-          </Link>
-          <Link
-            href="/achievements"
-            className="text-sm text-brand-600 hover:underline"
-          >
-            🏆 Mis logros
-          </Link>
-          <Link
-            href="/mistakes"
-            className="text-sm text-brand-600 hover:underline"
-          >
-            🔁 Repaso de mis errores
-          </Link>
-          <Link
-            href="/videos"
-            className="text-sm text-brand-600 hover:underline"
-          >
-            🎬 Videos y escucha (practica con series y YouTube)
-          </Link>
-          <Link
-            href="/practice/writing"
-            className="text-sm text-brand-600 hover:underline"
-          >
-            ✍️ Práctica de escritura libre con retroalimentación
-          </Link>
+        <div className="mt-6 text-center">
           <Link
             href="/placement"
             className="text-sm text-slate-400 hover:text-brand-600 hover:underline"

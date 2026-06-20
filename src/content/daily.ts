@@ -72,7 +72,7 @@ export interface DailySession {
   vocab: VocabSet;
   comprehensionSet: Activity[];
   dialogue: DialogueActivity;
-  pronunciation: PronunciationActivity;
+  pronunciationSet: PronunciationActivity[];
   activities: Activity[];
   productionPrompt: string;
   resources: DayResource[];
@@ -1013,45 +1013,73 @@ export function getDailySession(dayNumber: number): DailySession {
   const week = Math.floor(i / DAYS_PER_WEEK) + 1;
   const { stage, emoji, focus } = stageForWeek(week);
 
+  const enrich = (lesson: GrammarLesson): Mcq[] =>
+    lesson.practice.map((m) => ({
+      ...m,
+      topicTitle: m.topicTitle ?? lesson.title,
+      topicWhy: m.topicWhy ?? lesson.tipEs,
+    }));
+
+  // Gramática: el tema del día + dos de repaso → ~15 preguntas.
   const grammar = grammarLessons[i % grammarLessons.length];
-  // Inyecta el tema (título + explicación) en cada práctica para una
-  // retroalimentación más completa.
-  const grammarPractice: Mcq[] = grammar.practice.map((m) => ({
-    ...m,
-    topicTitle: m.topicTitle ?? grammar.title,
-    topicWhy: m.topicWhy ?? grammar.tipEs,
-  }));
+  const g1 = grammarLessons[(i + 1) % grammarLessons.length];
+  const g2 = grammarLessons[(i + 2) % grammarLessons.length];
+  const grammarPractice: Mcq[] = [...enrich(grammar), ...enrich(g1), ...enrich(g2)];
 
-  const vocab = vocabSets[i % vocabSets.length];
-  const matching = matchingFromVocab(vocab);
+  // Vocabulario: dos temas → ~16 tarjetas.
+  const v0 = vocabSets[i % vocabSets.length];
+  const v1 = vocabSets[(i + 1) % vocabSets.length];
+  const vocab: VocabSet = { theme: v0.theme, cards: [...v0.cards, ...v1.cards] };
+  const matching = matchingFromVocab({
+    theme: v0.theme,
+    cards: [...v0.cards.slice(0, 4), ...v1.cards.slice(0, 4)],
+  });
 
-  // Comprensión: dos lecturas y una escucha para acercarse a la hora de estudio.
+  // Comprensión: 3 lecturas + 2 escuchas + dictado (formato TOEFL).
   const reading1 = readingTasks[i % readingTasks.length];
   const reading2 = readingTasks[(i + 2) % readingTasks.length];
-  const listening = listeningTasks[i % listeningTasks.length];
+  const reading3 = readingTasks[(i + 4) % readingTasks.length];
+  const listening1 = listeningTasks[i % listeningTasks.length];
+  const listening2 = listeningTasks[(i + 1) % listeningTasks.length];
   const dictation = dictationTasks[i % dictationTasks.length];
-  const comprehensionSet: Activity[] = [reading1, listening, reading2];
+  const comprehensionSet: Activity[] = [
+    reading1,
+    listening1,
+    reading2,
+    listening2,
+    reading3,
+  ];
 
-  const order1 = orderTasks[i % orderTasks.length];
-  const order2 = orderTasks[(i + 3) % orderTasks.length];
+  // Ordenar oraciones: 6.
+  const orders: OrderWords[] = Array.from(
+    { length: 6 },
+    (_, k) => orderTasks[(i + k) % orderTasks.length]
+  );
+
+  // Pronunciación: 6 frases.
+  const pronunciationSet: PronunciationActivity[] = Array.from(
+    { length: 6 },
+    (_, k) => pronunciationPool[(i + k) % pronunciationPool.length]
+  );
+
   const productionPrompt = productionPrompts[i % productionPrompts.length];
   const dialogue = dialogueActivity(i);
-  const pronunciation = pronunciationPool[i % pronunciationPool.length];
 
-  // Sesión completa unificada (~1 hora): vocabulario, gramática, comprensión
-  // (formato TOEFL), conversación y pronunciación.
+  // Sesión completa unificada: vocabulario, gramática, comprensión (TOEFL),
+  // conversación y pronunciación. Es larga: se puede hacer por partes.
   const activities: Activity[] = [
     ...vocab.cards,
     matching,
     ...grammarPractice,
-    order1,
-    order2,
+    ...orders,
     reading1,
+    listening1,
     dictation,
-    listening,
     reading2,
+    listening2,
+    reading3,
     dialogue,
-    pronunciation,
+    ...pronunciationSet.slice(0, 3),
   ];
 
   return {
@@ -1065,11 +1093,11 @@ export function getDailySession(dayNumber: number): DailySession {
     vocab,
     comprehensionSet,
     dialogue,
-    pronunciation,
+    pronunciationSet,
     activities,
     productionPrompt,
     resources: resourcesByStage[stage],
-    estimatedMinutes: 60,
+    estimatedMinutes: 90,
   };
 }
 
