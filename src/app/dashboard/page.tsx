@@ -6,6 +6,7 @@ import { getDashboardData } from "@/lib/dashboard";
 import { AppHeader } from "@/components/AppHeader";
 import { getDailySession, checkpointDue } from "@/content/daily";
 import { prisma } from "@/lib/prisma";
+import { Onboarding } from "@/components/Onboarding";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +57,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen">
+      <Onboarding />
       <AppHeader name={user?.name ?? user?.email} />
       <main className="mx-auto max-w-4xl px-4 py-6">
         {/* Encabezado de bienvenida */}
@@ -167,11 +169,14 @@ export default async function DashboardPage() {
         {/* Más práctica */}
         <h2 className="mb-2 text-lg font-semibold">Más práctica</h2>
         <div className="mb-6 grid gap-2 sm:grid-cols-2">
+          <Link href="/practice/adaptive" className="card !p-4 transition-colors hover:border-brand-400">🎯 Reto personalizado</Link>
+          <Link href="/reading" className="card !p-4 transition-colors hover:border-brand-400">📚 Biblioteca de lecturas</Link>
           <Link href="/practice/conversation" className="card !p-4 transition-colors hover:border-brand-400">💬 Conversación</Link>
           <Link href="/practice/speaking" className="card !p-4 transition-colors hover:border-brand-400">🎤 Pronunciación</Link>
           <Link href="/practice/writing" className="card !p-4 transition-colors hover:border-brand-400">✍️ Escritura (con revisión)</Link>
           <Link href="/videos" className="card !p-4 transition-colors hover:border-brand-400">🎬 Videos y escucha</Link>
           <Link href="/grammar" className="card !p-4 transition-colors hover:border-brand-400">📖 Biblioteca de gramática</Link>
+          <Link href="/dictionary" className="card !p-4 transition-colors hover:border-brand-400">📒 Mi diccionario</Link>
           <Link href="/achievements" className="card !p-4 transition-colors hover:border-brand-400">🏆 Mis logros</Link>
         </div>
 
