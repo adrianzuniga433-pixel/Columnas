@@ -316,6 +316,12 @@ export default async function DashboardPage() {
         {/* Acciones extra */}
         <div className="mt-8 flex flex-col items-center gap-2 text-center">
           <Link
+            href="/videos"
+            className="text-sm text-brand-600 hover:underline"
+          >
+            🎬 Videos y escucha (practica con series y YouTube)
+          </Link>
+          <Link
             href="/practice/writing"
             className="text-sm text-brand-600 hover:underline"
           >
