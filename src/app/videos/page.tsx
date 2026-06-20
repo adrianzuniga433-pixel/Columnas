@@ -20,8 +20,8 @@ export default async function VideosPage() {
         </Link>
         <h1 className="text-2xl font-bold">🎬 Videos y escucha</h1>
         <p className="mb-6 text-sm text-slate-500">
-          Practica tu comprensión con videos y series reales. Cada recurso trae
-          una tarea concreta para que veas con propósito, no solo de pasada.
+          Practica tu comprensión con videos reales, reproducidos aquí mismo.
+          Cada uno trae una tarea concreta para que veas con propósito.
         </p>
 
         {videoLevels.map((lvl) => (
@@ -30,22 +30,20 @@ export default async function VideosPage() {
               {lvl.emoji} Nivel {lvl.level}
             </h2>
             <p className="mb-3 text-sm text-slate-500">{lvl.intro}</p>
-            <div className="grid gap-3">
+            <div className="grid gap-5">
               {lvl.resources.map((r) => (
-                <div key={r.title} className="card">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="font-semibold">{r.title}</h3>
-                      <p className="mt-0.5 text-sm text-slate-500">{r.teaches}</p>
-                    </div>
-                    <a
-                      href={r.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-secondary shrink-0 !px-3 !py-1.5 text-sm"
-                    >
-                      Ver ▶
-                    </a>
+                <div key={r.youtubeId} className="card">
+                  <h3 className="font-semibold">{r.title}</h3>
+                  <p className="mb-3 mt-0.5 text-sm text-slate-500">{r.teaches}</p>
+                  <div className="aspect-video w-full overflow-hidden rounded-xl bg-black">
+                    <iframe
+                      className="h-full w-full"
+                      src={`https://www.youtube-nocookie.com/embed/${r.youtubeId}`}
+                      title={r.title}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
                   </div>
                   <div className="mt-3 rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-900 dark:bg-brand-950 dark:text-brand-100">
                     <strong>Práctica:</strong> {r.practice}
@@ -57,8 +55,9 @@ export default async function VideosPage() {
         ))}
 
         <p className="mt-2 text-center text-xs text-slate-400">
-          Los videos son de canales externos (YouTube, plataformas de streaming).
-          Aquí solo se recomiendan y se propone cómo practicar con ellos.
+          Los videos son de canales externos (YouTube) y se muestran incrustados.
+          Si alguno no carga, es posible que el canal haya desactivado la
+          reproducción incrustada.
         </p>
       </main>
     </div>

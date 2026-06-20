@@ -539,6 +539,36 @@ export const readingTasks: Reading[] = [
       { prompt: "What is 'the secret', according to the author?", options: ["Speed", "Talent", "Consistency", "Money"], answerIndex: 2, explanation: "'it is consistency'." },
     ],
   },
+  {
+    kind: "reading",
+    title: "Working from Home",
+    passage:
+      "Since last year, Marco has worked from home three days a week. He saves two hours of travel every day and feels less stressed. However, he sometimes misses talking to his coworkers in person. To stay connected, the team has a short video call every morning.",
+    questions: [
+      { prompt: "How many days does Marco work from home?", options: ["Every day", "Two days", "Three days", "Five days"], answerIndex: 2, explanation: "'Marco has worked from home three days a week'." },
+      { prompt: "What does he sometimes miss?", options: ["His old salary", "Talking to coworkers in person", "The long travel", "His office chair"], answerIndex: 1, explanation: "'he sometimes misses talking to his coworkers in person'." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "A Trip to the Market",
+    passage:
+      "Every Saturday, Elena goes to the local market near her house. She buys fresh fruit, vegetables, and bread. The prices are lower than at the supermarket, and she enjoys talking to the sellers. Her favorite stall sells homemade cheese, which she always buys for her family.",
+    questions: [
+      { prompt: "When does Elena go to the market?", options: ["Every day", "On Sundays", "On Saturdays", "Once a month"], answerIndex: 2, explanation: "'Every Saturday, Elena goes to the local market'." },
+      { prompt: "Why does she prefer the market?", options: ["It is far away", "Prices are lower and she enjoys it", "It is open at night", "It sells phones"], answerIndex: 1, explanation: "'The prices are lower... and she enjoys talking to the sellers'." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "Learning to Save Money",
+    passage:
+      "When Pablo got his first job, he spent all his money every month. After a while, he decided to change. Now he saves a small amount as soon as he gets paid, before spending on anything else. It isn't much, but after a year he had enough for a short vacation.",
+    questions: [
+      { prompt: "What was Pablo's problem at first?", options: ["He had no job", "He spent all his money", "He worked too much", "He couldn't travel"], answerIndex: 1, explanation: "'he spent all his money every month'." },
+      { prompt: "What does he do now?", options: ["He saves before spending", "He stopped working", "He borrows money", "He spends more"], answerIndex: 0, explanation: "'he saves a small amount as soon as he gets paid, before spending'." },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -594,6 +624,36 @@ export const listeningTasks: Listening[] = [
     questions: [
       { prompt: "What is the main tip?", options: ["Study grammar only", "Don't be afraid to make mistakes", "Never speak until you're perfect", "Travel abroad"], answerIndex: 1, explanation: "'don't be afraid to make mistakes'." },
       { prompt: "How often should you speak?", options: ["Once a week", "Every day", "Only in class", "Never"], answerIndex: 1, explanation: "'Speak a little every day'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Reservando una mesa por teléfono.",
+    script:
+      "Good evening! I'd like to book a table for four people for tomorrow at eight o'clock. It's for a birthday dinner. Could we have a table near the window, please? My name is Roberto.",
+    questions: [
+      { prompt: "How many people is the table for?", options: ["Two", "Three", "Four", "Five"], answerIndex: 2, explanation: "'a table for four people'." },
+      { prompt: "What is the special occasion?", options: ["A wedding", "A birthday dinner", "A business meeting", "Nothing special"], answerIndex: 1, explanation: "'It's for a birthday dinner'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Hablando del clima y los planes.",
+    script:
+      "The weather this weekend looks great. On Saturday it will be sunny and warm, perfect for the beach. But on Sunday it might rain in the afternoon, so take an umbrella if you go out.",
+    questions: [
+      { prompt: "How will the weather be on Saturday?", options: ["Rainy", "Cold and windy", "Sunny and warm", "Snowy"], answerIndex: 2, explanation: "'On Saturday it will be sunny and warm'." },
+      { prompt: "What might happen on Sunday?", options: ["It might rain", "It will snow", "It will be very hot", "Nothing changes"], answerIndex: 0, explanation: "'on Sunday it might rain in the afternoon'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Instrucciones en el trabajo.",
+    script:
+      "Hi team, quick update. The client moved the meeting to Thursday at ten. Please finish the report by Wednesday evening and send it to me for review. If you have any questions, just send me a message. Thanks!",
+    questions: [
+      { prompt: "When is the meeting now?", options: ["Wednesday at ten", "Thursday at ten", "Friday evening", "Monday morning"], answerIndex: 1, explanation: "'The client moved the meeting to Thursday at ten'." },
+      { prompt: "By when should the report be finished?", options: ["Thursday", "Friday", "Wednesday evening", "Next week"], answerIndex: 2, explanation: "'finish the report by Wednesday evening'." },
     ],
   },
 ];

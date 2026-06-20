@@ -1,11 +1,11 @@
-// Recursos de video y escucha para practicar, curados de la Guía de Inglés
-// Autodidacta. Cada recurso incluye un enlace real y una tarea de práctica
-// concreta. El contenido enlazado es de terceros (YouTube, etc.); aquí solo se
-// recomienda y se propone cómo practicar con él.
+// Recursos de video para practicar, curados de la Guía de Inglés Autodidacta.
+// Los videos se reproducen incrustados dentro del sitio (YouTube embed). Cada
+// uno trae una tarea de práctica concreta. El contenido es de terceros; aquí
+// solo se selecciona y se propone cómo practicar con él.
 
 export interface VideoResource {
   title: string;
-  url: string;
+  youtubeId: string;
   teaches: string;
   practice: string;
 }
@@ -22,42 +22,35 @@ export const videoLevels: VideoLevel[] = [
     level: "Básico",
     emoji: "🟢",
     intro:
-      "Empieza con subtítulos en español; cuando entiendas más, cámbialos a inglés y luego quítalos.",
+      "Empieza con subtítulos (actívalos en el ícono ⚙ del video). Cuando entiendas más, cámbialos a inglés y luego quítalos.",
     resources: [
       {
-        title: "EnglishClass101",
-        url: "https://www.youtube.com/@EnglishClass101",
-        teaches: "Lecciones estructuradas desde cero: vocabulario y gramática.",
+        title: "Conversación básica en inglés (vida real)",
+        youtubeId: "QnlSt8IbKHY",
+        teaches: "Diálogos cotidianos lentos y claros para principiantes.",
         practice:
-          "Mira una lección de 10 minutos. Anota 5 frases nuevas y repítelas en voz alta 3 veces cada una.",
+          "Haz 'shadowing': repite cada frase justo después de escucharla, imitando el ritmo, durante 5 minutos.",
       },
       {
-        title: "Speak English With Vanessa",
-        url: "https://www.youtube.com/@SpeakEnglishWithVanessa",
-        teaches: "Pronunciación y fluidez para la vida real.",
+        title: "Conversaciones básicas: familia, saludos y escuela",
+        youtubeId: "KftDkWCh2ec",
+        teaches: "Frases para presentarte y hablar de tu día a día.",
         practice:
-          "Elige un video. Haz 'shadowing': repite cada frase justo después de ella, imitando la entonación, durante 5 minutos.",
+          "Anota 5 frases útiles y luego úsalas para presentarte en voz alta.",
       },
       {
-        title: "BBC Learning English — 6 Minute English",
-        url: "https://www.youtube.com/@bbclearningenglish",
-        teaches: "Un tema distinto cada semana en 6 minutos, con vocabulario actual.",
+        title: "Inglés fácil para nivel A1–A2 (30 min)",
+        youtubeId: "zUOSv7tS8gI",
+        teaches: "Conversación simple, ideal para empezar a entender oído.",
         practice:
-          "Escucha un episodio con subtítulos. Anota 3 palabras nuevas con su significado y escribe una oración con cada una.",
+          "Escucha 10 minutos con subtítulos. Anota 3 palabras nuevas con su significado.",
       },
       {
-        title: "Learn English with TV Series",
-        url: "https://www.youtube.com/@LearnEnglishWithTVSeries",
-        teaches: "Aprende inglés real con clips de series famosas.",
+        title: "BBC 6 Minute English — Food",
+        youtubeId: "bKfFvme1b8I",
+        teaches: "Vocabulario de comida explicado por presentadores de la BBC.",
         practice:
-          "Mira un clip. Ponlo en pausa después de cada línea y repite lo que dijo el personaje, copiando el ritmo.",
-      },
-      {
-        title: "Serie: FRIENDS (Netflix / streaming)",
-        url: "https://www.youtube.com/results?search_query=friends+english+lesson+clip",
-        teaches: "Diálogos naturales de vida cotidiana con pronunciación clara.",
-        practice:
-          "Mira 1 escena con subtítulos en inglés. Anota 3 expresiones coloquiales y búscalas para entenderlas.",
+          "Anota 3 palabras de comida nuevas y escribe una oración con cada una.",
       },
     ],
   },
@@ -68,60 +61,67 @@ export const videoLevels: VideoLevel[] = [
       "Reduce los subtítulos en español. Intenta seguir el sentido general sin traducir cada palabra.",
     resources: [
       {
-        title: "English with Lucy",
-        url: "https://www.youtube.com/@EnglishwithLucy",
-        teaches: "Gramática explicada con ejemplos claros y divertidos.",
+        title: "BBC 6 Minute English — All About Language",
+        youtubeId: "fcN0BXzK8bg",
+        teaches: "Una hora de vocabulario nuevo sobre el idioma y la comunicación.",
         practice:
-          "Mira una lección de gramática y escribe 3 oraciones propias usando lo que aprendiste.",
+          "Mira 15 minutos. Anota 5 expresiones nuevas y subráyalas en tu cuaderno.",
       },
       {
-        title: "TED-Ed",
-        url: "https://www.youtube.com/@TEDEd",
-        teaches: "Temas culturales y científicos con inglés académico accesible.",
+        title: "BBC 6 Minute English — Human Emotions",
+        youtubeId: "_LlyKiROzhU",
+        teaches: "Vocabulario para hablar de sentimientos y estados de ánimo.",
         practice:
-          "Mira un video de ~5 minutos sin subtítulos en español. Resume en 2 oraciones la idea principal.",
+          "Después de ver, escribe un párrafo corto describiendo cómo te sientes hoy.",
       },
       {
-        title: "Serie: The Office (USA) o Brooklyn Nine-Nine",
-        url: "https://www.youtube.com/results?search_query=the+office+best+moments+english",
-        teaches: "Inglés informal, humor y vocabulario de trabajo y vida diaria.",
+        title: "Present Perfect Tense — explicación de gramática",
+        youtubeId: "WDGc3CEBOUU",
+        teaches: "Cómo y cuándo usar el presente perfecto, con ejemplos.",
         practice:
-          "Mira un episodio con subtítulos en inglés. Elige 5 frases útiles y escríbelas en tu cuaderno.",
+          "Escribe 3 oraciones propias usando el presente perfecto (I have...).",
       },
       {
-        title: "BBC Learning English — News Review",
-        url: "https://www.youtube.com/@bbclearningenglish",
-        teaches: "Vocabulario de noticias actuales explicado paso a paso.",
+        title: "Present Perfect vs Present Perfect Continuous",
+        youtubeId: "7NGLHYVmr00",
+        teaches: "La diferencia entre dos tiempos que suelen confundirse.",
         practice:
-          "Mira un 'News Review'. Anota 3 expresiones nuevas y úsalas para escribir un párrafo corto.",
+          "Escribe 2 oraciones: una con cada tiempo, sobre tu propia vida.",
       },
     ],
   },
   {
     level: "Intermedio-Alto",
     emoji: "🟣",
-    intro: "Intenta ver contenido nativo sin subtítulos o con subtítulos en inglés.",
+    intro: "Intenta ver con subtítulos en inglés o sin subtítulos.",
     resources: [
       {
-        title: "Kurzgesagt – In a Nutshell",
-        url: "https://www.youtube.com/@kurzgesagt",
-        teaches: "Inglés académico y vocabulario científico con animaciones.",
+        title: "The secrets of learning a new language (TED)",
+        youtubeId: "o_XVt5rdpFY",
+        teaches: "Charla real (auténtica) sobre cómo aprender idiomas.",
         practice:
-          "Mira un video sin subtítulos. Anota 5 términos nuevos, búscalos y explica el tema en voz alta.",
+          "Mira la charla y resume en 3–4 oraciones la idea principal, en inglés.",
       },
       {
-        title: "Serie: Mindhunter o Brooklyn Nine-Nine",
-        url: "https://www.youtube.com/results?search_query=mindhunter+scene+english",
-        teaches: "Vocabulario avanzado e inglés formal e informal.",
+        title: "How to learn any language in six months (TED)",
+        youtubeId: "d0yGdNEWdn0",
+        teaches: "Inglés natural a velocidad nativa, con ideas motivadoras.",
         practice:
-          "Mira una escena sin subtítulos en español. Escribe un resumen de 3–4 oraciones de lo que pasó.",
+          "Elige 1 minuto y úsalo como dictado: pausa y escribe 5 frases tal cual.",
       },
       {
-        title: "TED Talks (canal oficial)",
-        url: "https://www.youtube.com/@TED",
-        teaches: "Charlas reales sobre ideas, ciencia y cultura.",
+        title: "How to learn any language easily (TED)",
+        youtubeId: "Yr_poW-KK1Q",
+        teaches: "Consejos prácticos en inglés claro pero auténtico.",
         practice:
-          "Elige una charla de un tema que te interese. Tómala como dictado: pausa y escribe 5 frases tal cual.",
+          "Anota 5 palabras o expresiones nuevas y búscalas para entenderlas.",
+      },
+      {
+        title: "Learn ALL English tenses — repaso completo",
+        youtubeId: "du34F6p9rQ8",
+        teaches: "Repaso de todos los tiempos verbales en un solo video.",
+        practice:
+          "Mira un bloque y escribe una oración de ejemplo por cada tiempo que repases.",
       },
     ],
   },
