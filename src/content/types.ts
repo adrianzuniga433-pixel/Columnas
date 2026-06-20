@@ -75,6 +75,21 @@ export interface Dictation {
   accepted: string[]; // respuestas aceptadas (normalizadas)
 }
 
+// Diálogo de conversación (lectura + audio + práctica en voz alta).
+export interface DialogueActivity {
+  kind: "dialogue";
+  title: string;
+  situation: string;
+  lines: { who: string; speaker: string; en: string; es: string }[];
+}
+
+// Práctica de pronunciación de una frase (micrófono).
+export interface PronunciationActivity {
+  kind: "pronunciation";
+  text: string;
+  es: string;
+}
+
 export type Activity =
   | Flashcard
   | Mcq
@@ -83,7 +98,9 @@ export type Activity =
   | Listening
   | OrderWords
   | Matching
-  | Dictation;
+  | Dictation
+  | DialogueActivity
+  | PronunciationActivity;
 
 // ----- Estructura de una lección -----
 

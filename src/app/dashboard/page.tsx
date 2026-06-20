@@ -13,7 +13,8 @@ import {
   progressToGoal,
   type Area,
 } from "@/lib/itp";
-import { getDailySession } from "@/content/daily";
+import { getDailySession, checkpointDue } from "@/content/daily";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,20 @@ export default async function DashboardPage() {
   const reachedGoal = data.estimatedItpScore >= GOAL_SCORE;
   const daily = getDailySession(progress.studyDay);
   const doneToday = studiedToday(progress.lastStudyAt);
+
+  // Examen de avance disponible (cada 5 días) y aún no aprobado.
+  const checkpointMilestone = checkpointDue(progress.studyDay);
+  let checkpointPending = false;
+  if (checkpointMilestone) {
+    const passed = await prisma.examAttempt.findFirst({
+      where: {
+        userId: session.userId,
+        level: 1000 + checkpointMilestone,
+        passed: true,
+      },
+    });
+    checkpointPending = !passed;
+  }
 
   const stats = await getProgressStats(session.userId);
   // Últimos 14 días para el calendario.
@@ -105,6 +120,12 @@ export default async function DashboardPage() {
             <Link href="/today?section=comprension" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
               📖 Comprensión
             </Link>
+            <Link href="/today?section=conversation" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
+              💬 Conversación
+            </Link>
+            <Link href="/today?section=pronunciation" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
+              🎤 Pronunciación
+            </Link>
             <Link href="/today?section=produccion" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
               ✏️ Producción
             </Link>
@@ -113,6 +134,27 @@ export default async function DashboardPage() {
             </Link>
           </div>
         </div>
+
+        {/* Examen de avance disponible */}
+        {checkpointPending && (
+          <Link
+            href="/checkpoint"
+            className="mb-6 flex items-center justify-between gap-3 rounded-2xl bg-indigo-600 p-5 text-white shadow-lg transition-transform hover:scale-[1.01]"
+          >
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-indigo-200">
+                📋 Examen de avance #{checkpointMilestone}
+              </p>
+              <h2 className="mt-1 text-lg font-bold">¡Verifica lo que aprendiste!</h2>
+              <p className="text-sm text-indigo-100">
+                Repasa la gramática de los últimos días. Necesitas 70% para aprobar.
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold">
+              Presentar →
+            </span>
+          </Link>
+        )}
 
         {/* Progreso: calendario + palabras + errores */}
         <div className="mb-6 grid gap-4 md:grid-cols-3">

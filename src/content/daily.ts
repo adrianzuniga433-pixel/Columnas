@@ -5,14 +5,39 @@
 
 import type {
   Activity,
+  DialogueActivity,
   Dictation,
   Flashcard,
   Listening,
   Matching,
   Mcq,
   OrderWords,
+  PronunciationActivity,
   Reading,
 } from "./types";
+import { dialogues } from "./dialogues";
+
+// Frases para la práctica de pronunciación dentro de la sesión.
+const pronunciationPool: PronunciationActivity[] = [
+  { kind: "pronunciation", text: "Nice to meet you. My name is Carlos.", es: "Mucho gusto. Me llamo Carlos." },
+  { kind: "pronunciation", text: "I usually wake up early in the morning.", es: "Normalmente me despierto temprano en la mañana." },
+  { kind: "pronunciation", text: "Could I have a coffee with milk, please?", es: "¿Me da un café con leche, por favor?" },
+  { kind: "pronunciation", text: "How much does this jacket cost?", es: "¿Cuánto cuesta esta chaqueta?" },
+  { kind: "pronunciation", text: "I have never been to the United States.", es: "Nunca he estado en Estados Unidos." },
+  { kind: "pronunciation", text: "You should drink more water every day.", es: "Deberías tomar más agua cada día." },
+  { kind: "pronunciation", text: "Excuse me, where is the train station?", es: "Disculpe, ¿dónde está la estación de tren?" },
+  { kind: "pronunciation", text: "I look forward to hearing from you.", es: "Espero con gusto tu respuesta." },
+];
+
+function dialogueActivity(i: number): DialogueActivity {
+  const d = dialogues[i % dialogues.length];
+  return {
+    kind: "dialogue",
+    title: d.title,
+    situation: d.situation,
+    lines: d.lines,
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Tipos
@@ -46,6 +71,8 @@ export interface DailySession {
   grammarPractice: Mcq[];
   vocab: VocabSet;
   comprehensionSet: Activity[];
+  dialogue: DialogueActivity;
+  pronunciation: PronunciationActivity;
   activities: Activity[];
   productionPrompt: string;
   resources: DayResource[];
@@ -1008,8 +1035,11 @@ export function getDailySession(dayNumber: number): DailySession {
   const order1 = orderTasks[i % orderTasks.length];
   const order2 = orderTasks[(i + 3) % orderTasks.length];
   const productionPrompt = productionPrompts[i % productionPrompts.length];
+  const dialogue = dialogueActivity(i);
+  const pronunciation = pronunciationPool[i % pronunciationPool.length];
 
-  // Sesión completa (~1 hora).
+  // Sesión completa unificada (~1 hora): vocabulario, gramática, comprensión
+  // (formato TOEFL), conversación y pronunciación.
   const activities: Activity[] = [
     ...vocab.cards,
     matching,
@@ -1020,6 +1050,8 @@ export function getDailySession(dayNumber: number): DailySession {
     dictation,
     listening,
     reading2,
+    dialogue,
+    pronunciation,
   ];
 
   return {
@@ -1032,11 +1064,50 @@ export function getDailySession(dayNumber: number): DailySession {
     grammarPractice,
     vocab,
     comprehensionSet,
+    dialogue,
+    pronunciation,
     activities,
     productionPrompt,
     resources: resourcesByStage[stage],
     estimatedMinutes: 60,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Examen de avance: cada 5 días, repasa la gramática de esos días.
+// ---------------------------------------------------------------------------
+
+export const CHECKPOINT_EVERY = 5;
+
+/**
+ * Milestone (número de examen) disponible según los días completados.
+ * Devuelve el examen más reciente desbloqueado, o null si aún no hay ninguno.
+ * Que esté "aprobado" se verifica aparte (ExamAttempt).
+ */
+export function checkpointDue(studyDay: number): number | null {
+  const completed = studyDay - 1;
+  const milestone = Math.floor(completed / CHECKPOINT_EVERY);
+  return milestone >= 1 ? milestone : null;
+}
+
+/** Construye las preguntas del examen de avance para un milestone dado. */
+export function buildCheckpointExam(milestone: number): Mcq[] {
+  // Días que cubre este examen (los 5 anteriores al checkpoint).
+  const endDay = milestone * CHECKPOINT_EVERY; // último día incluido
+  const startDay = endDay - CHECKPOINT_EVERY + 1;
+  const questions: Mcq[] = [];
+  for (let day = startDay; day <= endDay; day++) {
+    const i = day - 1;
+    const grammar = grammarLessons[i % grammarLessons.length];
+    const enriched = grammar.practice.map((m) => ({
+      ...m,
+      topicTitle: m.topicTitle ?? grammar.title,
+      topicWhy: m.topicWhy ?? grammar.tipEs,
+    }));
+    // 2 preguntas por día.
+    questions.push(enriched[0], enriched[2 % enriched.length]);
+  }
+  return questions;
 }
 
 /** Ítems de vocabulario del día listos para inyectar al SRS. */

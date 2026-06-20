@@ -12,6 +12,8 @@ export type DailySection =
   | "grammar"
   | "vocab"
   | "comprension"
+  | "conversation"
+  | "pronunciation"
   | "produccion"
   | "recursos";
 
@@ -20,6 +22,8 @@ const SECTION_LABEL: Record<DailySection, string> = {
   grammar: "📘 Gramática",
   vocab: "📝 Vocabulario",
   comprension: "📖 Comprensión",
+  conversation: "💬 Conversación",
+  pronunciation: "🎤 Pronunciación",
   produccion: "✏️ Producción",
   recursos: "🎬 Recursos",
 };
@@ -45,7 +49,11 @@ export function DailyPlayer({
         ? session.vocab.cards
         : section === "comprension"
           ? session.comprehensionSet
-          : session.activities; // full
+          : section === "conversation"
+            ? [session.dialogue]
+            : section === "pronunciation"
+              ? [session.pronunciation]
+              : session.activities; // full
 
   const showGrammarIntro = section === "full" || section === "grammar";
   const isFull = section === "full";

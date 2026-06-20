@@ -11,6 +11,8 @@ const VALID_SECTIONS: DailySection[] = [
   "grammar",
   "vocab",
   "comprension",
+  "conversation",
+  "pronunciation",
   "produccion",
   "recursos",
 ];

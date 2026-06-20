@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import type {
   Activity,
   Flashcard,
@@ -11,6 +11,8 @@ import type {
   OrderWords,
   Matching,
   Dictation,
+  DialogueActivity,
+  PronunciationActivity,
   ReadingQuestion,
 } from "@/content/types";
 import { SpeechButton } from "./SpeechButton";
@@ -601,6 +603,165 @@ function DictationView({
   );
 }
 
+function DialogueView({
+  a,
+  onDone,
+}: {
+  a: DialogueActivity;
+  onDone: (r: ActivityResult) => void;
+}) {
+  const [showEs, setShowEs] = useState(true);
+
+  function playAll() {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    for (const line of a.lines) {
+      const u = new SpeechSynthesisUtterance(line.en);
+      u.lang = "en-US";
+      u.rate = 0.95;
+      window.speechSynthesis.speak(u);
+    }
+  }
+
+  return (
+    <div>
+      <p className="mb-1 text-sm text-slate-500">💬 Conversación</p>
+      <h3 className="text-lg font-semibold">{a.title}</h3>
+      <p className="mb-3 text-sm text-slate-500">{a.situation}</p>
+      <div className="mb-3 flex flex-wrap gap-2">
+        <button className="btn-secondary" onClick={playAll}>
+          ▶ Escuchar diálogo
+        </button>
+        <button className="btn-ghost" onClick={() => setShowEs((s) => !s)}>
+          {showEs ? "Ocultar traducción" : "Mostrar traducción"}
+        </button>
+      </div>
+      <div className="space-y-2">
+        {a.lines.map((line, i) => {
+          const isYou = line.speaker === "A";
+          return (
+            <div key={i} className={`flex ${isYou ? "justify-end" : "justify-start"}`}>
+              <div
+                className={`max-w-[85%] rounded-2xl px-3 py-2 ${
+                  isYou ? "bg-brand-600 text-white" : "bg-slate-100 dark:bg-slate-800"
+                }`}
+              >
+                <p className="mb-0.5 text-[10px] font-medium uppercase tracking-wide opacity-70">
+                  {line.who}
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-sm font-medium">{line.en}</p>
+                  <SpeechButton text={line.en} label="" className="!px-1.5 !py-0.5 !text-current" />
+                </div>
+                {showEs && (
+                  <p className={`mt-0.5 text-xs ${isYou ? "text-brand-100" : "text-slate-500"}`}>
+                    {line.es}
+                  </p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-3 text-xs text-slate-400">
+        Practica diciendo en voz alta las líneas de “Tú”.
+      </p>
+      <ContinueButton onClick={() => onDone({ correct: 0, total: 0 })} />
+    </div>
+  );
+}
+
+function normalizeWords(s: string): string {
+  return s.toLowerCase().replace(/[.,!?;:'"]/g, "").replace(/\s+/g, " ").trim();
+}
+
+function PronunciationView({
+  a,
+  onDone,
+}: {
+  a: PronunciationActivity;
+  onDone: (r: ActivityResult) => void;
+}) {
+  const [supported, setSupported] = useState(true);
+  const [listening, setListening] = useState(false);
+  const [heard, setHeard] = useState<string | null>(null);
+  const [score, setScore] = useState<number | null>(null);
+  const recRef = useRef<any>(null);
+
+  useEffect(() => {
+    const SR =
+      (typeof window !== "undefined" &&
+        ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)) ||
+      null;
+    if (!SR) {
+      setSupported(false);
+      return;
+    }
+    const rec = new SR();
+    rec.lang = "en-US";
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    rec.onresult = (e: any) => {
+      const transcript = e.results[0][0].transcript as string;
+      setHeard(transcript);
+      const t = normalizeWords(a.text).split(" ");
+      const said = new Set(normalizeWords(transcript).split(" "));
+      const matched = t.filter((w) => said.has(w)).length;
+      setScore(Math.round((matched / Math.max(1, t.length)) * 100));
+    };
+    rec.onend = () => setListening(false);
+    rec.onerror = () => setListening(false);
+    recRef.current = rec;
+  }, [a.text]);
+
+  function start() {
+    if (!recRef.current) return;
+    setHeard(null);
+    setScore(null);
+    try {
+      setListening(true);
+      recRef.current.start();
+    } catch {
+      setListening(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="mb-1 text-sm text-slate-500">🎤 Pronunciación</p>
+      <p className="mb-1 text-lg font-medium">{a.text}</p>
+      <p className="mb-3 text-sm text-slate-400">{a.es}</p>
+      {!supported && (
+        <div className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+          Tu navegador no permite el micrófono para esto (usa Chrome). Aún puedes
+          escuchar la frase y repetirla en voz alta.
+        </div>
+      )}
+      <div className="flex flex-wrap items-center gap-2">
+        <SpeechButton text={a.text} label="🔊 Escuchar" />
+        <button className="btn-primary" onClick={start} disabled={!supported || listening}>
+          {listening ? "🎙️ Escuchando..." : "🎤 Hablar"}
+        </button>
+      </div>
+      {heard && score !== null && (
+        <div
+          className={`mt-3 animate-pop-in rounded-lg px-3 py-2 text-sm ${
+            score >= 80
+              ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+              : score >= 50
+                ? "bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                : "bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-300"
+          }`}
+        >
+          Escuché: “{heard}” — coincidencia {score}%.
+          {score < 80 ? " Escucha de nuevo e intenta otra vez." : " ¡Muy bien! 🎉"}
+        </div>
+      )}
+      <ContinueButton onClick={() => onDone({ correct: 0, total: 0 })} />
+    </div>
+  );
+}
+
 export function ActivityCard({
   activity,
   onDone,
@@ -625,6 +786,10 @@ export function ActivityCard({
       return <MatchingView a={activity} onDone={onDone} />;
     case "dictation":
       return <DictationView a={activity} onDone={onDone} />;
+    case "dialogue":
+      return <DialogueView a={activity} onDone={onDone} />;
+    case "pronunciation":
+      return <PronunciationView a={activity} onDone={onDone} />;
     default:
       return null;
   }
