@@ -44,7 +44,7 @@ export function DailyPlayer({
       : section === "vocab"
         ? session.vocab.cards
         : section === "comprension"
-          ? [session.comprehension]
+          ? session.comprehensionSet
           : session.activities; // full
 
   const showGrammarIntro = section === "full" || section === "grammar";
