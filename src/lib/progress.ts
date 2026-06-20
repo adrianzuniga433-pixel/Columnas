@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "./prisma";
 import { srsSeedForLevel } from "@/content";
+import { srsSeedForDay } from "@/content/daily";
 
 /** Devuelve el Progress del usuario, creándolo si no existe. */
 export async function ensureProgress(userId: string) {
@@ -63,6 +64,50 @@ export async function seedSrsForLevel(userId: string, level: number) {
       },
     });
   }
+}
+
+/** Inserta los ítems de vocabulario de la sesión diaria al SRS (idempotente). */
+export async function seedSrsForDay(userId: string, day: number) {
+  const seeds = srsSeedForDay(day);
+  for (const seed of seeds) {
+    await prisma.srsItem.upsert({
+      where: { userId_conceptKey: { userId, conceptKey: seed.conceptKey } },
+      update: {},
+      create: {
+        userId,
+        type: seed.type,
+        area: seed.area,
+        front: seed.front,
+        back: seed.back,
+        example: seed.example,
+        conceptKey: seed.conceptKey,
+        nextReviewAt: new Date(),
+      },
+    });
+  }
+}
+
+/**
+ * Marca la sesión diaria como completada. Avanza al siguiente día solo una vez
+ * por día natural (para mantener una sesión distinta cada día).
+ */
+export async function completeDailySession(userId: string) {
+  const progress = await ensureProgress(userId);
+  const today = startOfDay(new Date());
+  const alreadyAdvancedToday =
+    progress.lastStudyAt != null && startOfDay(progress.lastStudyAt) === today;
+
+  await seedSrsForDay(userId, progress.studyDay);
+
+  const updated = await prisma.progress.update({
+    where: { userId },
+    data: {
+      lastStudyAt: new Date(),
+      studyDay: alreadyAdvancedToday ? progress.studyDay : progress.studyDay + 1,
+    },
+  });
+  await touchStreak(userId);
+  return { studyDay: updated.studyDay, advanced: !alreadyAdvancedToday };
 }
 
 /** Cantidad de ítems de SRS pendientes de repaso hoy. */

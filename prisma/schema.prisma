@@ -33,6 +33,8 @@ model Progress {
   streakCount       Int      @default(0)
   lastActiveDate    DateTime?
   placementDone     Boolean  @default(false)
+  studyDay          Int      @default(1)
+  lastStudyAt       DateTime?
   updatedAt         DateTime @updatedAt
 }
 
