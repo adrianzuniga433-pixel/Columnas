@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
@@ -6,6 +6,20 @@ export const metadata: Metadata = {
   title: "Curso de Inglés — TOEFL ITP",
   description:
     "Aprende inglés desde cero hasta un A2 sólido (meta 400 en el TOEFL ITP) con niveles, repetición espaciada y exámenes.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Curso de Inglés",
+  },
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/icon-192.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#4f46e5",
 };
 
 export default function RootLayout({

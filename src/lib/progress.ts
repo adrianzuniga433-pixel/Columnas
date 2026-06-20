@@ -17,6 +17,14 @@ function startOfDay(d: Date): number {
   );
 }
 
+/** Clave de día YYYY-MM-DD para registrar los días estudiados. */
+export function dateKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 /**
  * Actualiza la racha diaria. Si el último acceso fue ayer, +1. Si fue hoy, sin
  * cambios. Si fue antes de ayer, reinicia a 1.
@@ -99,6 +107,15 @@ export async function completeDailySession(userId: string) {
 
   await seedSrsForDay(userId, progress.studyDay);
 
+  // Registra el día estudiado (para el calendario de racha).
+  await prisma.studyLog
+    .upsert({
+      where: { userId_date: { userId, date: dateKey(new Date()) } },
+      update: {},
+      create: { userId, date: dateKey(new Date()) },
+    })
+    .catch(() => null);
+
   const updated = await prisma.progress.update({
     where: { userId },
     data: {
@@ -108,6 +125,24 @@ export async function completeDailySession(userId: string) {
   });
   await touchStreak(userId);
   return { studyDay: updated.studyDay, advanced: !alreadyAdvancedToday };
+}
+
+/** Estadísticas de progreso para el panel. */
+export async function getProgressStats(userId: string) {
+  const [studyLogs, wordsLearned, mistakesPending] = await Promise.all([
+    prisma.studyLog.findMany({
+      where: { userId },
+      orderBy: { date: "desc" },
+      take: 60,
+    }),
+    prisma.srsItem.count({ where: { userId, type: "vocab" } }),
+    prisma.mistakeItem.count({ where: { userId, mastered: false } }),
+  ]);
+  return {
+    studyDates: new Set(studyLogs.map((s) => s.date)),
+    wordsLearned,
+    mistakesPending,
+  };
 }
 
 /** Cantidad de ítems de SRS pendientes de repaso hoy. */

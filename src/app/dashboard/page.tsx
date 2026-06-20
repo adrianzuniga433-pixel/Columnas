@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession, getCurrentUser } from "@/lib/auth";
-import { ensureProgress } from "@/lib/progress";
+import { ensureProgress, getProgressStats, dateKey } from "@/lib/progress";
 import { getDashboardData } from "@/lib/dashboard";
 import { AppHeader } from "@/components/AppHeader";
 import {
@@ -41,6 +41,20 @@ export default async function DashboardPage() {
   const reachedGoal = data.estimatedItpScore >= GOAL_SCORE;
   const daily = getDailySession(progress.studyDay);
   const doneToday = studiedToday(progress.lastStudyAt);
+
+  const stats = await getProgressStats(session.userId);
+  // Últimos 14 días para el calendario.
+  const last14: { key: string; label: string; studied: boolean }[] = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = dateKey(d);
+    last14.push({
+      key,
+      label: String(d.getDate()),
+      studied: stats.studyDates.has(key),
+    });
+  }
 
   return (
     <div className="min-h-screen">
@@ -97,6 +111,48 @@ export default async function DashboardPage() {
             <Link href="/today?section=recursos" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">
               🎬 Recursos
             </Link>
+          </div>
+        </div>
+
+        {/* Progreso: calendario + palabras + errores */}
+        <div className="mb-6 grid gap-4 md:grid-cols-3">
+          <div className="card md:col-span-1">
+            <p className="text-sm text-slate-500">Palabras aprendidas</p>
+            <p className="text-3xl font-bold text-brand-600">{stats.wordsLearned}</p>
+            <p className="mt-1 text-xs text-slate-400">en tus repasos</p>
+          </div>
+          <Link
+            href="/mistakes"
+            className={`card transition-colors hover:border-brand-400 ${
+              stats.mistakesPending > 0 ? "ring-1 ring-amber-300" : ""
+            }`}
+          >
+            <p className="text-sm text-slate-500">Errores por repasar</p>
+            <p className="text-3xl font-bold text-amber-600">{stats.mistakesPending}</p>
+            <p className="mt-1 text-xs text-slate-400">
+              {stats.mistakesPending > 0 ? "Toca para repasarlos →" : "¡Todo dominado!"}
+            </p>
+          </Link>
+          <div className="card md:col-span-1">
+            <p className="mb-2 text-sm text-slate-500">Tus últimos 14 días</p>
+            <div className="flex flex-wrap gap-1">
+              {last14.map((d) => (
+                <div
+                  key={d.key}
+                  title={d.key}
+                  className={`flex h-6 w-6 items-center justify-center rounded text-[10px] ${
+                    d.studied
+                      ? "bg-emerald-500 text-white"
+                      : "bg-slate-100 text-slate-400 dark:bg-slate-800"
+                  }`}
+                >
+                  {d.label}
+                </div>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-slate-400">
+              {doneToday ? "✓ Hoy ya estudiaste" : "Hoy aún no estudias"}
+            </p>
           </div>
         </div>
 
@@ -327,6 +383,18 @@ export default async function DashboardPage() {
 
         {/* Acciones extra */}
         <div className="mt-8 flex flex-col items-center gap-2 text-center">
+          <Link
+            href="/practice/speaking"
+            className="text-sm text-brand-600 hover:underline"
+          >
+            🎤 Práctica de pronunciación (habla y te corrige)
+          </Link>
+          <Link
+            href="/mistakes"
+            className="text-sm text-brand-600 hover:underline"
+          >
+            🔁 Repaso de mis errores
+          </Link>
           <Link
             href="/videos"
             className="text-sm text-brand-600 hover:underline"

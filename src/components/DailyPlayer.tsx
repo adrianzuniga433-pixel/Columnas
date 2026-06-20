@@ -66,7 +66,34 @@ export function DailyPlayer({
         ? Math.round((step / Math.max(1, totalSteps)) * 100)
         : 100;
 
+  function recordMistake(mcq: Extract<Activity, { kind: "mcq" }>) {
+    const conceptKey = (mcq.sentence ?? mcq.prompt)
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 180);
+    fetch("/api/mistakes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        conceptKey,
+        prompt: mcq.prompt,
+        sentence: mcq.sentence,
+        options: mcq.options,
+        answerIndex: mcq.answerIndex,
+        explanation: mcq.explanation,
+        translationEs: mcq.translationEs,
+        topicTitle: mcq.topicTitle,
+        topicWhy: mcq.topicWhy,
+      }),
+    }).catch(() => {});
+  }
+
   function handleDone(r: ActivityResult) {
+    const act = activities[step];
+    if (act && act.kind === "mcq" && r.correct < r.total) {
+      recordMistake(act);
+    }
     setCorrect((c) => c + r.correct);
     setTotal((t) => t + r.total);
     if (step + 1 >= totalSteps) {

@@ -19,6 +19,42 @@ model User {
   srsItems         SrsItem[]
   examAttempts     ExamAttempt[]
   placementResults PlacementResult[]
+  mistakeItems     MistakeItem[]
+  studyLogs        StudyLog[]
+}
+
+// Preguntas que el usuario respondió mal, para volver a repasarlas.
+model MistakeItem {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conceptKey    String
+  prompt        String
+  sentence      String?
+  options       String // JSON: string[]
+  answerIndex   Int
+  explanation   String
+  translationEs String?
+  topicTitle    String?
+  topicWhy      String?
+  timesWrong    Int      @default(1)
+  mastered      Boolean  @default(false)
+  lastWrongAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, conceptKey])
+  @@index([userId, mastered])
+}
+
+// Registro de días estudiados (para el calendario de racha).
+model StudyLog {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date   String // YYYY-MM-DD (día local del registro)
+
+  @@unique([userId, date])
+  @@index([userId])
 }
 
 model Progress {
