@@ -70,6 +70,25 @@ export default async function ToeflPage() {
           </p>
         </div>
 
+        {/* Simulacro completo cronometrado */}
+        <Link
+          href="/mock"
+          className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 p-5 text-white shadow-lg transition-transform hover:scale-[1.01]"
+        >
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-indigo-200">
+              🎯 Simulacro completo
+            </p>
+            <h2 className="mt-1 text-lg font-bold">Examen TOEFL ITP cronometrado</h2>
+            <p className="text-sm text-indigo-100">
+              Tres secciones seguidas con reloj. Obtienes un puntaje escalado real (310–677).
+            </p>
+          </div>
+          <span className="shrink-0 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold">
+            Presentar →
+          </span>
+        </Link>
+
         {/* CTA del nivel */}
         <div className="mt-4 card bg-brand-600 text-white dark:bg-brand-700">
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">

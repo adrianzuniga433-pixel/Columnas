@@ -85,7 +85,9 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
   }));
 
   const attempts = await prisma.examAttempt.findMany({
-    where: { userId },
+    // Excluye los simulacros completos (nivel sentinela 2000); tienen su
+    // propio historial y puntaje escalado.
+    where: { userId, level: { lt: 2000 } },
     orderBy: { attemptedAt: "desc" },
     take: 10,
   });

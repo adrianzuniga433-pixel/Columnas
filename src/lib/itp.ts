@@ -167,6 +167,37 @@ export function placementFromRatio(ratio: number): PlacementOutcome {
   };
 }
 
+// ----- Puntaje escalado del simulacro completo (estilo TOEFL ITP) -----
+// El ITP entrega 3 subpuntajes (uno por sección) en un rango de 31 a 68, y el
+// puntaje final = (suma de los 3 subpuntajes) × 10 / 3, dentro de 310–677.
+// Réplica del método de cálculo; NO usa tablas oficiales de ETS.
+
+export const SCALED_MIN = 31;
+export const SCALED_MAX = 68;
+
+/** Las 3 secciones del examen ITP (vocabulario se integra en reading). */
+export type MockSection = "listening" | "structure" | "reading";
+
+export const MOCK_SECTION_LABELS: Record<MockSection, string> = {
+  listening: "Section 1 — Listening Comprehension",
+  structure: "Section 2 — Structure & Written Expression",
+  reading: "Section 3 — Reading Comprehension",
+};
+
+/** Convierte el % de acierto (0..1) de una sección a su subpuntaje escalado. */
+export function scaledSubscore(ratio: number): number {
+  const clamped = Math.max(0, Math.min(1, ratio));
+  return Math.round(SCALED_MIN + (SCALED_MAX - SCALED_MIN) * clamped);
+}
+
+/** Combina los subpuntajes de sección en el puntaje ITP total (310–677). */
+export function mockTotalScore(subscores: number[]): number {
+  if (subscores.length === 0) return ITP_MIN;
+  const sum = subscores.reduce((a, b) => a + b, 0);
+  const total = Math.round((sum * 10) / subscores.length);
+  return Math.max(ITP_MIN, Math.min(ITP_MAX, total));
+}
+
 /** Progreso (0..1) del puntaje estimado hacia la meta de 400, anclado en ITP_MIN. */
 export function progressToGoal(estimatedScore: number): number {
   const span = GOAL_SCORE - ITP_MIN;
