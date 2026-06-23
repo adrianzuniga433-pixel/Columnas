@@ -1113,6 +1113,24 @@ function pickQuestionWindow<T>(pool: T[], day: number, size: number): T[] {
   return out;
 }
 
+/**
+ * Toma `count` elementos de un banco avanzando POR BLOQUES según el día: el día
+ * d empieza en (d*count). Así dos días consecutivos nunca comparten elementos
+ * (a diferencia de una ventana que avanza de uno en uno, que sí se solapa).
+ * Cuando count y el tamaño del banco son coprimos, recorre todo el banco antes
+ * de repetir combinaciones.
+ */
+function pickStride<T>(pool: T[], dayIndex: number, count: number): T[] {
+  if (pool.length === 0) return [];
+  const start = (dayIndex * count) % pool.length;
+  const take = Math.min(count, pool.length);
+  const out: T[] = [];
+  for (let k = 0; k < take; k++) {
+    out.push(pool[(start + k) % pool.length]);
+  }
+  return out;
+}
+
 export function getDailySession(dayNumber: number): DailySession {
   const day = Math.max(1, Math.floor(dayNumber));
   const i = day - 1;
@@ -1140,9 +1158,9 @@ export function getDailySession(dayNumber: number): DailySession {
     ...pickQuestionWindow(enrich(g2), day, 3),
   ];
 
-  // Vocabulario: dos temas → ~16 tarjetas.
-  const v0 = vocabSets[i % vocabSets.length];
-  const v1 = vocabSets[(i + 1) % vocabSets.length];
+  // Vocabulario: dos temas (avanza por bloques de 2, así dos días seguidos no
+  // comparten temas/tarjetas).
+  const [v0, v1] = pickStride(vocabSets, i, 2);
   const vocab: VocabSet = { theme: v0.theme, cards: [...v0.cards, ...v1.cards] };
   const matching = matchingFromVocab({
     theme: v0.theme,
@@ -1150,11 +1168,12 @@ export function getDailySession(dayNumber: number): DailySession {
   });
 
   // Comprensión: 3 lecturas + 2 escuchas + dictado (formato TOEFL).
+  // Lecturas: índices i, i+2, i+4 → días consecutivos ya son disjuntos.
+  // Escuchas y dictado avanzan por bloques para no repetirse día con día.
   const reading1 = readingTasks[i % readingTasks.length];
   const reading2 = readingTasks[(i + 2) % readingTasks.length];
   const reading3 = readingTasks[(i + 4) % readingTasks.length];
-  const listening1 = listeningTasks[i % listeningTasks.length];
-  const listening2 = listeningTasks[(i + 1) % listeningTasks.length];
+  const [listening1, listening2] = pickStride(listeningTasks, i, 2);
   const dictation = dictationTasks[i % dictationTasks.length];
   const comprehensionSet: Activity[] = [
     reading1,
@@ -1164,16 +1183,14 @@ export function getDailySession(dayNumber: number): DailySession {
     reading3,
   ];
 
-  // Ordenar oraciones: 6.
-  const orders: OrderWords[] = Array.from(
-    { length: 6 },
-    (_, k) => orderTasks[(i + k) % orderTasks.length]
-  );
+  // Ordenar oraciones: 3 por día, en bloques disjuntos entre días consecutivos.
+  const orders: OrderWords[] = pickStride(orderTasks, i, 3);
 
-  // Pronunciación: 6 frases.
-  const pronunciationSet: PronunciationActivity[] = Array.from(
-    { length: 6 },
-    (_, k) => pronunciationPool[(i + k) % pronunciationPool.length]
+  // Pronunciación: 3 frases por día, en bloques disjuntos entre días.
+  const pronunciationSet: PronunciationActivity[] = pickStride(
+    pronunciationPool,
+    i,
+    3
   );
 
   const productionPrompt = productionPrompts[i % productionPrompts.length];
