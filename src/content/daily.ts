@@ -27,6 +27,10 @@ const pronunciationPool: PronunciationActivity[] = [
   { kind: "pronunciation", text: "You should drink more water every day.", es: "Deberías tomar más agua cada día." },
   { kind: "pronunciation", text: "Excuse me, where is the train station?", es: "Disculpe, ¿dónde está la estación de tren?" },
   { kind: "pronunciation", text: "I look forward to hearing from you.", es: "Espero con gusto tu respuesta." },
+  { kind: "pronunciation", text: "I'd like to make a reservation for two.", es: "Quisiera hacer una reservación para dos." },
+  { kind: "pronunciation", text: "Can you tell me where the station is?", es: "¿Puedes decirme dónde está la estación?" },
+  { kind: "pronunciation", text: "I've been studying English for two years.", es: "He estado estudiando inglés por dos años." },
+  { kind: "pronunciation", text: "She works in a hospital downtown.", es: "Ella trabaja en un hospital del centro." },
 ];
 
 function dialogueActivity(i: number): DialogueActivity {
@@ -906,6 +910,46 @@ export const readingTasks: Reading[] = [
       { prompt: "What does he do now?", options: ["He saves before spending", "He stopped working", "He borrows money", "He spends more"], answerIndex: 0, explanation: "'he saves a small amount as soon as he gets paid, before spending'." },
     ],
   },
+  {
+    kind: "reading",
+    title: "The Library Card",
+    passage:
+      "Nadia loves reading, but books are expensive. Last week she got a card at the public library near her home. Now she can borrow up to five books at a time, completely free. She returns them after three weeks. The library also has a quiet room where she studies on weekends.",
+    questions: [
+      { prompt: "How many books can Nadia borrow at once?", options: ["Three", "Five", "Ten", "Only one"], answerIndex: 1, explanation: "'she can borrow up to five books at a time'." },
+      { prompt: "What does she do in the quiet room?", options: ["She sleeps", "She studies on weekends", "She works", "She eats"], answerIndex: 1, explanation: "'a quiet room where she studies on weekends'." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "A Rainy Day",
+    passage:
+      "It rained all day on Sunday, so Carla changed her plans. Instead of going to the park, she stayed home and baked a cake with her sister. In the afternoon, they watched two movies and drank hot chocolate. Carla said it was one of the best days she had had in months.",
+    questions: [
+      { prompt: "Why did Carla change her plans?", options: ["She was sick", "It rained all day", "Her sister was busy", "The park was closed"], answerIndex: 1, explanation: "'It rained all day on Sunday, so Carla changed her plans'." },
+      { prompt: "What did they do in the afternoon?", options: ["They went to the park", "They watched two movies", "They went shopping", "They studied"], answerIndex: 1, explanation: "'they watched two movies and drank hot chocolate'." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "Volunteering on Weekends",
+    passage:
+      "Every Saturday morning, Hugo volunteers at an animal shelter. He feeds the dogs, cleans their area, and takes them for walks. At first he was nervous around big dogs, but now he feels comfortable. He says volunteering makes him happy and has taught him to be more patient and responsible.",
+    questions: [
+      { prompt: "What does Hugo do at the shelter?", options: ["He sells animals", "He feeds and walks the dogs", "He trains people", "He repairs cages"], answerIndex: 1, explanation: "'He feeds the dogs, cleans their area, and takes them for walks'." },
+      { prompt: "What has volunteering taught him?", options: ["To be more patient and responsible", "To be afraid of dogs", "To work less", "To earn money"], answerIndex: 0, explanation: "'has taught him to be more patient and responsible'." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "Choosing a Phone",
+    passage:
+      "Laura wanted to buy a new phone, but there were too many options. Some were very expensive, with features she did not need. After reading reviews online, she chose a cheaper model with a good camera and a long battery life. She is happy because it does everything she needs without costing too much.",
+    questions: [
+      { prompt: "Why was it difficult for Laura to choose?", options: ["The phones were broken", "There were too many options", "The store was closed", "She had no money"], answerIndex: 1, explanation: "'there were too many options'." },
+      { prompt: "What did she choose in the end?", options: ["The most expensive phone", "A cheaper model with a good camera and battery", "No phone at all", "A used phone"], answerIndex: 1, explanation: "'she chose a cheaper model with a good camera and a long battery life'." },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -993,6 +1037,46 @@ export const listeningTasks: Listening[] = [
       { prompt: "By when should the report be finished?", options: ["Thursday", "Friday", "Wednesday evening", "Next week"], answerIndex: 2, explanation: "'finish the report by Wednesday evening'." },
     ],
   },
+  {
+    kind: "listening",
+    scriptLabel: "Anuncio en el aeropuerto.",
+    script:
+      "Attention, passengers on flight 207 to Madrid. Boarding will begin in twenty minutes at gate B12. Please have your passport and boarding pass ready. We will start with passengers who need extra time. Thank you.",
+    questions: [
+      { prompt: "Where is the flight going?", options: ["Madrid", "Paris", "London", "Rome"], answerIndex: 0, explanation: "'flight 207 to Madrid'." },
+      { prompt: "When will boarding begin?", options: ["In ten minutes", "In twenty minutes", "In one hour", "Right now"], answerIndex: 1, explanation: "'Boarding will begin in twenty minutes'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Preguntando en un gimnasio.",
+    script:
+      "Hi! I'd like some information about your gym. How much is the monthly membership? Does it include the swimming pool and the classes? And what are your opening hours on weekends? I'm thinking of joining next week.",
+    questions: [
+      { prompt: "What is the person asking about?", options: ["A job", "A gym membership", "A hotel room", "A language course"], answerIndex: 1, explanation: "'I'd like some information about your gym'." },
+      { prompt: "When are they thinking of joining?", options: ["Today", "Next week", "Next month", "Never"], answerIndex: 1, explanation: "'I'm thinking of joining next week'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "En una tienda de ropa.",
+    script:
+      "Excuse me, I really like this blue jacket, but it's a bit big. Do you have it in a smaller size? Also, is it on sale? I saw a sign that said twenty percent off. If so, I'll take it.",
+    questions: [
+      { prompt: "What is the problem with the jacket?", options: ["It's the wrong color", "It's a bit big", "It's too expensive", "It's damaged"], answerIndex: 1, explanation: "'it's a bit big'." },
+      { prompt: "What does the customer ask about the price?", options: ["If it's on sale", "If they accept cash", "If it's free", "If they can deliver it"], answerIndex: 0, explanation: "'is it on sale? ... twenty percent off'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Un mensaje de voz con una invitación.",
+    script:
+      "Hey, it's Julia! I'm having a small dinner at my place on Friday around seven. Nothing fancy, just a few friends. Can you come? Let me know if you have any food allergies so I can plan. Hope to see you there!",
+    questions: [
+      { prompt: "What is Julia organizing?", options: ["A business meeting", "A dinner at her place", "A trip", "A study group"], answerIndex: 1, explanation: "'I'm having a small dinner at my place on Friday'." },
+      { prompt: "What does she want to know?", options: ["If you have a car", "If you have any food allergies", "Your address", "Your phone number"], answerIndex: 1, explanation: "'Let me know if you have any food allergies'." },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -1008,6 +1092,10 @@ export const orderTasks: OrderWords[] = [
   { kind: "order-words", prompt: "Ordena las palabras para formar la oración.", words: ["You", "should", "drink", "more", "water"], correct: "You should drink more water", translationEs: "Deberías tomar más agua." },
   { kind: "order-words", prompt: "Ordena las palabras para formar la oración.", words: ["What", "time", "does", "it", "start"], correct: "What time does it start", translationEs: "¿A qué hora empieza?" },
   { kind: "order-words", prompt: "Ordena las palabras para formar la oración.", words: ["This", "book", "is", "more", "interesting"], correct: "This book is more interesting", translationEs: "Este libro es más interesante." },
+  { kind: "order-words", prompt: "Ordena las palabras para formar la oración.", words: ["He", "has", "lived", "here", "for", "years"], correct: "He has lived here for years", translationEs: "Él ha vivido aquí por años." },
+  { kind: "order-words", prompt: "Ordena las palabras para formar la oración.", words: ["Could", "you", "help", "me", "please"], correct: "Could you help me please", translationEs: "¿Podrías ayudarme, por favor?" },
+  { kind: "order-words", prompt: "Ordena las palabras para formar la oración.", words: ["I", "was", "reading", "when", "she", "arrived"], correct: "I was reading when she arrived", translationEs: "Estaba leyendo cuando ella llegó." },
+  { kind: "order-words", prompt: "Ordena las palabras para formar la oración.", words: ["We", "are", "going", "to", "move", "soon"], correct: "We are going to move soon", translationEs: "Nos vamos a mudar pronto." },
 ];
 
 // ---------------------------------------------------------------------------
@@ -1167,12 +1255,10 @@ export function getDailySession(dayNumber: number): DailySession {
     cards: [...v0.cards.slice(0, 4), ...v1.cards.slice(0, 4)],
   });
 
-  // Comprensión: 3 lecturas + 2 escuchas + dictado (formato TOEFL).
-  // Lecturas: índices i, i+2, i+4 → días consecutivos ya son disjuntos.
-  // Escuchas y dictado avanzan por bloques para no repetirse día con día.
-  const reading1 = readingTasks[i % readingTasks.length];
-  const reading2 = readingTasks[(i + 2) % readingTasks.length];
-  const reading3 = readingTasks[(i + 4) % readingTasks.length];
+  // Comprensión: 2 lecturas + 2 escuchas + dictado (formato TOEFL). Todo avanza
+  // por bloques: con bancos de 12 y 2 ítems/día, cada pieza tarda 6 días en
+  // reaparecer (no se repite el mismo día ni en días cercanos).
+  const [reading1, reading2] = pickStride(readingTasks, i, 2);
   const [listening1, listening2] = pickStride(listeningTasks, i, 2);
   const dictation = dictationTasks[i % dictationTasks.length];
   const comprehensionSet: Activity[] = [
@@ -1180,17 +1266,16 @@ export function getDailySession(dayNumber: number): DailySession {
     listening1,
     reading2,
     listening2,
-    reading3,
   ];
 
-  // Ordenar oraciones: 3 por día, en bloques disjuntos entre días consecutivos.
-  const orders: OrderWords[] = pickStride(orderTasks, i, 3);
+  // Ordenar oraciones: 2 por día, en bloques que tardan 6 días en repetirse.
+  const orders: OrderWords[] = pickStride(orderTasks, i, 2);
 
-  // Pronunciación: 3 frases por día, en bloques disjuntos entre días.
+  // Pronunciación: 2 frases por día, en bloques que tardan 6 días en repetirse.
   const pronunciationSet: PronunciationActivity[] = pickStride(
     pronunciationPool,
     i,
-    3
+    2
   );
 
   const productionPrompt = productionPrompts[i % productionPrompts.length];
@@ -1208,9 +1293,8 @@ export function getDailySession(dayNumber: number): DailySession {
     dictation,
     reading2,
     listening2,
-    reading3,
     dialogue,
-    ...pronunciationSet.slice(0, 3),
+    ...pronunciationSet,
   ];
 
   return {
