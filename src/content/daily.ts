@@ -1111,6 +1111,12 @@ export const dictationTasks: Dictation[] = [
   { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "How much does this jacket cost?", accepted: ["How much does this jacket cost"] },
   { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "If it rains tomorrow, we will stay home.", accepted: ["If it rains tomorrow we will stay home"] },
   { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "My favorite hobby is reading in my free time.", accepted: ["My favorite hobby is reading in my free time"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "He has worked at this company for ten years.", accepted: ["He has worked at this company for ten years"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "Could you please tell me how to get to the station?", accepted: ["Could you please tell me how to get to the station"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "They were watching a movie when the power went out.", accepted: ["They were watching a movie when the power went out"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "I think it is going to rain later this afternoon.", accepted: ["I think it is going to rain later this afternoon", "I think its going to rain later this afternoon"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "She usually goes to the gym after work.", accepted: ["She usually goes to the gym after work"] },
+  { kind: "dictation", prompt: "Escucha y escribe la oración.", text: "We are looking forward to our trip next month.", accepted: ["We are looking forward to our trip next month"] },
 ];
 
 // ---------------------------------------------------------------------------
