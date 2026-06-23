@@ -51,7 +51,17 @@ export interface Listening {
   // Guion que se sintetiza con la Web Speech API (en inglés).
   script: string;
   scriptLabel?: string; // descripción en español del contexto
+  // Conversación de varios turnos (estilo TOEFL Part B/C). Si está presente, el
+  // reproductor usa una VOZ DISTINTA por interlocutor. 'script' sigue sirviendo
+  // como transcripción y respaldo.
+  turns?: ListeningTurn[];
   questions: ReadingQuestion[];
+}
+
+// Un turno de una conversación: quién habla y qué dice.
+export interface ListeningTurn {
+  speaker: string; // etiqueta corta: "Man", "Woman", "Student", "Professor"...
+  text: string; // lo que dice (en inglés)
 }
 
 export interface OrderWords {

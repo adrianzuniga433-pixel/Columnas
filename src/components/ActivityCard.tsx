@@ -16,6 +16,7 @@ import type {
   ReadingQuestion,
 } from "@/content/types";
 import { SpeechButton } from "./SpeechButton";
+import { ConversationAudio } from "./ConversationAudio";
 
 export interface ActivityResult {
   correct: number;
@@ -369,25 +370,32 @@ function ListeningView({
   onDone: (r: ActivityResult) => void;
 }) {
   const [showScript, setShowScript] = useState(false);
+  const isConversation = !!a.turns && a.turns.length > 0;
   return (
     <div>
-      <p className="mb-2 text-sm text-slate-500">Listening</p>
+      <p className="mb-2 text-sm text-slate-500">
+        Listening{isConversation ? " · conversación" : ""}
+      </p>
       {a.scriptLabel && (
         <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
           {a.scriptLabel}
         </p>
       )}
-      <div className="flex flex-wrap items-center gap-2">
-        <SpeechButton text={a.script} label="Escuchar audio" />
-        <SpeechButton text={a.script} label="🐢 Lento" rate={0.6} />
-        <button
-          className="btn-ghost"
-          onClick={() => setShowScript((s) => !s)}
-        >
-          {showScript ? "Ocultar texto" : "Ver texto"}
-        </button>
-      </div>
-      {showScript && (
+      {isConversation ? (
+        <ConversationAudio turns={a.turns!} />
+      ) : (
+        <div className="flex flex-wrap items-center gap-2">
+          <SpeechButton text={a.script} label="Escuchar audio" />
+          <SpeechButton text={a.script} label="🐢 Lento" rate={0.6} />
+          <button
+            className="btn-ghost"
+            onClick={() => setShowScript((s) => !s)}
+          >
+            {showScript ? "Ocultar texto" : "Ver texto"}
+          </button>
+        </div>
+      )}
+      {!isConversation && showScript && (
         <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm italic dark:bg-slate-800/60">
           {a.script}
         </div>

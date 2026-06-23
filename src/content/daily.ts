@@ -1077,6 +1077,78 @@ export const listeningTasks: Listening[] = [
       { prompt: "What does she want to know?", options: ["If you have a car", "If you have any food allergies", "Your address", "Your phone number"], answerIndex: 1, explanation: "'Let me know if you have any food allergies'." },
     ],
   },
+  {
+    kind: "listening",
+    scriptLabel: "Conversación: dos estudiantes hablan de una tarea.",
+    script:
+      "Woman: Hey, did you start the history essay yet? Man: Not really. I'm still choosing a topic. How about you? Woman: I'm writing about ancient Egypt. The professor said it has to be at least five pages. Man: Five pages? I thought it was three. Woman: No, she changed it last week. And it's due next Friday. Man: Thanks for telling me. I'd better get started this weekend.",
+    turns: [
+      { speaker: "Woman", text: "Hey, did you start the history essay yet?" },
+      { speaker: "Man", text: "Not really. I'm still choosing a topic. How about you?" },
+      { speaker: "Woman", text: "I'm writing about ancient Egypt. The professor said it has to be at least five pages." },
+      { speaker: "Man", text: "Five pages? I thought it was three." },
+      { speaker: "Woman", text: "No, she changed it last week. And it's due next Friday." },
+      { speaker: "Man", text: "Thanks for telling me. I'd better get started this weekend." },
+    ],
+    questions: [
+      { prompt: "How long must the essay be?", options: ["Three pages", "At least five pages", "Ten pages", "One page"], answerIndex: 1, explanation: "'it has to be at least five pages'." },
+      { prompt: "When is the essay due?", options: ["This weekend", "Next Monday", "Next Friday", "Tomorrow"], answerIndex: 2, explanation: "'it's due next Friday'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Conversación: un estudiante y la bibliotecaria.",
+    script:
+      "Man: Excuse me, I'm looking for a book about marine biology. Woman: Sure. You can find those on the second floor, section B. Man: Great. Can I borrow it for a month? Woman: Books are usually for three weeks, but you can renew online if no one else needs it. Man: Perfect. Do I need my student card? Woman: Yes, you'll need it to check the book out.",
+    turns: [
+      { speaker: "Student", text: "Excuse me, I'm looking for a book about marine biology." },
+      { speaker: "Librarian", text: "Sure. You can find those on the second floor, section B." },
+      { speaker: "Student", text: "Great. Can I borrow it for a month?" },
+      { speaker: "Librarian", text: "Books are usually for three weeks, but you can renew online if no one else needs it." },
+      { speaker: "Student", text: "Perfect. Do I need my student card?" },
+      { speaker: "Librarian", text: "Yes, you'll need it to check the book out." },
+    ],
+    questions: [
+      { prompt: "Where can the student find the book?", options: ["First floor, section A", "Second floor, section B", "Third floor", "The basement"], answerIndex: 1, explanation: "'on the second floor, section B'." },
+      { prompt: "How long can he usually borrow a book?", options: ["One week", "Two weeks", "Three weeks", "One month"], answerIndex: 2, explanation: "'Books are usually for three weeks'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Conversación: dos amigos hacen planes para estudiar.",
+    script:
+      "Woman: Are you free to study for the math test tomorrow? Man: Yeah, but not in the morning. I have to work until noon. Woman: That's fine. How about two o'clock at the library? Man: Sounds good. Should we invite Sara? She's really good at math. Woman: Good idea. I'll text her now. Man: Great. Let's meet at the entrance at two.",
+    turns: [
+      { speaker: "Woman", text: "Are you free to study for the math test tomorrow?" },
+      { speaker: "Man", text: "Yeah, but not in the morning. I have to work until noon." },
+      { speaker: "Woman", text: "That's fine. How about two o'clock at the library?" },
+      { speaker: "Man", text: "Sounds good. Should we invite Sara? She's really good at math." },
+      { speaker: "Woman", text: "Good idea. I'll text her now." },
+      { speaker: "Man", text: "Great. Let's meet at the entrance at two." },
+    ],
+    questions: [
+      { prompt: "Why can't the man study in the morning?", options: ["He is sick", "He has to work until noon", "He has another class", "He wants to sleep"], answerIndex: 1, explanation: "'I have to work until noon'." },
+      { prompt: "Where will they meet?", options: ["At the man's house", "At a café", "At the library entrance", "At school"], answerIndex: 2, explanation: "'Let's meet at the entrance' (at the library)." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Conversación: en la recepción de un gimnasio.",
+    script:
+      "Man: Hi, I'd like to sign up for a membership. Woman: Welcome! We have a monthly plan for thirty dollars and a yearly plan for three hundred. Man: The yearly one sounds better. Does it include the classes? Woman: Yes, all group classes are included, like yoga and spinning. Man: Perfect. When can I start? Woman: Right away. I just need an ID and your signature here.",
+    turns: [
+      { speaker: "Customer", text: "Hi, I'd like to sign up for a membership." },
+      { speaker: "Staff", text: "Welcome! We have a monthly plan for thirty dollars and a yearly plan for three hundred." },
+      { speaker: "Customer", text: "The yearly one sounds better. Does it include the classes?" },
+      { speaker: "Staff", text: "Yes, all group classes are included, like yoga and spinning." },
+      { speaker: "Customer", text: "Perfect. When can I start?" },
+      { speaker: "Staff", text: "Right away. I just need an ID and your signature here." },
+    ],
+    questions: [
+      { prompt: "How much is the yearly plan?", options: ["Thirty dollars", "Three hundred dollars", "One hundred dollars", "It's free"], answerIndex: 1, explanation: "'a yearly plan for three hundred'." },
+      { prompt: "What is included in the membership?", options: ["Only the gym machines", "All group classes", "A personal trainer", "Free meals"], answerIndex: 1, explanation: "'all group classes are included, like yoga and spinning'." },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
