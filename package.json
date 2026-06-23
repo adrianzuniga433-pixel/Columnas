@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push --skip-generate && tsx prisma/seed.ts && next build",
+    "build": "tsx scripts/validateContent.ts && prisma generate && prisma db push --skip-generate && tsx prisma/seed.ts && next build",
     "start": "next start",
     "lint": "next lint",
+    "validate": "tsx scripts/validateContent.ts",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma db push --force-reset && tsx prisma/seed.ts",
