@@ -47,7 +47,13 @@ export function SpeechButton({
   }
 
   return (
-    <button type="button" onClick={speak} className={`btn-secondary ${className}`}>
+    <button
+      type="button"
+      onClick={speak}
+      aria-label={label || "Escuchar pronunciación"}
+      title={label || "Escuchar pronunciación"}
+      className={`btn-secondary ${className}`}
+    >
       <span aria-hidden>{speaking ? "🔊" : "▶️"}</span> {label}
     </button>
   );

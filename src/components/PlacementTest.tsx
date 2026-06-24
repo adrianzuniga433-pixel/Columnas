@@ -176,7 +176,7 @@ export function PlacementTest() {
             const isAnswer = i === item.answerIndex;
             const isPicked = i === picked;
             let cls =
-              "w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors ";
+              "w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-slate-900 ";
             if (!answered) {
               cls +=
                 "border-slate-300 hover:border-brand-500 hover:bg-brand-50 dark:border-slate-700 dark:hover:bg-slate-800";

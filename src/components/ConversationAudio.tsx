@@ -151,30 +151,49 @@ export function ConversationAudio({
     <div className={className}>
       <div className="flex flex-wrap items-center gap-2">
         {!playing ? (
-          <button type="button" className="btn-primary" onClick={playAll}>
-            ▶️ Reproducir conversación
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={playAll}
+            aria-label="Reproducir la conversación completa"
+          >
+            <span aria-hidden>▶️</span> Reproducir conversación
           </button>
         ) : (
-          <button type="button" className="btn-secondary" onClick={stop}>
-            ⏹️ Detener
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={stop}
+            aria-label="Detener la reproducción"
+          >
+            <span aria-hidden>⏹️</span> Detener
           </button>
         )}
-        <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
+        <div
+          className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-800"
+          role="group"
+          aria-label="Velocidad de reproducción"
+        >
           <span className="px-1 text-xs text-slate-500">Velocidad</span>
-          {RATES.map((r) => (
-            <button
-              key={r.label}
-              type="button"
-              onClick={() => setRate(r.value)}
-              className={`rounded-md px-2 py-1 text-xs font-medium transition-colors ${
-                Math.abs(rate - r.value) < 0.01
-                  ? "bg-white text-brand-700 shadow-sm dark:bg-slate-600 dark:text-white"
-                  : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-200"
-              }`}
-            >
-              {r.label}
-            </button>
-          ))}
+          {RATES.map((r) => {
+            const active = Math.abs(rate - r.value) < 0.01;
+            return (
+              <button
+                key={r.label}
+                type="button"
+                onClick={() => setRate(r.value)}
+                aria-pressed={active}
+                aria-label={`Velocidad ${r.label}`}
+                className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
+                  active
+                    ? "bg-white text-brand-700 shadow-sm dark:bg-slate-600 dark:text-white"
+                    : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-200"
+                }`}
+              >
+                {r.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -192,7 +211,8 @@ export function ConversationAudio({
               key={idx}
               type="button"
               onClick={() => playOne(idx)}
-              className={`flex w-full items-start gap-2 rounded-lg border p-2 text-left text-sm transition-colors ${
+              aria-label={`Reproducir la línea de ${t.speaker}: ${t.text}`}
+              className={`flex w-full items-start gap-2 rounded-lg border p-2 text-left text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
                 isCurrent
                   ? "border-brand-400 bg-brand-50 dark:bg-brand-950"
                   : "border-transparent hover:bg-slate-50 dark:hover:bg-slate-800"
