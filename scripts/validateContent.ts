@@ -19,6 +19,7 @@ import {
   orderTasks,
   dictationTasks,
   productionPrompts,
+  writtenExpressionTasks,
   getDailySession,
 } from "../src/content/daily";
 import { levelExams } from "../src/content/exams";
@@ -151,6 +152,22 @@ dictationTasks.forEach((d, i) => {
   }
 });
 
+// ---- 6b. Written Expression (identificar el error) ----
+writtenExpressionTasks.forEach((e, i) => {
+  const tag = `writtenExpression[${i}]`;
+  if (!e.prompt) fail(`${tag}: sin prompt`);
+  if (!e.explanation) fail(`${tag}: sin explicación`);
+  const labels = e.segments.map((s) => s.label).filter(Boolean) as string[];
+  if (labels.length < 2) fail(`${tag}: menos de 2 segmentos marcables`);
+  if (new Set(labels).size !== labels.length) fail(`${tag}: etiquetas duplicadas`);
+  if (!labels.includes(e.answerLabel)) {
+    fail(`${tag}: answerLabel "${e.answerLabel}" no existe entre los segmentos`);
+  }
+  if (e.segments.some((s) => !s.text || s.text.trim() === "")) {
+    fail(`${tag}: hay segmentos vacíos`);
+  }
+});
+
 // ---- 7. Consignas de producción ----
 productionPrompts.forEach((p, i) => {
   if (typeof p !== "string" || p.trim() === "") {
@@ -235,6 +252,7 @@ function activityKey(a: any): string {
     case "dictation": return "dict:" + a.text;
     case "dialogue": return "dlg:" + a.title;
     case "pronunciation": return "pron:" + a.text;
+    case "error-id": return "err:" + a.segments.map((s: any) => s.text).join(" ");
     default: return a.kind;
   }
 }
@@ -242,6 +260,7 @@ function activityKey(a: any): string {
 // vocabulario sí pueden, como repaso intencional).
 const NO_REPEAT = new Set([
   "mcq",
+  "error-id",
   "order-words",
   "reading",
   "listening",
@@ -268,7 +287,7 @@ for (let day = 1; day <= 29; day++) {
 
 // ---- Reporte ----
 console.log(
-  `Contenido: ${grammarLessons.length} lecciones de gramática, ${readingTasks.length} lecturas, ${listeningTasks.length} escuchas, ${levelExams.length} exámenes de nivel, ${placementItems.length} ítems de diagnóstico.`
+  `Contenido: ${grammarLessons.length} lecciones de gramática, ${writtenExpressionTasks.length} ejercicios de Written Expression, ${readingTasks.length} lecturas, ${listeningTasks.length} escuchas, ${levelExams.length} exámenes de nivel, ${placementItems.length} ítems de diagnóstico.`
 );
 if (problems.length > 0) {
   console.error(`\n❌ Validación de contenido: ${problems.length} problema(s):`);

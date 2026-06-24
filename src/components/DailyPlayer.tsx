@@ -49,6 +49,7 @@ export function DailyPlayer({
   const shortActivities: Activity[] = [
     ...session.vocab.cards.slice(0, 5),
     ...session.grammarPractice.slice(0, 5),
+    ...session.writtenExpression.slice(0, 1),
     session.comprehensionSet[0],
     ...session.pronunciationSet.slice(0, 1),
   ];
@@ -56,7 +57,7 @@ export function DailyPlayer({
   // Qué actividades corresponden a esta sección.
   const activities: Activity[] =
     section === "grammar"
-      ? session.grammarPractice
+      ? [...session.grammarPractice, ...session.writtenExpression]
       : section === "vocab"
         ? session.vocab.cards
         : section === "comprension"
@@ -111,10 +112,37 @@ export function DailyPlayer({
     }).catch(() => {});
   }
 
+  // Registra un error de Written Expression en el panel de debilidades,
+  // mapeándolo a la forma de opción múltiple (las partes marcadas son las
+  // opciones; la respuesta correcta es la parte con el error).
+  function recordErrorId(e: Extract<Activity, { kind: "error-id" }>) {
+    const labeled = e.segments.filter((s) => s.label);
+    const sentence = e.segments.map((s) => s.text).join(" ");
+    const options = labeled.map((s) => s.text);
+    const answerIndex = labeled.findIndex((s) => s.label === e.answerLabel);
+    if (answerIndex < 0) return;
+    fetch("/api/mistakes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        conceptKey: "we:" + sentence.toLowerCase().replace(/\s+/g, " ").trim().slice(0, 170),
+        prompt: "Written Expression: ¿qué parte tiene el error?",
+        sentence,
+        options,
+        answerIndex,
+        explanation: e.explanation,
+        topicTitle: "Written Expression (identificar el error)",
+      }),
+    }).catch(() => {});
+  }
+
   function handleDone(r: ActivityResult) {
     const act = activities[step];
     if (act && act.kind === "mcq" && r.correct < r.total) {
       recordMistake(act);
+    }
+    if (act && act.kind === "error-id" && r.correct < r.total) {
+      recordErrorId(act);
     }
     setCorrect((c) => c + r.correct);
     setTotal((t) => t + r.total);

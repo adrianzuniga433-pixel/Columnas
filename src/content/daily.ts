@@ -7,6 +7,7 @@ import type {
   Activity,
   DialogueActivity,
   Dictation,
+  ErrorId,
   Flashcard,
   Listening,
   Matching,
@@ -73,6 +74,8 @@ export interface DailySession {
   monthFocus: string;
   grammar: GrammarLesson;
   grammarPractice: Mcq[];
+  // Written Expression: ejercicios de "identificar el error" (Sección 2 del ITP).
+  writtenExpression: ErrorId[];
   vocab: VocabSet;
   comprehensionSet: Activity[];
   dialogue: DialogueActivity;
@@ -1211,6 +1214,41 @@ export const productionPrompts: string[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Pool de Written Expression (identificar el error). Es la parte más grande de
+// la Sección 2 del TOEFL ITP. Cubre los errores más típicos de hispanohablantes
+// (concordancia, plurales, artículos, preposiciones, orden, tiempos verbales).
+// ---------------------------------------------------------------------------
+
+const we = (
+  segments: { text: string; label?: string }[],
+  answerLabel: string,
+  explanation: string
+): ErrorId => ({
+  kind: "error-id",
+  prompt: "Identifica la parte que tiene el error.",
+  segments,
+  answerLabel,
+  explanation,
+});
+
+export const writtenExpressionTasks: ErrorId[] = [
+  we([{ text: "She", label: "A" }, { text: "have", label: "B" }, { text: "two", label: "C" }, { text: "brothers.", label: "D" }], "B", "Con 'she' el verbo es 'has', no 'have' (concordancia sujeto-verbo)."),
+  we([{ text: "I", label: "A" }, { text: "have", label: "B" }, { text: "three", label: "C" }, { text: "childs.", label: "D" }], "D", "Plural irregular: child → children, nunca 'childs'."),
+  we([{ text: "She is", label: "A" }, { text: "a", label: "B" }, { text: "honest", label: "C" }, { text: "person.", label: "D" }], "B", "'honest' tiene 'h' muda (suena vocal): se usa 'an', no 'a'."),
+  we([{ text: "There", label: "A" }, { text: "are", label: "B" }, { text: "too much", label: "C" }, { text: "cars.", label: "D" }], "C", "'cars' es contable: se usa 'many', no 'much'."),
+  we([{ text: "I", label: "A" }, { text: "don't", label: "B" }, { text: "have", label: "C" }, { text: "nothing.", label: "D" }], "D", "Doble negación: con 'don't' se usa 'anything', no 'nothing'."),
+  we([{ text: "She", label: "A" }, { text: "is good", label: "B" }, { text: "in", label: "C" }, { text: "math.", label: "D" }], "C", "La expresión correcta es 'good at', no 'good in'."),
+  we([{ text: "He", label: "A" }, { text: "is", label: "B" }, { text: "more taller", label: "C" }, { text: "than me.", label: "D" }], "C", "'taller' ya es comparativo; no se combina con 'more'."),
+  we([{ text: "You", label: "A" }, { text: "should", label: "B" }, { text: "to study", label: "C" }, { text: "more.", label: "D" }], "C", "Tras un modal va el verbo en base sin 'to': 'study'."),
+  we([{ text: "Did", label: "A" }, { text: "you", label: "B" }, { text: "went", label: "C" }, { text: "there?", label: "D" }], "C", "Tras 'did' el verbo va en base: 'Did you go?', no 'went'."),
+  we([{ text: "I", label: "A" }, { text: "enjoy", label: "B" }, { text: "to read", label: "C" }, { text: "books.", label: "D" }], "C", "Tras 'enjoy' va gerundio: 'reading', no 'to read'."),
+  we([{ text: "He", label: "A" }, { text: "speaks", label: "B" }, { text: "very good", label: "C" }, { text: "English.", label: "D" }], "C", "Para describir un verbo se usa el adverbio 'well', no 'good'."),
+  we([{ text: "I have lived", label: "A" }, { text: "here", label: "B" }, { text: "since", label: "C" }, { text: "five years.", label: "D" }], "C", "Con un periodo de tiempo (five years) se usa 'for', no 'since'."),
+  we([{ text: "Where", label: "A" }, { text: "you are", label: "B" }, { text: "going", label: "C" }, { text: "now?", label: "D" }], "B", "En preguntas el orden es auxiliar + sujeto: 'are you going'."),
+  we([{ text: "Yesterday", label: "A" }, { text: "I", label: "B" }, { text: "go", label: "C" }, { text: "to the park.", label: "D" }], "C", "'Yesterday' exige pasado: 'went', no 'go'."),
+];
+
+// ---------------------------------------------------------------------------
 // Recursos por etapa (de la guía: series, podcasts, lecturas, apps)
 // ---------------------------------------------------------------------------
 
@@ -1324,6 +1362,10 @@ export function getDailySession(dayNumber: number): DailySession {
     ...pickQuestionWindow(enrich(g2), day, 3),
   ];
 
+  // Written Expression: 2 ejercicios de "identificar el error" por día, en
+  // bloques disjuntos (banco de 14 → cada uno tarda 7 días en reaparecer).
+  const writtenExpression: ErrorId[] = pickStride(writtenExpressionTasks, i, 2);
+
   // Vocabulario: dos temas (avanza por bloques de 2, así dos días seguidos no
   // comparten temas/tarjetas).
   const [v0, v1] = pickStride(vocabSets, i, 2);
@@ -1365,6 +1407,7 @@ export function getDailySession(dayNumber: number): DailySession {
     ...vocab.cards,
     matching,
     ...grammarPractice,
+    ...writtenExpression,
     ...orders,
     reading1,
     listening1,
@@ -1383,6 +1426,7 @@ export function getDailySession(dayNumber: number): DailySession {
     monthFocus: focus,
     grammar,
     grammarPractice,
+    writtenExpression,
     vocab,
     comprehensionSet,
     dialogue,
