@@ -6,6 +6,7 @@ import {
   getProgressStats,
   getWeeklySummary,
   getCompletedSections,
+  isToday,
   dateKey,
 } from "@/lib/progress";
 import { getDashboardData } from "@/lib/dashboard";
@@ -28,16 +29,6 @@ const SECTION_CHIPS: { key: string; label: string }[] = [
   { key: "recursos", label: "🎬 Recursos" },
 ];
 
-function studiedToday(last: Date | null): boolean {
-  if (!last) return false;
-  const now = new Date();
-  return (
-    last.getFullYear() === now.getFullYear() &&
-    last.getMonth() === now.getMonth() &&
-    last.getDate() === now.getDate()
-  );
-}
-
 export default async function DashboardPage() {
   const session = await getSession();
   if (!session) redirect("/login");
@@ -48,7 +39,7 @@ export default async function DashboardPage() {
   const user = await getCurrentUser();
   const data = await getDashboardData(session.userId);
   const daily = getDailySession(progress.studyDay);
-  const doneToday = studiedToday(progress.lastStudyAt);
+  const doneToday = isToday(progress.lastStudyAt);
   const sectionDone = new Set(await getCompletedSections(session.userId));
   // Progreso del núcleo del día (gramática + vocabulario + comprensión): al
   // completarlo, el día se cierra y avanza solo.

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MOCK_SECTION_LABELS, type MockSection } from "@/lib/itp";
+import { optionButtonClass as optionButton } from "@/lib/optionStyles";
 import type { SanitizedMockItem } from "@/lib/mock";
 import { SpeechButton } from "./SpeechButton";
 
@@ -269,14 +270,6 @@ export function MockExam({
       </p>
     </div>
   );
-}
-
-function optionButton(selected: boolean) {
-  return `w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-slate-900 ${
-    selected
-      ? "border-brand-500 bg-brand-50 dark:bg-brand-950 dark:border-brand-500"
-      : "border-slate-300 hover:border-brand-400 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
-  }`;
 }
 
 function McqQ({

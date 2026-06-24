@@ -27,6 +27,17 @@ function startOfDay(d: Date): number {
   );
 }
 
+/** ¿La fecha cae en el día calendario local de hoy? (null = nunca). */
+export function isToday(d: Date | null): boolean {
+  if (!d) return false;
+  const now = new Date();
+  return (
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate()
+  );
+}
+
 /** Clave de día YYYY-MM-DD para registrar los días estudiados. */
 export function dateKey(d: Date): string {
   const y = d.getFullYear();
