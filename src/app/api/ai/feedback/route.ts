@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
-import { aiEnabled, getWritingFeedback } from "@/lib/ai";
+import { aiEnabled, getWritingReview } from "@/lib/ai";
 
 const schema = z.object({
   prompt: z.string().min(1),
@@ -36,18 +36,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
   }
 
-  const feedback = await getWritingFeedback(
+  const review = await getWritingReview(
     parsed.data.prompt,
     parsed.data.text,
     parsed.data.level
   );
 
-  if (!feedback) {
+  if (!review) {
     return NextResponse.json(
       { error: "No se pudo generar la retroalimentación. Inténtalo más tarde." },
       { status: 502 }
     );
   }
 
-  return NextResponse.json({ feedback });
+  return NextResponse.json({ review });
 }
