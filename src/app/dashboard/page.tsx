@@ -50,6 +50,10 @@ export default async function DashboardPage() {
   const daily = getDailySession(progress.studyDay);
   const doneToday = studiedToday(progress.lastStudyAt);
   const sectionDone = new Set(await getCompletedSections(session.userId));
+  // Progreso del núcleo del día (gramática + vocabulario + comprensión): al
+  // completarlo, el día se cierra y avanza solo.
+  const CORE_KEYS = ["grammar", "vocab", "comprension"];
+  const coreDoneCount = CORE_KEYS.filter((k) => sectionDone.has(k)).length;
 
   // Examen de avance disponible (cada 5 días) y aún no aprobado.
   const checkpointMilestone = checkpointDue(progress.studyDay);
@@ -122,6 +126,32 @@ export default async function DashboardPage() {
               </span>
             </div>
           </Link>
+          {!doneToday && (
+            <div className="mt-3">
+              <div className="mb-1 flex items-center justify-between text-xs text-brand-100">
+                <span>
+                  Núcleo del día: {coreDoneCount}/3 bloques
+                  {coreDoneCount > 0 && coreDoneCount < 3 ? " · ¡vas bien!" : ""}
+                  {coreDoneCount === 3 ? " · ¡listo, avanza al siguiente!" : ""}
+                </span>
+                <span aria-hidden>
+                  {["grammar", "vocab", "comprension"]
+                    .map((k) => (sectionDone.has(k) ? "🟢" : "⚪"))
+                    .join(" ")}
+                </span>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/25">
+                <div
+                  className="h-full rounded-full bg-white transition-all"
+                  style={{ width: `${(coreDoneCount / 3) * 100}%` }}
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-brand-100">
+                Completa gramática, vocabulario y comprensión (en cualquier orden)
+                y el día se marca como hecho.
+              </p>
+            </div>
+          )}
           <Link
             href="/today?mode=short"
             className="mt-3 inline-block rounded-full bg-white/25 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-white/35"
