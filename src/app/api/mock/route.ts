@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/auth";
 import { ensureProgress, touchStreak } from "@/lib/progress";
-import { flatMockItems, questionCount } from "@/lib/mock";
+import { flatMockItems } from "@/lib/mock";
 import {
   MOCK_SECTION_LABELS,
   mockTotalScore,

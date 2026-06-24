@@ -244,7 +244,7 @@ levelExams.forEach((ex) => {
 });
 
 // ---- 10. Prueba diagnóstica (placement) ----
-placementItems.forEach((p, i) => {
+placementItems.forEach((p) => {
   checkChoices(`placement "${p.id}"`, p.options, p.answerIndex, { min: 3 });
 });
 const placementIds = placementItems.map((p) => p.id);
