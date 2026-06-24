@@ -20,6 +20,8 @@ import {
   dictationTasks,
   productionPrompts,
   writtenExpressionTasks,
+  readingTasksB1,
+  listeningTasksB1,
   getDailySession,
 } from "../src/content/daily";
 import { levelExams } from "../src/content/exams";
@@ -119,6 +121,17 @@ if (new Set(readingTitles).size !== readingTitles.length) {
   fail("readingTasks: hay títulos de lectura duplicados");
 }
 
+// Lecturas B1 (densas, nivel intermedio).
+readingTasksB1.forEach((r, i) => {
+  if (!r.title) fail(`readingTasksB1[${i}]: sin título`);
+  if (!r.passage) fail(`reading B1 "${r.title}": sin pasaje`);
+  checkQuestions(`reading B1 "${r.title}"`, r.questions);
+});
+const allReadingTitles = [...readingTasks, ...readingTasksB1].map((r) => r.title);
+if (new Set(allReadingTitles).size !== allReadingTitles.length) {
+  fail("readingTasks + B1: hay títulos de lectura duplicados entre bancos");
+}
+
 // ---- 4. Escuchas (incluye conversaciones multi-turno) ----
 listeningTasks.forEach((l, i) => {
   if (!l.script) fail(`listeningTasks[${i}]: sin script`);
@@ -128,6 +141,20 @@ listeningTasks.forEach((l, i) => {
     l.turns.forEach((t, ti) => {
       if (!t.speaker || !t.text) {
         fail(`listening #${i} turno ${ti}: falta speaker o text`);
+      }
+    });
+  }
+});
+
+// Escuchas B1 (charlas/discusiones largas, algunas multi-turno).
+listeningTasksB1.forEach((l, i) => {
+  if (!l.script) fail(`listeningTasksB1[${i}]: sin script`);
+  checkQuestions(`listening B1 #${i}`, l.questions);
+  if (l.turns) {
+    if (l.turns.length < 2) fail(`listening B1 #${i}: turns con menos de 2 turnos`);
+    l.turns.forEach((t, ti) => {
+      if (!t.speaker || !t.text) {
+        fail(`listening B1 #${i} turno ${ti}: falta speaker o text`);
       }
     });
   }
@@ -268,19 +295,27 @@ const NO_REPEAT = new Set([
   "dialogue",
   "pronunciation",
 ]);
-for (let day = 1; day <= 29; day++) {
-  const today = getDailySession(day);
-  const tomorrow = getDailySession(day + 1);
-  const byTypeToday: Record<string, Set<string>> = {};
-  for (const a of today.activities) {
-    (byTypeToday[a.kind] ||= new Set()).add(activityKey(a));
-  }
-  for (const a of tomorrow.activities) {
-    if (!NO_REPEAT.has(a.kind)) continue;
-    if (byTypeToday[a.kind]?.has(activityKey(a))) {
-      fail(
-        `rotación: el ejercicio "${activityKey(a)}" (${a.kind}) se repite entre el día ${day} y el ${day + 1}`
-      );
+// Se verifica dentro de cada etapa por separado (la etapa Intermedio, semana
+// 9+, añade los bancos B1, así que el cruce de la frontera no aplica).
+const ROTATION_RANGES: [number, number][] = [
+  [1, 40], // etapa Básico
+  [55, 90], // etapa Intermedio/avanzada (con B1)
+];
+for (const [from, to] of ROTATION_RANGES) {
+  for (let day = from; day < to; day++) {
+    const today = getDailySession(day);
+    const tomorrow = getDailySession(day + 1);
+    const byTypeToday: Record<string, Set<string>> = {};
+    for (const a of today.activities) {
+      (byTypeToday[a.kind] ||= new Set()).add(activityKey(a));
+    }
+    for (const a of tomorrow.activities) {
+      if (!NO_REPEAT.has(a.kind)) continue;
+      if (byTypeToday[a.kind]?.has(activityKey(a))) {
+        fail(
+          `rotación: el ejercicio "${activityKey(a)}" (${a.kind}) se repite entre el día ${day} y el ${day + 1}`
+        );
+      }
     }
   }
 }

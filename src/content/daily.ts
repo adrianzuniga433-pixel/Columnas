@@ -955,6 +955,64 @@ export const readingTasks: Reading[] = [
   },
 ];
 
+// Lecturas de nivel B1 (más densas, expositivas, con preguntas de inferencia y
+// vocabulario en contexto). Se usan en etapas Intermedio en adelante.
+export const readingTasksB1: Reading[] = [
+  {
+    kind: "reading",
+    title: "Why We Forget",
+    passage:
+      "Forgetting is often seen as a failure of the mind, but scientists now believe it serves a purpose. The brain receives far more information than it could ever store, so it constantly decides what to keep and what to discard. Memories that are rarely used tend to fade, while those connected to emotions or repeated often are strengthened. In other words, forgetting is not simply a flaw; it is part of how the brain stays efficient and focuses on what truly matters.",
+    questions: [
+      { prompt: "What is the main idea of the passage?", options: ["Forgetting is always harmful", "Forgetting has a useful purpose", "The brain never forgets", "Emotions cause memory loss"], answerIndex: 1, explanation: "El texto sostiene que olvidar 'serves a purpose' y ayuda al cerebro a ser eficiente." },
+      { prompt: "According to the text, which memories are strengthened?", options: ["Those rarely used", "Those connected to emotions or repeated often", "Those learned in childhood", "All memories equally"], answerIndex: 1, explanation: "'those connected to emotions or repeated often are strengthened'." },
+      { prompt: "The word 'discard' is closest in meaning to:", options: ["keep", "throw away", "repeat", "study"], answerIndex: 1, explanation: "'discard' = desechar/eliminar, lo opuesto de 'keep'." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "The Hidden Cost of Fast Fashion",
+    passage:
+      "Clothing has never been cheaper, but the low prices hide a high cost. To sell garments quickly and cheaply, many companies use large amounts of water and energy, and produce huge quantities of waste. Clothes are often worn only a few times before being thrown away, ending up in landfills where they take decades to break down. Some experts argue that buying fewer, better-made items would reduce this impact, even if each piece costs more at first.",
+    questions: [
+      { prompt: "What is the 'hidden cost' the title refers to?", options: ["The price of clothes", "The environmental damage of producing cheap clothes", "The cost of shipping", "The price of better-made items"], answerIndex: 1, explanation: "El 'costo oculto' es el daño ambiental: agua, energía y residuos." },
+      { prompt: "What do some experts suggest?", options: ["Buying more clothes", "Buying fewer, better-made items", "Never buying clothes", "Only buying online"], answerIndex: 1, explanation: "'buying fewer, better-made items would reduce this impact'." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "How Vaccines Train the Body",
+    passage:
+      "A vaccine works by teaching the immune system to recognize a threat before it causes harm. It introduces a harmless piece of a virus or bacteria, which the body learns to identify. If the real disease appears later, the immune system can respond quickly because it already knows what to look for. This is why vaccinated people often avoid serious illness even when they are exposed. Although no vaccine is perfect, widespread vaccination can protect entire communities, including those who cannot be vaccinated themselves.",
+    questions: [
+      { prompt: "How does a vaccine help the body?", options: ["It cures every disease instantly", "It teaches the immune system to recognize a threat in advance", "It replaces the immune system", "It removes all bacteria"], answerIndex: 1, explanation: "'teaching the immune system to recognize a threat before it causes harm'." },
+      { prompt: "Why can widespread vaccination protect a community?", options: ["Because it cures the unvaccinated", "Because it protects even those who cannot be vaccinated", "Because vaccines are perfect", "Because it removes all viruses"], answerIndex: 1, explanation: "'can protect entire communities, including those who cannot be vaccinated'." },
+      { prompt: "The phrase 'exposed' is closest in meaning to:", options: ["cured", "in contact with the disease", "vaccinated", "hidden"], answerIndex: 1, explanation: "'exposed' = expuesto, en contacto con la enfermedad." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "The History of Coffee",
+    passage:
+      "Coffee is one of the most traded products in the world, but its journey began centuries ago. According to legend, a goat herder in Ethiopia noticed that his animals became lively after eating certain berries. The drink later spread through the Middle East, where coffee houses became centers of conversation and ideas. By the seventeenth century, coffee had reached Europe, where similar cafés played a role in business and politics. Today, millions of people depend on coffee for their income, from small farmers to large companies.",
+    questions: [
+      { prompt: "Why were coffee houses important historically?", options: ["They sold only food", "They became centers of conversation and ideas", "They were used as banks", "They produced coffee berries"], answerIndex: 1, explanation: "'coffee houses became centers of conversation and ideas'." },
+      { prompt: "What can be inferred about coffee today?", options: ["Few people drink it", "Many people's income depends on it", "It is no longer traded", "It is only grown in Europe"], answerIndex: 1, explanation: "'millions of people depend on coffee for their income'." },
+    ],
+  },
+  {
+    kind: "reading",
+    title: "Cities and Green Spaces",
+    passage:
+      "As cities grow, planners increasingly recognize the value of parks and green spaces. Beyond making neighborhoods more attractive, these areas help cool the air, reduce flooding, and improve residents' mental health. Studies have found that people who live near parks tend to be more active and report lower levels of stress. However, creating green spaces in crowded cities is not easy, since land is expensive and demand for housing is high. Balancing these needs is one of the central challenges of modern urban planning.",
+    questions: [
+      { prompt: "What is one benefit of green spaces mentioned in the text?", options: ["They increase flooding", "They improve residents' mental health", "They make land cheaper", "They reduce the number of parks"], answerIndex: 1, explanation: "'improve residents' mental health'." },
+      { prompt: "Why is creating green spaces difficult in cities?", options: ["People dislike parks", "Land is expensive and housing is in demand", "There are too many parks already", "Parks cause stress"], answerIndex: 1, explanation: "'land is expensive and demand for housing is high'." },
+      { prompt: "The central challenge described is:", options: ["building taller buildings", "balancing green spaces with other city needs", "removing all parks", "lowering taxes"], answerIndex: 1, explanation: "'Balancing these needs is one of the central challenges'." },
+    ],
+  },
+];
+
 // ---------------------------------------------------------------------------
 // Pool de escuchas (Web Speech sintetiza el guion)
 // ---------------------------------------------------------------------------
@@ -1150,6 +1208,77 @@ export const listeningTasks: Listening[] = [
     questions: [
       { prompt: "How much is the yearly plan?", options: ["Thirty dollars", "Three hundred dollars", "One hundred dollars", "It's free"], answerIndex: 1, explanation: "'a yearly plan for three hundred'." },
       { prompt: "What is included in the membership?", options: ["Only the gym machines", "All group classes", "A personal trainer", "Free meals"], answerIndex: 1, explanation: "'all group classes are included, like yoga and spinning'." },
+    ],
+  },
+];
+
+// Escuchas de nivel B1: charlas/lecturas más largas (estilo TOEFL Part C) y
+// discusiones académicas. Se usan en etapas Intermedio en adelante.
+export const listeningTasksB1: Listening[] = [
+  {
+    kind: "listening",
+    scriptLabel: "Charla: una profesora explica la fotosíntesis.",
+    script:
+      "Good morning, everyone. Today we'll talk about photosynthesis, the process that allows plants to make their own food. In simple terms, plants take in sunlight, water, and carbon dioxide, and turn them into sugar and oxygen. The sugar gives the plant energy to grow, while the oxygen is released into the air. This is why forests are sometimes called the lungs of the planet. Without photosynthesis, life as we know it could not exist, because most living things depend, directly or indirectly, on the energy that plants capture from the sun.",
+    questions: [
+      { prompt: "What does photosynthesis produce?", options: ["Only water", "Sugar and oxygen", "Carbon dioxide and salt", "Sunlight"], answerIndex: 1, explanation: "'turn them into sugar and oxygen'." },
+      { prompt: "Why are forests called 'the lungs of the planet'?", options: ["They breathe like animals", "They release oxygen into the air", "They store water", "They block sunlight"], answerIndex: 1, explanation: "Liberan oxígeno: 'the oxygen is released into the air'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Segmento de radio sobre el sueño.",
+    script:
+      "Welcome back. In this segment, we look at why sleep matters more than many people think. Research shows that during sleep, the brain organizes memories and clears out waste products that build up during the day. People who regularly sleep too little often have trouble concentrating and may face higher health risks over time. Experts recommend keeping a regular schedule and avoiding screens before bed. The message is simple: sleep is not wasted time, but an active process that keeps both the body and the mind healthy.",
+    questions: [
+      { prompt: "According to the segment, what does the brain do during sleep?", options: ["Nothing at all", "Organizes memories and clears waste", "Grows larger", "Produces food"], answerIndex: 1, explanation: "'the brain organizes memories and clears out waste products'." },
+      { prompt: "What is one piece of advice given?", options: ["Sleep less", "Avoid screens before bed", "Drink coffee at night", "Keep an irregular schedule"], answerIndex: 1, explanation: "'avoiding screens before bed'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Anuncio en un museo.",
+    script:
+      "Attention, visitors. The special exhibition on ancient Egypt is now open on the second floor. The exhibition includes objects that are more than three thousand years old, many of them shown in this country for the first time. Please note that photography without flash is allowed, but visitors are asked not to touch the displays. A guided tour in English begins every hour near the main entrance and lasts about forty minutes. We hope you enjoy your visit.",
+    questions: [
+      { prompt: "Where is the special exhibition?", options: ["On the first floor", "On the second floor", "Near the exit", "Outside"], answerIndex: 1, explanation: "'now open on the second floor'." },
+      { prompt: "What are visitors asked NOT to do?", options: ["Take photos without flash", "Touch the displays", "Join the tour", "Enter the museum"], answerIndex: 1, explanation: "'asked not to touch the displays'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Conversación académica: un estudiante y su asesor.",
+    script:
+      "Student: Hi, professor. I wanted to ask about choosing my courses for next semester. Advisor: Of course. Have you thought about what areas interest you most? Student: I enjoy economics, but I'm worried the advanced class might be too difficult. Advisor: It is challenging, but you did well in the introductory course. I'd recommend taking it along with a lighter elective to balance your workload. Student: That makes sense. Could I also add the statistics course? Advisor: You could, but three demanding courses at once may be a lot. Let's start with two and see how it goes.",
+    turns: [
+      { speaker: "Student", text: "Hi, professor. I wanted to ask about choosing my courses for next semester." },
+      { speaker: "Advisor", text: "Of course. Have you thought about what areas interest you most?" },
+      { speaker: "Student", text: "I enjoy economics, but I'm worried the advanced class might be too difficult." },
+      { speaker: "Advisor", text: "It is challenging, but you did well in the introductory course. I'd recommend taking it along with a lighter elective to balance your workload." },
+      { speaker: "Student", text: "That makes sense. Could I also add the statistics course?" },
+      { speaker: "Advisor", text: "You could, but three demanding courses at once may be a lot. Let's start with two and see how it goes." },
+    ],
+    questions: [
+      { prompt: "What is the student worried about?", options: ["Paying for classes", "The advanced economics class being too difficult", "Finding the classroom", "The professor's schedule"], answerIndex: 1, explanation: "'I'm worried the advanced class might be too difficult'." },
+      { prompt: "What does the advisor finally recommend?", options: ["Taking three demanding courses", "Starting with two courses", "Dropping economics", "Waiting a year"], answerIndex: 1, explanation: "'Let's start with two and see how it goes'." },
+    ],
+  },
+  {
+    kind: "listening",
+    scriptLabel: "Conversación: dos estudiantes planean un proyecto de investigación.",
+    script:
+      "Woman: So, for our project on local water use, where should we begin? Man: I think we should first collect data from the city's reports, then interview a few residents. Woman: Good idea. The interviews will take time, though. Maybe we should split the work. Man: Agreed. I can handle the data if you organize the interviews. Woman: Perfect. Let's aim to have a first draft ready in two weeks. Man: Sounds reasonable. We can meet on Friday to check our progress.",
+    turns: [
+      { speaker: "Woman", text: "So, for our project on local water use, where should we begin?" },
+      { speaker: "Man", text: "I think we should first collect data from the city's reports, then interview a few residents." },
+      { speaker: "Woman", text: "Good idea. The interviews will take time, though. Maybe we should split the work." },
+      { speaker: "Man", text: "Agreed. I can handle the data if you organize the interviews." },
+      { speaker: "Woman", text: "Perfect. Let's aim to have a first draft ready in two weeks." },
+      { speaker: "Man", text: "Sounds reasonable. We can meet on Friday to check our progress." },
+    ],
+    questions: [
+      { prompt: "What is the man going to do?", options: ["Organize the interviews", "Handle the data", "Write the whole project alone", "Nothing"], answerIndex: 1, explanation: "'I can handle the data if you organize the interviews'." },
+      { prompt: "When do they plan to meet to check progress?", options: ["On Monday", "On Friday", "In two months", "Never"], answerIndex: 1, explanation: "'We can meet on Friday to check our progress'." },
     ],
   },
 ];
@@ -1378,8 +1507,15 @@ export function getDailySession(dayNumber: number): DailySession {
   // Comprensión: 2 lecturas + 2 escuchas + dictado (formato TOEFL). Todo avanza
   // por bloques: con bancos de 12 y 2 ítems/día, cada pieza tarda 6 días en
   // reaparecer (no se repite el mismo día ni en días cercanos).
-  const [reading1, reading2] = pickStride(readingTasks, i, 2);
-  const [listening1, listening2] = pickStride(listeningTasks, i, 2);
+  // Desde la etapa Intermedio (semana 9+) se añaden textos y charlas densas de
+  // nivel B1 al banco para que la comprensión se acerque al examen real.
+  const advanced = week >= 9;
+  const readPool = advanced ? [...readingTasks, ...readingTasksB1] : readingTasks;
+  const listenPool = advanced
+    ? [...listeningTasks, ...listeningTasksB1]
+    : listeningTasks;
+  const [reading1, reading2] = pickStride(readPool, i, 2);
+  const [listening1, listening2] = pickStride(listenPool, i, 2);
   const dictation = dictationTasks[i % dictationTasks.length];
   const comprehensionSet: Activity[] = [
     reading1,
