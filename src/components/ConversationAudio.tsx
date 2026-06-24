@@ -48,6 +48,9 @@ export function ConversationAudio({
     load();
     window.speechSynthesis.addEventListener("voiceschanged", load);
     return () => {
+      // Marca cancelado ANTES de cancelar: si no, el onend/onerror de la
+      // frase en curso reanudaría la siguiente tras desmontar el componente.
+      cancelledRef.current = true;
       window.speechSynthesis.removeEventListener("voiceschanged", load);
       window.speechSynthesis.cancel();
     };
