@@ -71,6 +71,10 @@ model Progress {
   placementDone     Boolean  @default(false)
   studyDay          Int      @default(1)
   lastStudyAt       DateTime?
+  // Día más alto del plan ya completado (fuente de verdad del avance).
+  lastCompletedDay  Int      @default(0)
+  // Bloques completados del día en curso. JSON: { "day": N, "done": [secciones] }
+  completedSections String   @default("")
   // Plan hacia el examen: fecha objetivo y puntaje meta del usuario.
   examDate          DateTime?
   targetScore       Int?

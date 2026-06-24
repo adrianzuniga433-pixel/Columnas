@@ -21,6 +21,11 @@ import {
   requiredDaysPerWeek,
 } from "../src/lib/planMath";
 import { pickStride, pickQuestionWindow } from "../src/content/daily";
+import {
+  dayAlreadyCredited,
+  coreComplete,
+  isKnownSection,
+} from "../src/lib/dayProgress";
 
 let passed = 0;
 const failures: string[] = [];
@@ -169,6 +174,24 @@ ok(requiredDaysPerWeek(40, 5) >= 4, "required brecha media");
   ok(!bad, "pickQuestionWindow: 3 días consecutivos disjuntos");
   eq(pickQuestionWindow(pool, 0, 3).length, 3, "pickQuestionWindow tamaño 3");
 }
+
+// ===================== Avance diario y bloques =====================
+
+// El día se acredita por día COMPLETADO, no por día calendario.
+ok(!dayAlreadyCredited(3, 2), "día 3 con 2 completados → se puede acreditar");
+ok(dayAlreadyCredited(3, 3), "día 3 ya completado → no se re-acredita");
+ok(dayAlreadyCredited(2, 5), "día por debajo del completado → no avanza");
+// Tras completar el día 3 (lastCompletedDay=3, studyDay=4), el día 4 avanza:
+ok(!dayAlreadyCredited(4, 3), "día 4 tras completar el 3 → avanza (sin repetir)");
+
+ok(coreComplete(["grammar", "vocab", "comprension"]), "núcleo completo cierra el día");
+ok(coreComplete(["grammar", "vocab", "comprension", "pronunciation"]), "núcleo + extra cierra el día");
+ok(!coreComplete(["grammar", "vocab"]), "núcleo incompleto NO cierra el día");
+ok(!coreComplete([]), "sin bloques NO cierra el día");
+
+ok(isKnownSection("grammar"), "grammar es una sección válida");
+ok(!isKnownSection("recursos"), "recursos no es una sección marcable");
+ok(!isKnownSection("xyz"), "sección desconocida se ignora");
 
 // ===================== Reporte =====================
 

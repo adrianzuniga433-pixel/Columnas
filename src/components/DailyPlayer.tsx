@@ -149,10 +149,25 @@ export function DailyPlayer({
     if (step + 1 >= totalSteps) {
       if (isFull) setPhase("wrapup");
       else if (isShort) finish();
-      else setPhase("done");
+      else {
+        // Bloque suelto (gramática, vocabulario, etc.): se marca como hecho
+        // para que cuente y no haya que repetirlo.
+        markSection(section);
+        setPhase("done");
+      }
     } else {
       setStep((s) => s + 1);
     }
+  }
+
+  function markSection(s: DailySection) {
+    fetch("/api/daily/section", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ section: s }),
+    })
+      .then(() => router.refresh())
+      .catch(() => {});
   }
 
   async function finish() {

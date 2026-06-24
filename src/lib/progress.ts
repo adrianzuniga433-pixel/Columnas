@@ -2,6 +2,16 @@ import "server-only";
 import { prisma } from "./prisma";
 import { srsSeedForLevel } from "@/content";
 import { srsSeedForDay } from "@/content/daily";
+import {
+  DAILY_SECTIONS,
+  type DailySectionKey,
+  isKnownSection,
+  dayAlreadyCredited,
+  coreComplete,
+} from "./dayProgress";
+
+export { DAILY_SECTIONS };
+export type { DailySectionKey };
 
 /** Devuelve el Progress del usuario, creándolo si no existe. */
 export async function ensureProgress(userId: string) {
@@ -105,15 +115,27 @@ export async function seedSrsForDay(userId: string, day: number) {
  * Marca la sesión diaria como completada. Avanza al siguiente día solo una vez
  * por día natural (para mantener una sesión distinta cada día).
  */
-export async function completeDailySession(userId: string) {
-  const progress = await ensureProgress(userId);
-  const today = startOfDay(new Date());
-  const alreadyAdvancedToday =
-    progress.lastStudyAt != null && startOfDay(progress.lastStudyAt) === today;
+function parseCompletedSections(raw: string, day: number): string[] {
+  try {
+    const v = JSON.parse(raw);
+    if (v && v.day === day && Array.isArray(v.done)) {
+      return v.done.filter((s: unknown): s is string => typeof s === "string");
+    }
+  } catch {
+    /* ignore */
+  }
+  return [];
+}
 
-  await seedSrsForDay(userId, progress.studyDay);
+/** Secciones del día en curso ya completadas (para mostrar ✓ en el panel). */
+export async function getCompletedSections(userId: string): Promise<string[]> {
+  const p = await ensureProgress(userId);
+  // Si el día ya quedó acreditado, no hay bloques pendientes que marcar.
+  if (dayAlreadyCredited(p.studyDay, p.lastCompletedDay)) return [];
+  return parseCompletedSections(p.completedSections, p.studyDay);
+}
 
-  // Registra el día estudiado (para el calendario de racha).
+async function logStudyToday(userId: string) {
   await prisma.studyLog
     .upsert({
       where: { userId_date: { userId, date: dateKey(new Date()) } },
@@ -121,16 +143,70 @@ export async function completeDailySession(userId: string) {
       create: { userId, date: dateKey(new Date()) },
     })
     .catch(() => null);
+}
 
-  const updated = await prisma.progress.update({
+// Acredita el día actual: siembra el SRS, registra el día y avanza al siguiente.
+async function creditCurrentDay(userId: string, studyDay: number) {
+  await seedSrsForDay(userId, studyDay);
+  await logStudyToday(userId);
+  return prisma.progress.update({
     where: { userId },
     data: {
       lastStudyAt: new Date(),
-      studyDay: alreadyAdvancedToday ? progress.studyDay : progress.studyDay + 1,
+      lastCompletedDay: studyDay,
+      studyDay: studyDay + 1,
+      completedSections: "",
+    },
+  });
+}
+
+export async function completeDailySession(userId: string) {
+  const progress = await ensureProgress(userId);
+  // Idempotente: el avance se acredita por día COMPLETADO, no por día
+  // calendario. Si este día ya está acreditado, no se vuelve a avanzar.
+  if (dayAlreadyCredited(progress.studyDay, progress.lastCompletedDay)) {
+    await touchStreak(userId);
+    return { studyDay: progress.studyDay, advanced: false };
+  }
+  const updated = await creditCurrentDay(userId, progress.studyDay);
+  await touchStreak(userId);
+  return { studyDay: updated.studyDay, advanced: true };
+}
+
+/**
+ * Marca un bloque (sección) del día como hecho. Si con eso se completa el
+ * núcleo (gramática + vocabulario + comprensión), cierra el día y avanza, así
+ * el usuario puede hacer la sesión por partes sin repetir lo ya hecho.
+ */
+export async function markSectionComplete(userId: string, section: string) {
+  const progress = await ensureProgress(userId);
+  if (!isKnownSection(section)) {
+    return { sections: [], advanced: false, studyDay: progress.studyDay };
+  }
+  // El día ya está acreditado: nada que marcar.
+  if (dayAlreadyCredited(progress.studyDay, progress.lastCompletedDay)) {
+    return { sections: [], advanced: false, studyDay: progress.studyDay };
+  }
+
+  await logStudyToday(userId);
+
+  const done = new Set(parseCompletedSections(progress.completedSections, progress.studyDay));
+  done.add(section);
+
+  if (coreComplete(done)) {
+    const updated = await creditCurrentDay(userId, progress.studyDay);
+    await touchStreak(userId);
+    return { sections: [], advanced: true, studyDay: updated.studyDay };
+  }
+
+  await prisma.progress.update({
+    where: { userId },
+    data: {
+      completedSections: JSON.stringify({ day: progress.studyDay, done: [...done] }),
     },
   });
   await touchStreak(userId);
-  return { studyDay: updated.studyDay, advanced: !alreadyAdvancedToday };
+  return { sections: [...done], advanced: false, studyDay: progress.studyDay };
 }
 
 /** Estadísticas de progreso para el panel. */

@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession, getCurrentUser } from "@/lib/auth";
-import { ensureProgress, getProgressStats, getWeeklySummary, dateKey } from "@/lib/progress";
+import {
+  ensureProgress,
+  getProgressStats,
+  getWeeklySummary,
+  getCompletedSections,
+  dateKey,
+} from "@/lib/progress";
 import { getDashboardData } from "@/lib/dashboard";
 import { AppHeader } from "@/components/AppHeader";
 import { getDailySession, checkpointDue } from "@/content/daily";
@@ -10,6 +16,17 @@ import { Onboarding } from "@/components/Onboarding";
 import { ReminderClient } from "@/components/ReminderClient";
 
 export const dynamic = "force-dynamic";
+
+// Bloques de la sesión diaria (los que se pueden marcar como hechos primero).
+const SECTION_CHIPS: { key: string; label: string }[] = [
+  { key: "grammar", label: "📘 Gramática" },
+  { key: "vocab", label: "📝 Vocabulario" },
+  { key: "comprension", label: "📖 Comprensión" },
+  { key: "conversation", label: "💬 Conversación" },
+  { key: "pronunciation", label: "🎤 Pronunciación" },
+  { key: "produccion", label: "✏️ Producción" },
+  { key: "recursos", label: "🎬 Recursos" },
+];
 
 function studiedToday(last: Date | null): boolean {
   if (!last) return false;
@@ -32,6 +49,7 @@ export default async function DashboardPage() {
   const data = await getDashboardData(session.userId);
   const daily = getDailySession(progress.studyDay);
   const doneToday = studiedToday(progress.lastStudyAt);
+  const sectionDone = new Set(await getCompletedSections(session.userId));
 
   // Examen de avance disponible (cada 5 días) y aún no aprobado.
   const checkpointMilestone = checkpointDue(progress.studyDay);
@@ -110,15 +128,27 @@ export default async function DashboardPage() {
           >
             ⏱️ ¿Poco tiempo? Sesión corta (~15 min)
           </Link>
-          <p className="mt-4 mb-2 text-xs text-brand-100">O entra directo a una parte:</p>
+          <p className="mt-4 mb-2 text-xs text-brand-100">
+            {doneToday
+              ? "Hazlo de nuevo por partes si quieres repasar:"
+              : "O entra directo a una parte (cada bloque que completes queda marcado ✓):"}
+          </p>
           <div className="flex flex-wrap gap-2 text-xs">
-            <Link href="/today?section=grammar" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">📘 Gramática</Link>
-            <Link href="/today?section=vocab" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">📝 Vocabulario</Link>
-            <Link href="/today?section=comprension" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">📖 Comprensión</Link>
-            <Link href="/today?section=conversation" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">💬 Conversación</Link>
-            <Link href="/today?section=pronunciation" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">🎤 Pronunciación</Link>
-            <Link href="/today?section=produccion" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">✏️ Producción</Link>
-            <Link href="/today?section=recursos" className="rounded-full bg-white/15 px-3 py-1.5 transition-colors hover:bg-white/25">🎬 Recursos</Link>
+            {SECTION_CHIPS.map((c) => {
+              const done = sectionDone.has(c.key);
+              return (
+                <Link
+                  key={c.key}
+                  href={`/today?section=${c.key}`}
+                  className={`rounded-full px-3 py-1.5 transition-colors ${
+                    done ? "bg-white/35 font-medium" : "bg-white/15 hover:bg-white/25"
+                  }`}
+                >
+                  {done ? "✓ " : ""}
+                  {c.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
 
