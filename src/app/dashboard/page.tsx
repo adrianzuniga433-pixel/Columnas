@@ -235,7 +235,7 @@ export default async function DashboardPage() {
         <div className="mb-6 grid gap-2 sm:grid-cols-2">
           <Link href="/plan" className="card !p-4 transition-colors hover:border-brand-400">🎯 Plan hacia mi examen</Link>
           <Link href="/progress" className="card !p-4 transition-colors hover:border-brand-400">📊 Mi progreso y debilidades</Link>
-          <Link href="/practice/adaptive" className="card !p-4 transition-colors hover:border-brand-400">🎯 Reto personalizado</Link>
+          <Link href="/practice/adaptive" className="card !p-4 transition-colors hover:border-brand-400">🧠 Repaso inteligente</Link>
           <Link href="/reading" className="card !p-4 transition-colors hover:border-brand-400">📚 Biblioteca de lecturas</Link>
           <Link href="/practice/conversation" className="card !p-4 transition-colors hover:border-brand-400">💬 Conversación</Link>
           <Link href="/practice/speaking" className="card !p-4 transition-colors hover:border-brand-400">🎤 Pronunciación</Link>
