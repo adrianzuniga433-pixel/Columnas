@@ -4,10 +4,14 @@ import { getProgressInsights } from "./insights";
 import {
   AREA_LABELS,
   GOAL_SCORE,
-  ITP_MAX,
   cefrForScore,
   type Area,
 } from "./itp";
+import {
+  gainForDaysPerWeek,
+  projectScore,
+  requiredDaysPerWeek,
+} from "./planMath";
 
 const AREA_ACTION: Record<Area, { href: string; label: string }> = {
   listening: { href: "/today?section=comprension", label: "comprensión auditiva" },
@@ -38,14 +42,6 @@ export interface StudyPlan {
 
 function dayKeyLocal(d: Date): string {
   return d.toISOString().slice(0, 10);
-}
-
-// Puntos estimados de mejora por semana según la constancia reciente.
-function gainForDaysPerWeek(daysPerWeek: number): number {
-  if (daysPerWeek >= 5) return 9;
-  if (daysPerWeek >= 3) return 6;
-  if (daysPerWeek >= 1) return 3;
-  return 1;
 }
 
 export async function getStudyPlan(userId: string): Promise<StudyPlan> {
@@ -79,20 +75,11 @@ export async function getStudyPlan(userId: string): Promise<StudyPlan> {
   const effWeeks = Math.max(0.5, weeksLeft);
 
   const pointsNeeded = Math.max(0, target - current);
-  const projectedScore = Math.min(
-    ITP_MAX,
-    Math.round(current + gainPerWeek * weeksLeft)
-  );
+  const projectedScore = projectScore(current, gainPerWeek, weeksLeft);
   const onTrack = projectedScore >= target;
 
   // Días/semana necesarios para llegar a la meta a tiempo.
-  const requiredGainPerWeek = pointsNeeded / effWeeks;
-  let requiredDaysPerWeek = 0;
-  if (requiredGainPerWeek <= 1) requiredDaysPerWeek = 1;
-  else if (requiredGainPerWeek <= 3) requiredDaysPerWeek = 2;
-  else if (requiredGainPerWeek <= 6) requiredDaysPerWeek = 4;
-  else if (requiredGainPerWeek <= 9) requiredDaysPerWeek = 6;
-  else requiredDaysPerWeek = 7;
+  const reqDaysPerWeek = requiredDaysPerWeek(pointsNeeded, effWeeks);
 
   const focusArea = insights.weakestArea?.area ?? null;
   const focusLabel = focusArea ? AREA_LABELS[focusArea] : null;
@@ -108,7 +95,7 @@ export async function getStudyPlan(userId: string): Promise<StudyPlan> {
   } else if (daysLeft === 0) {
     message = "Tu examen es hoy o ya pasó. Actualiza la fecha si quieres un nuevo plan.";
   } else {
-    message = `A tu ritmo actual proyectas ${projectedScore}, por debajo de tu meta de ${target}. Sube a ~${requiredDaysPerWeek} días de estudio por semana${
+    message = `A tu ritmo actual proyectas ${projectedScore}, por debajo de tu meta de ${target}. Sube a ~${reqDaysPerWeek} días de estudio por semana${
       focusLabel ? `, enfocándote en ${focusLabel}` : ""
     } para cerrar la brecha.`;
   }
@@ -126,7 +113,7 @@ export async function getStudyPlan(userId: string): Promise<StudyPlan> {
     gainPerWeek,
     projectedScore,
     onTrack,
-    requiredDaysPerWeek,
+    requiredDaysPerWeek: reqDaysPerWeek,
     focusArea,
     focusLabel,
     focusHref,

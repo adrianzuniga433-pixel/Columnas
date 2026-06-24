@@ -1305,7 +1305,7 @@ function matchingFromVocab(vocab: VocabSet): Matching {
  * muestre preguntas distintas. Con un banco de 9 y ventanas de 3, los días
  * d-1, d, d+1 dan offsets disjuntos (0, 3, 6) → ningún solapamiento.
  */
-function pickQuestionWindow<T>(pool: T[], day: number, size: number): T[] {
+export function pickQuestionWindow<T>(pool: T[], day: number, size: number): T[] {
   if (pool.length === 0) return [];
   const slots = Math.max(1, Math.floor(pool.length / size));
   const start = ((day % slots) * size) % pool.length;
@@ -1324,7 +1324,7 @@ function pickQuestionWindow<T>(pool: T[], day: number, size: number): T[] {
  * Cuando count y el tamaño del banco son coprimos, recorre todo el banco antes
  * de repetir combinaciones.
  */
-function pickStride<T>(pool: T[], dayIndex: number, count: number): T[] {
+export function pickStride<T>(pool: T[], dayIndex: number, count: number): T[] {
   if (pool.length === 0) return [];
   const start = (dayIndex * count) % pool.length;
   const take = Math.min(count, pool.length);
