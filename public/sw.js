@@ -47,6 +47,21 @@ self.addEventListener("message", (event) => {
   if (event.data === "SKIP_WAITING") self.skipWaiting();
 });
 
+// Al tocar una notificación de recordatorio, abre/enfoca la sesión del día.
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clients) => {
+        for (const client of clients) {
+          if ("focus" in client) return client.focus();
+        }
+        if (self.clients.openWindow) return self.clients.openWindow("/today");
+      })
+  );
+});
+
 function isStaticAsset(url) {
   return (
     url.pathname.startsWith("/_next/static/") ||

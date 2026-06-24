@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { showAppNotification } from "@/lib/notify";
 
 const K_ENABLED = "columnas_remind_enabled";
 const K_HOUR = "columnas_remind_hour";
@@ -54,6 +55,24 @@ export function SettingsForm() {
     }
   }
 
+  async function testNotification() {
+    if (typeof Notification === "undefined") {
+      alert("Tu navegador no soporta notificaciones.");
+      return;
+    }
+    let p = Notification.permission;
+    if (p !== "granted") {
+      p = await Notification.requestPermission();
+      setPerm(p);
+    }
+    if (p !== "granted") return;
+    const ok = await showAppNotification(
+      "¡Prueba de recordatorio! 🦖",
+      "Así se verá tu recordatorio diario. ¡A practicar!"
+    );
+    if (!ok) alert("No se pudo mostrar la notificación.");
+  }
+
   return (
     <div className="mx-auto max-w-xl px-4 py-6">
       <Link href="/dashboard" className="btn-ghost mb-4 inline-block">
@@ -65,14 +84,20 @@ export function SettingsForm() {
       <div className="card mb-4">
         <p className="font-semibold">🔔 Recordatorio diario</p>
         <p className="mb-3 text-sm text-slate-500">
-          Te recordamos estudiar cuando abras la app después de tu hora elegida.
+          A tu hora elegida te avisamos para que no rompas tu racha. Funciona
+          mientras la app esté abierta o instalada en tu dispositivo.
         </p>
-        <button
-          className={enabled ? "btn-secondary" : "btn-primary"}
-          onClick={toggleReminder}
-        >
-          {enabled ? "Recordatorio activado ✓ (tocar para desactivar)" : "Activar recordatorio"}
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            className={enabled ? "btn-secondary" : "btn-primary"}
+            onClick={toggleReminder}
+          >
+            {enabled ? "Recordatorio activado ✓ (tocar para desactivar)" : "Activar recordatorio"}
+          </button>
+          <button className="btn-ghost" onClick={testNotification}>
+            🔔 Probar
+          </button>
+        </div>
         {enabled && (
           <div className="mt-4">
             <label className="label">Hora del recordatorio</label>
@@ -87,6 +112,10 @@ export function SettingsForm() {
                 </option>
               ))}
             </select>
+            <p className="mt-2 text-xs text-slate-400">
+              💡 Para recibirlo aunque cierres el navegador, instala la app
+              (Añadir a pantalla de inicio) y mantén las notificaciones activas.
+            </p>
           </div>
         )}
         {perm === "denied" && (
