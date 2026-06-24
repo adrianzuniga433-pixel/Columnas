@@ -233,6 +233,7 @@ export default async function DashboardPage() {
         {/* Más práctica */}
         <h2 className="mb-2 text-lg font-semibold">Más práctica</h2>
         <div className="mb-6 grid gap-2 sm:grid-cols-2">
+          <Link href="/plan" className="card !p-4 transition-colors hover:border-brand-400">🎯 Plan hacia mi examen</Link>
           <Link href="/progress" className="card !p-4 transition-colors hover:border-brand-400">📊 Mi progreso y debilidades</Link>
           <Link href="/practice/adaptive" className="card !p-4 transition-colors hover:border-brand-400">🎯 Reto personalizado</Link>
           <Link href="/reading" className="card !p-4 transition-colors hover:border-brand-400">📚 Biblioteca de lecturas</Link>

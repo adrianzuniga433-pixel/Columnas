@@ -71,6 +71,9 @@ model Progress {
   placementDone     Boolean  @default(false)
   studyDay          Int      @default(1)
   lastStudyAt       DateTime?
+  // Plan hacia el examen: fecha objetivo y puntaje meta del usuario.
+  examDate          DateTime?
+  targetScore       Int?
   updatedAt         DateTime @updatedAt
 }
 
