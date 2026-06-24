@@ -46,8 +46,11 @@ function dayKeyLocal(d: Date): string {
 
 export async function getStudyPlan(userId: string): Promise<StudyPlan> {
   const progress = await ensureProgress(userId);
-  const stats = await getProgressStats(userId);
-  const insights = await getProgressInsights(userId);
+  // Independientes entre sí: se cargan en paralelo.
+  const [stats, insights] = await Promise.all([
+    getProgressStats(userId),
+    getProgressInsights(userId),
+  ]);
 
   const current = progress.estimatedItpScore;
   const target = progress.targetScore ?? GOAL_SCORE;

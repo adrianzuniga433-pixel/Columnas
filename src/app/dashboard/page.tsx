@@ -36,31 +36,38 @@ export default async function DashboardPage() {
   const progress = await ensureProgress(session.userId);
   if (!progress.placementDone) redirect("/placement");
 
-  const user = await getCurrentUser();
-  const data = await getDashboardData(session.userId);
+  // Examen de avance disponible (cada 5 días) y aún no aprobado.
+  const checkpointMilestone = checkpointDue(progress.studyDay);
+
+  // Carga en paralelo todo lo independiente (antes eran ~6 awaits en serie).
+  const [user, data, completedSections, checkpointPassed, stats, weekly] =
+    await Promise.all([
+      getCurrentUser(),
+      getDashboardData(session.userId),
+      getCompletedSections(session.userId),
+      checkpointMilestone
+        ? prisma.examAttempt.findFirst({
+            where: {
+              userId: session.userId,
+              level: 1000 + checkpointMilestone,
+              passed: true,
+            },
+          })
+        : Promise.resolve(null),
+      getProgressStats(session.userId),
+      getWeeklySummary(session.userId),
+    ]);
+
   const daily = getDailySession(progress.studyDay);
   const doneToday = isToday(progress.lastStudyAt);
-  const sectionDone = new Set(await getCompletedSections(session.userId));
+  const sectionDone = new Set(completedSections);
   // Progreso del núcleo del día (gramática + vocabulario + comprensión): al
   // completarlo, el día se cierra y avanza solo.
   const CORE_KEYS = ["grammar", "vocab", "comprension"];
   const coreDoneCount = CORE_KEYS.filter((k) => sectionDone.has(k)).length;
 
-  // Examen de avance disponible (cada 5 días) y aún no aprobado.
-  const checkpointMilestone = checkpointDue(progress.studyDay);
-  let checkpointPending = false;
-  if (checkpointMilestone) {
-    const passed = await prisma.examAttempt.findFirst({
-      where: {
-        userId: session.userId,
-        level: 1000 + checkpointMilestone,
-        passed: true,
-      },
-    });
-    checkpointPending = !passed;
-  }
+  const checkpointPending = checkpointMilestone ? !checkpointPassed : false;
 
-  const stats = await getProgressStats(session.userId);
   const DOW = ["D", "L", "M", "M", "J", "V", "S"];
   const todayKey = dateKey(new Date());
   const last14: { key: string; label: string; dow: string; studied: boolean; today: boolean }[] = [];
@@ -77,7 +84,6 @@ export default async function DashboardPage() {
     });
   }
   const studied14 = last14.filter((d) => d.studied).length;
-  const weekly = await getWeeklySummary(session.userId);
 
   return (
     <div className="min-h-screen">
